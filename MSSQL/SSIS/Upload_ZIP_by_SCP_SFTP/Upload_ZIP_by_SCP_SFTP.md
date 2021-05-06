@@ -160,7 +160,7 @@ public void Main()
 
 **После анализа кода приходим к выводу, что всю логику выгрузки данных удобнее реализовать в одном Script Task.**  
 
-### Исходный код скриптав для выгрузки данных из DWH  
+### Исходный код скриптов для выгрузки данных из DWH  
 
 - Для GFK: [ScriptMain.cs](./GFK/ScriptMain.cs.md), [Export.cs](./GFK/Export.cs.md), [Upload.cs](./GFK/Upload.cs.md)
 - Для Nielsen: [ScriptMain.cs](./Nielsen/ScriptMain.cs.md), [Export.cs](./Nielsen/Export.cs.md), [Upload.cs](./Nielsen/Upload.cs.md)
@@ -181,3 +181,4 @@ public void Main()
 - [Документация по классу CultureInfo](https://docs.microsoft.com/ru-ru/dotnet/api/system.globalization.cultureinfo.currentculture?view=netframework-4.6)  
 - [Raising Events in the Script Task](https://docs.microsoft.com/en-us/sql/integration-services/extending-packages-scripting/task/raising-events-in-the-script-task?view=sql-server-ver15)  
 - [Script Task and Component Logging](http://microsoft-ssis.blogspot.com/2011/02/script-task-and-component-logging.html)  
+- [Документация по классу ProcessStartInfo](https://docs.microsoft.com/ru-ru/dotnet/api/system.diagnostics.processstartinfo?view=netframework-4.5)  

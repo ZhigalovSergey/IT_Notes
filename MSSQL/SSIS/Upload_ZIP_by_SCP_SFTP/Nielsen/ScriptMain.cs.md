@@ -110,69 +110,89 @@ namespace ST_ae54ed5b852743dcb0d5effb6eeb6bd2
             string DestinationFolder = String.Format("{0}/nielsen/temp/", Dts.Variables["WorkingDirectory"].Value);
             string LogFolder = String.Format("{0}/nielsen/log/", Dts.Variables["WorkingDirectory"].Value);
             string datetime = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            Int32 TimeOut = (Int32)Dts.Variables["TimeOut"].Value;
+            //Create Connection to SQL Server
+            string MDWHConnection = "Data Source=dwh.prod.lan;Initial Catalog=MDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False";
+
+            //Delete DestinationFolder
+            if (Directory.Exists(DestinationFolder))
+            {
+                Directory.Delete(DestinationFolder, true);
+            }
+
             try
             {
                 DateTime thisDay = DateTime.Today;
-                DateTime SunDay = thisDay.AddDays((int)DayOfWeek.Sunday - (int)DateTime.Today.DayOfWeek);
-                DateTime MonDay = thisDay.AddDays((int)DayOfWeek.Sunday - (int)DateTime.Today.DayOfWeek - 6);
-                string date_from = MonDay.ToString("yyyyMMdd");
-                string date_to = SunDay.ToString("yyyyMMdd");
-
-                //Declare Variables and provide values
-                string FileDelimiter = "\t";        //You can provide comma or pipe or whatever you like
-                string FileExtension = ".csv";      //Provide the extension you like such as .txt or .csv
-
-                //Create Connection to SQL Server in which you like to load files
-                string MDWHConnection = "Data Source=dwh.prod.lan;Initial Catalog=MDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False";
-
-                //Create DestinationFolder
-                if (!Directory.Exists(DestinationFolder))
+                DateTime StartDate;
+                String ArchiveStartDate = Dts.Variables["ArchiveStartDate"].Value.ToString();
+                try
                 {
-                    Directory.CreateDirectory(DestinationFolder);
+                    StartDate = DateTime.ParseExact(ArchiveStartDate, "yyyy.MM.dd", null);
+                }
+                catch
+                {
+                    StartDate = thisDay;
                 }
 
-                //Read data from SQL SERVER
-                Export ex = new Export();
+                while ((thisDay - StartDate).Days >= 0)
+                {
+                    DateTime SunDay = StartDate.AddDays((int)DayOfWeek.Sunday - (int)StartDate.DayOfWeek);
+                    DateTime MonDay = StartDate.AddDays((int)DayOfWeek.Sunday - (int)StartDate.DayOfWeek - 6);
+                    string date_from = MonDay.ToString("yyyyMMdd");
+                    string date_to = SunDay.ToString("yyyyMMdd");
 
-                string FileNamePart = String.Format("GOODS_Merchants_{0}_{1}", date_from, date_to);
-                string QueryString = String.Format("exec interface.nielsen_merchants {0}, {1}", date_from, date_to);
-                ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter);
+                    //Declare Variables and provide values
+                    string FileDelimiter = "\t";        //You can provide comma or pipe or whatever you like
+                    string FileExtension = ".csv";      //Provide the extension you like such as .txt or .csv
 
-                FileNamePart = String.Format("GOODS_Orders_{0}_{1}", date_from, date_to);
-                QueryString = String.Format("exec interface.nielsen_orders {0}, {1}", date_from, date_to);
-                ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter);
+                    //Create DestinationFolder
+                    Directory.CreateDirectory(DestinationFolder);
 
-                FileNamePart = String.Format("GOODS_Sales_{0}_{1}", date_from, date_to);
-                QueryString = String.Format("exec interface.nielsen_sales {0}, {1}", date_from, date_to);
-                ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter);
+                    //Read data from SQL SERVER
+                    Export ex = new Export();
 
-                FileNamePart = String.Format("GOODS_Mapping_{0}_{1}", date_from, date_to);
-                QueryString = String.Format("exec interface.nielsen_mapping {0}, {1}", date_from, date_to);
-                ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter);
+                    string FileNamePart = String.Format("GOODS_Merchants_{0}_{1}", date_from, date_to);
+                    string QueryString = String.Format("exec interface.nielsen_merchants {0}, {1}", date_from, date_to);
+                    ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter, TimeOut);
 
-                FileNamePart = String.Format("GOODS_Addresses_{0}_{1}", date_from, date_to);
-                QueryString = String.Format("exec interface.nielsen_addresses {0}, {1}", date_from, date_to);
-                ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter);
+                    FileNamePart = String.Format("GOODS_Orders_{0}_{1}", date_from, date_to);
+                    QueryString = String.Format("exec interface.nielsen_orders {0}, {1}", date_from, date_to);
+                    ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter, TimeOut);
 
-                //Create zip file
-                string SourceName = String.Format("{0}/nielsen/temp/*.*", Dts.Variables["WorkingDirectory"].Value);
-                string TargetName = String.Format("{0}/nielsen/temp/GOODS_tlog_{1}_{2}.zip", Dts.Variables["WorkingDirectory"].Value, date_from, date_to);
-                CreateZip(SourceName, TargetName);
+                    FileNamePart = String.Format("GOODS_Sales_{0}_{1}", date_from, date_to);
+                    QueryString = String.Format("exec interface.nielsen_sales {0}, {1}", date_from, date_to);
+                    ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter, TimeOut);
 
-                //Copy zip file
-                string CopyName = String.Format("{0}/nielsen/Upload_to_Nielsen/GOODS_tlog_{1}_{2}.zip", Dts.Variables["WorkingDirectory"].Value, date_from, date_to);
-                File.Copy(TargetName, CopyName, true);
+                    FileNamePart = String.Format("GOODS_Mapping_{0}_{1}", date_from, date_to);
+                    QueryString = String.Format("exec interface.nielsen_mapping {0}, {1}", date_from, date_to);
+                    ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter, TimeOut);
 
-                //Upload zip file to Nielsen
-                PrivateKeyFile keyFile = new PrivateKeyFile(String.Format("{0}{1}", Dts.Variables["WorkingDirectory"].Value, Dts.Variables["PrivateKeyFilePath"].Value));
-                string LocalPath = String.Format("{0}/nielsen/temp/", Dts.Variables["WorkingDirectory"].Value);
-                string RemotePath = "/Upload_to_Nielsen/";
+                    FileNamePart = String.Format("GOODS_Addresses_{0}_{1}", date_from, date_to);
+                    QueryString = String.Format("exec interface.nielsen_addresses {0}, {1}", date_from, date_to);
+                    ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter, TimeOut);
 
-                Upload upload = new Upload();
-                upload.Upload_to_Nielson(keyFile, LocalPath, RemotePath);
+                    //Create zip file
+                    string SourceName = String.Format("{0}*.*", DestinationFolder);
+                    string TargetName = String.Format("{0}{1}{2}_{3}.zip", DestinationFolder, Dts.Variables["ArchiveTemplate"].Value, date_from, date_to);
+                    CreateZip(SourceName, TargetName);
 
-                //Delete DestinationFolder
-                Directory.Delete(DestinationFolder, true);
+                    //Copy zip file
+                    string CopyName = String.Format("{0}/nielsen/Upload_to_Nielsen/{1}{2}_{3}.zip", Dts.Variables["WorkingDirectory"].Value, Dts.Variables["ArchiveTemplate"].Value, date_from, date_to);
+                    File.Copy(TargetName, CopyName, true);
+
+                    //Upload zip file to Nielsen
+                    PrivateKeyFile keyFile = new PrivateKeyFile(String.Format("{0}{1}", Dts.Variables["WorkingDirectory"].Value, Dts.Variables["PrivateKeyFilePath"].Value));
+                    string LocalPath = String.Format("{0}", DestinationFolder);
+                    string RemotePath = "/Upload_to_Nielsen/";
+
+                    Upload upload = new Upload();
+                    upload.Upload_to_Nielson(keyFile, LocalPath, RemotePath);
+
+                    //Delete DestinationFolder
+                    Directory.Delete(DestinationFolder, true);
+
+                    StartDate = StartDate.AddDays(7);
+                }
 
                 Dts.TaskResult = (int)ScriptResults.Success;
             }
@@ -180,13 +200,18 @@ namespace ST_ae54ed5b852743dcb0d5effb6eeb6bd2
             {
                 // Create Log File for Errors
                 using (StreamWriter sw = File.CreateText(LogFolder
-                    + "\\" + "ErrorLog_ScriptMain_" + datetime + ".log"))
+                    + "\\" + "ErrorLog_" + datetime + ".log"))
                 {
                     sw.WriteLine(exception.ToString());
                 }
 
                 //Delete DestinationFolder
-                Directory.Delete(DestinationFolder, true);
+                if (Directory.Exists(DestinationFolder))
+                {
+                    Directory.Delete(DestinationFolder, true);
+                }
+
+                Dts.Events.FireError(0, "Script Task - Upload to Nielsen", "An error occurred in Script Task - Upload to Nielsen: " + exception.Message.ToString(), "", 0);
 
                 Dts.TaskResult = (int)ScriptResults.Failure;
             }

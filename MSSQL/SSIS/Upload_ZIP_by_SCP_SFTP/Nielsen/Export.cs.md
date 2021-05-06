@@ -2,23 +2,26 @@
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 class Export
 {
-    public void Export_to_flat_file(string Connection, string Query, string FileFullPath, string FileDelimite)
+    public void Export_to_flat_file(string Connection, string Query, string FileFullPath, string FileDelimite, Int32 TimeOut)
     {
         try
         {
             //Read data from SQL SERVER
             using (OleDbConnection connection = new OleDbConnection(Connection))
             {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
                 OleDbCommand command = new OleDbCommand(Query, connection);
                 connection.Open();
-                command.CommandTimeout = 600;
+                command.CommandTimeout = TimeOut;
                 OleDbDataReader reader = command.ExecuteReader();
 
                 StreamWriter sw = null;

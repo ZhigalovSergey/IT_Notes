@@ -141,7 +141,7 @@ namespace ST_9d1b2b00cbb84f53bcbe2173ec3851c7
 
                 //Read data from SQL SERVER
                 Export ex = new Export();
-                string FileNamePart = "GOODS_ADDRESS" + "_" + date_from + "_" + date_to;
+                string FileNamePart = String.Format("GOODS_ADDRESS_{0}_{1}", date_from, date_to);
                 string QueryString = String.Format("exec interface.gfk_cities");
                 ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter);
 
