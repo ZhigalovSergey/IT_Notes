@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 class Export
@@ -16,6 +18,7 @@ class Export
             //Read data from SQL SERVER
             using (OleDbConnection connection = new OleDbConnection(Connection))
             {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
                 OleDbCommand command = new OleDbCommand(Query, connection);
                 connection.Open();
                 command.CommandTimeout = 300;

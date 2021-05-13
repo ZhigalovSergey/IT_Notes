@@ -113,6 +113,15 @@ namespace ST_9d1b2b00cbb84f53bcbe2173ec3851c7
             string LogFolder = String.Format("{0}/gfk/log/", Dts.Variables["WorkingDirectory"].Value);
             string datetime = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
+            //Create Connection to SQL Server in which you like to load files
+            string MDWHConnection = "Data Source=dwh.prod.lan;Initial Catalog=MDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False";
+
+            //Delete DestinationFolder
+            if (Directory.Exists(DestinationFolder))
+            {
+                Directory.Delete(DestinationFolder, true);
+            }
+
             try
             {
                 DateTime thisDay = DateTime.Today;
@@ -125,9 +134,6 @@ namespace ST_9d1b2b00cbb84f53bcbe2173ec3851c7
                 string FileDelimiter = "\t";        //You can provide comma or pipe or whatever you like
                 string FileExtension = ".txt";      //Provide the extension you like such as .txt or .csv
 
-                //Create Connection to SQL Server in which you like to load files
-                string MDWHConnection = "Data Source=dwh.prod.lan;Initial Catalog=MDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False";
-
                 //Create DestinationFolder
                 if (!Directory.Exists(DestinationFolder))
                 {
@@ -136,7 +142,7 @@ namespace ST_9d1b2b00cbb84f53bcbe2173ec3851c7
 
                 //Read data from SQL SERVER
                 Export ex = new Export();
-                string FileNamePart = "GOODS_ADDRESS" + "_" + date_from + "_" + date_to;
+                string FileNamePart = String.Format("GOODS_ADDRESS_{0}_{1}", date_from, date_to);
                 string QueryString = String.Format("exec interface.gfk_cities");
                 ex.Export_to_flat_file(MDWHConnection, QueryString, DestinationFolder + FileNamePart + FileExtension, FileDelimiter);
 
@@ -175,13 +181,19 @@ namespace ST_9d1b2b00cbb84f53bcbe2173ec3851c7
             {
                 // Create Log File for Errors
                 using (StreamWriter sw = File.CreateText(LogFolder
-                    + "\\" + "ErrorLog_ScriptMain_" + datetime + ".log"))
+                    + "\\" + "ErrorLog_" + datetime + ".log"))
                 {
                     sw.WriteLine(exception.ToString());
                 }
 
                 //Delete DestinationFolder
-                Directory.Delete(DestinationFolder, true);
+                if (Directory.Exists(DestinationFolder))
+                {
+                    Directory.Delete(DestinationFolder, true);
+                }
+
+                Dts.Events.FireError(0, "Script Task - Upload to GFK", "An error occurred in Script Task - Upload to GFK: " + exception.Message.ToString(), "", 0);
+
                 Dts.TaskResult = (int)ScriptResults.Failure;
             }
 
