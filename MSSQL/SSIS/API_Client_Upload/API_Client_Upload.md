@@ -60,4 +60,8 @@ Uload to Adjust: [ScriptMain.cs](./UploadToAdjust/SSIS/ScriptMain.cs.md), [Uploa
 - [Строки настраиваемых форматов даты и времени](https://docs.microsoft.com/ru-ru/dotnet/standard/base-types/custom-date-and-time-format-strings)  
 - [Документация по Adjust на русском](https://docs.adjust.com/ru/)  
 - [Документация по Adjust](https://help.adjust.com/en/article/server-to-server-events)  
+- [Документация по Adjust - Encoding](https://help.adjust.com/en/article/encoding)  
+- [Документация по Adjust - Placeholders](https://partners.adjust.com/placeholders/)  
+- [JSON parser](https://jsonformatter.org/json-parser)  
 - [Документация по классу WebException](https://docs.microsoft.com/ru-ru/dotnet/api/system.net.webexception?view=netframework-4.5)  
+- [Документация по методу Thread.Sleep](https://docs.microsoft.com/ru-ru/dotnet/api/system.threading.thread.sleep?view=netframework-4.5)  

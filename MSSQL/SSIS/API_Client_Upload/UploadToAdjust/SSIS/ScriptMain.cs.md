@@ -99,19 +99,24 @@ namespace ST_d9095ca136244bee885a71b44a0c62c4
             string datetime = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string LogFolder = Dts.Variables["LogFolder"].Value.ToString();
             string MDWHConnection = String.Format("Data Source={0};Initial Catalog=MDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False", "dwh.prod.lan"); // dwh.prod.lan, dwh.dev.lan
+            Int32 TimeOut = (Int32)Dts.Variables["TimeOut"].Value;
 
             Upload adjust = new Upload();
             adjust.LogFolder = LogFolder;
             adjust.Connection = MDWHConnection;
+            adjust.TimeOut = TimeOut;
             adjust.app_token = Dts.Variables["adjust_app_token"].GetSensitiveValue().ToString();
             adjust.environment = "production"; // "production" - for prod, "sandbox" - for testing
 
-            Int16 cnt = 0;
+            Int16 cnt_event_order = 0;
+            Int16 cnt_event_promo = 0;
+            Int16 cnt_event_ftb = 0;
             try
             {
                 //Create Connection to SQL Server in which you like to load files
-                string QueryString = @"select    [order_id]             -- 0
-                                                ,[order_create_dt]      -- 1
+                string QueryString = String.Format(@"select top ({0})
+                                                [order_id]             -- 0
+                                                ,datediff_big(second, '19700101', dateadd(HH, -3, [order_create_dt])) as [order_create_dt]      -- 1
                                                 ,[order_amount]         -- 2
                                                 ,[promocode]            -- 3
                                                 ,[android_id]           -- 4
@@ -121,7 +126,9 @@ namespace ST_d9095ca136244bee885a71b44a0c62c4
                                                 ,[android_advertising_id]   -- 8
                                                 ,[first_order_flag]         -- 9
                                                 ,[orderProductInfo]         -- 10
-                                            from interface.adjust_order";
+                                            from interface.adjust_order
+                                            order by order_create_dt
+                                            ", Dts.Variables["BatchSize"].Value.ToString());
 
                 //Read data from SQL SERVER
 
@@ -130,7 +137,7 @@ namespace ST_d9095ca136244bee885a71b44a0c62c4
                 {
                     Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
                     OleDbCommand command = new OleDbCommand(QueryString, connection);
-                    command.CommandTimeout = 300;
+                    command.CommandTimeout = TimeOut;
                     connection.Open();
                     OleDbDataReader reader = command.ExecuteReader();
                     // Write All Rows
@@ -139,7 +146,7 @@ namespace ST_d9095ca136244bee885a71b44a0c62c4
                         while (reader.Read())
                         {
                             String order_id = reader["order_id"].ToString();
-                            String order_create_dt = reader.GetDateTime(1).ToString("yyyy-MM-ddTHH:mm:ss\\Z+0300");
+                            String order_create_dt = reader.GetInt64(1).ToString();
                             String order_amount = Math.Round((reader.GetDecimal(2) * 1000)).ToString();
                             String android_id = reader.GetValue(4).ToString();
                             String android_advertising_id = reader.GetValue(8).ToString();
@@ -151,68 +158,59 @@ namespace ST_d9095ca136244bee885a71b44a0c62c4
                             // {"event_token", "7ge801"}; // событие - order
                             if ((Boolean)reader["need_revenue_event"])
                             {
-                                adjust.send_revenue_to_adjust(order_id, order_create_dt, order_amount, android_id, android_advertising_id, idfa, partner_params);
+                                cnt_event_order = adjust.send_revenue_to_adjust(cnt_event_order, order_id, order_create_dt, order_amount, android_id, android_advertising_id, idfa, partner_params);
                             }
 
                             // {"event_token", "77yg6d"}; // событие - code
                             if ((Boolean)reader["need_promo_event"])
                             {
-                                adjust.send_promo_to_adjust(order_id, order_create_dt, android_id, android_advertising_id, idfa);
+                                cnt_event_promo = adjust.send_promo_to_adjust(cnt_event_promo, order_id, order_create_dt, android_id, android_advertising_id, idfa);
                             }
 
                             // {event_token", "26j8we"}; // событие - ftb
                             if ((Boolean)reader["first_order_flag"])
                             {
-                                adjust.send_first_time_buyer_to_adjust(order_id, order_create_dt, android_id, android_advertising_id, idfa);
+                                cnt_event_ftb = adjust.send_first_time_buyer_to_adjust(cnt_event_ftb, order_id, order_create_dt, android_id, android_advertising_id, idfa);
                             }
 
-                            cnt += 1;
                         }
                     }
                     reader.Close();
                 }
 
+                Boolean fireAgain = true;
+                Dts.Events.FireInformation(0, "Script Task - Upload to Adjust", "Was transferred " + cnt_event_order.ToString() + " event - Order, " + cnt_event_promo.ToString() + " event - Promo, " + cnt_event_ftb.ToString() + " event - FTB", String.Empty, 0, ref fireAgain);
                 Dts.TaskResult = (int)ScriptResults.Success;
             }
             catch (WebException exception)
             {
-                string msg;
                 using (StreamWriter sw = File.AppendText(LogFolder + "AdjustErrorLog_" + datetime + ".log"))
                 {
-                    msg = String.Format("An error occurred in Script Task - Upload to Adjust: {0}", exception.Message.ToString());
-                    msg = msg + String.Format("\r\nException.Status is {0}", exception.Status.ToString());
-                    msg = msg + String.Format("\r\nWas transferred {0} orders", cnt.ToString());
-                    sw.Write(msg);
+                    sw.Write("\r\nWas transferred {0} event - Order, {1} event - Promo, {2} event - FTB", cnt_event_order.ToString(), cnt_event_promo.ToString(), cnt_event_ftb.ToString());
                 }
 
-                if (exception.Status == WebExceptionStatus.ProtocolError)
-                {
-                    WebResponse resp = exception.Response;
-                    using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
-                    {
-                        using (StreamWriter sw = File.AppendText(LogFolder + "AdjustErrorLog_" + datetime + ".log"))
-                        {
-                            msg = msg + String.Format("\r\n{0}", sr.ReadToEnd());
-                            sw.WriteLine(sr.ReadToEnd());
-                        }
-                    }
-                }
-
+                string msg;
+                msg = String.Format("An error occurred in Script Task - Upload to Adjust: {0}", exception.Message.ToString());
+                msg = msg + String.Format("\r\nWas transferred {0} event - Order, {1} event - Promo, {2} event - FTB", cnt_event_order.ToString(), cnt_event_promo.ToString(), cnt_event_ftb.ToString());
                 msg = msg + String.Format("\r\nPath LogFolder is {0}", LogFolder);
                 Dts.Events.FireError(0, "Script Task - Upload to Adjust", msg, "", 0);
                 //Dts.TaskResult = (int)ScriptResults.Failure;
             }
             catch (Exception exception)
             {
+
+                string msg;
+                msg = String.Format("\r\nWas transferred {0} event - Order, {1} event - Promo, {2} event - FTB", cnt_event_order.ToString(), cnt_event_promo.ToString(), cnt_event_ftb.ToString());
+                
                 // Create Log File for Errors
                 using (StreamWriter sw = File.CreateText(LogFolder
                      + "ErrorLog_" + datetime + ".log"))
                 {
                     sw.WriteLine(exception.ToString());
-                    sw.WriteLine("Was transferred {0} orders", cnt.ToString());
+                    sw.WriteLine(msg);
                 }
-
-                Dts.Events.FireError(0, "Script Task - Upload to Adjust", "An error occurred in Script Task - Upload to Adjust: " + exception.Message.ToString(), "", 0);
+                
+                Dts.Events.FireError(0, "Script Task - Upload to Adjust", "An error occurred in Script Task - Upload to Adjust: " + exception.Message.ToString() + msg, "", 0);
                 //Dts.TaskResult = (int)ScriptResults.Failure;
             }
             
