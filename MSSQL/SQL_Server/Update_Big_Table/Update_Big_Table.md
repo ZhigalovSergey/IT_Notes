@@ -1,5 +1,8 @@
 # Обновление значений в больших таблицах  
 
+*[Синтаксис MarkDown](https://www.markdownguide.org/basic-syntax/)*  
+[Заметки по SQL Server](../SQLServer_note.md)  
+
 ## Описание проблемы  
 
 Есть таблица со снэпшотами (досталось в наследство от предыдущей команды) - core.item_snapshot  
@@ -476,10 +479,10 @@ ORDER BY [Schema.Table], [Index ID], [Partition Function], [Partition #];
 
 При переносе изменений на проде, скрипт [fill_disappeared_offers.sql](./fill_disappeared_offers.sql.md) скрипт не успел отработать в технологическое окно (12 часов). Отработало только 1/5 всего объема данных. Поэтому возникла задача оптимизировать прогрузку. Одна из идей, это организовать параллельную обработку данных, задача [Параллельное удаление строк в таблице](../Delete_parallel/Delete_parallel.md) На основе этого шаблона напишем наши скрипты. 
 
-- для инициализации - 
-- процедура для параллельной обработки - 
-- для завершающей обработки -
-- для мониторинга - 
+- для инициализации - [scripts_init.sql](./parall/scripts_init.sql.md)  
+- процедура для параллельной обработки - [core.item_snapshot_map.sql](./parall/core.item_snapshot_map.sql.md)  
+- для завершающей обработки - [core.item_snapshot_tail.sql](./parall/core.item_snapshot_tail.sql.md)  
+- для мониторинга - [scripts_monitoring.sql](./parall/scripts_monitoring.sql.md)  
 
 Проведем анализ зависимости средней скорости вставки данных от количества сессий в **Dev среде**
 
@@ -524,11 +527,15 @@ go
 
 
 
-
-
 ### Исходный код скриптов
-
+Последовательная прогрузка (в одну сессию):  
 [fill_disappeared_offers.sql](./fill_disappeared/Delete_parallel.md_offers.sql.md)
+
+Для параллельной прогрузки (в N сессий):  
+- для инициализации - [scripts_init.sql](./parall/scripts_init.sql.md)  
+- процедура для параллельной обработки - [core.item_snapshot_map.sql](./parall/core.item_snapshot_map.sql.md)  
+- для завершающей обработки - [core.item_snapshot_tail.sql](./parall/core.item_snapshot_tail.sql.md)  
+- для мониторинга - [scripts_monitoring.sql](./parall/scripts_monitoring.sql.md)  
 
 ### Полезные ссылки:
 
