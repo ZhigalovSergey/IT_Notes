@@ -1,5 +1,8 @@
+```sql
 use [MDWH]
 go
+
+-- select @@version
 
 ---------------------------------------------------------------------------------------------------------
 ----------------- Создание партиционированной таблицы [core].[item_snapshot_tgt] --------------------
@@ -10,6 +13,10 @@ create nonclustered index [ix_item_snapshot_item_key] on [core].[item_snapshot]
 [item_key] asc,
 [snapshot_date] asc
 )
+go
+
+alter table [core].[item_snapshot] rebuild partition = all 
+with (data_compression = row)
 go
 
 -- вычисление диапазона item_key
@@ -29,10 +36,13 @@ create table [core].[item_snapshot_item_key_check] (
 
 -- создание целевой таблицы
 -- вычисление списка дат
+-- set statistics io on
 select [snapshot_date] 
 into [core].[item_snapshot_date] 
 from core.item_snapshot 
 group by [snapshot_date]
+-- set statistics io off
+
 
 -- создание функции партиционирования
 -- Таблица или индекс в SQL Server могут содержать до 15 000 секций = 40 лет ежедневных партиций
@@ -50,13 +60,10 @@ declare @sql nvarchar(4000),
 
 declare cursor_snapshot_date cursor
 for
- select
-	 cast([snapshot_date] as nvarchar(10))
- from
-	 [core].[item_snapshot_date]
+ select cast([snapshot_date] as nvarchar(10))
+ from [core].[item_snapshot_date]
  --where [snapshot_date] >= '20200101'
- order by
-	 [snapshot_date]
+ order by [snapshot_date]
 
 open cursor_snapshot_date
 fetch next from cursor_snapshot_date into @dt
@@ -219,5 +226,4 @@ begin
 end
 close cursor_name
 deallocate cursor_name
-
-
+```

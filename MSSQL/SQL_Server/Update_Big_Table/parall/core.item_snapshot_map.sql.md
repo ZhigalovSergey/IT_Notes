@@ -1,4 +1,4 @@
-﻿
+﻿```sql
 /*
 
 exec core.item_snapshot_map
@@ -144,7 +144,8 @@ begin
 							,[is_new_active_sku]						
 					from core.item_snapshot sn
 						inner join [core].[item_snapshot_item_key_buf_' + cast(@@SPID as nvarchar(10)) + '] buf on sn.item_key = buf.item_key'	
-		
+					
+					-- select @sql
 					exec sp_executesql @sql
 
 					set @rows_affected = @@ROWCOUNT
@@ -180,7 +181,7 @@ begin
 						from
 							[core].[item_snapshot_buf_' + cast(@@SPID as nvarchar(10)) + ']
 					)
-					insert into [core].[item_snapshot_tgt] with -- (tablock)
+					insert into [core].[item_snapshot_tgt] -- with (tablock)
 						(
 							[snapshot_date]
 							,[item_key]
@@ -203,7 +204,8 @@ begin
 						,[is_new_active_sku]
 						,is_item_with_disappeared_offers
 					from disappeared'
-	
+					
+					-- select @sql
 					exec sp_executesql @sql
 
 					set @rows_affected = @@ROWCOUNT
@@ -275,3 +277,4 @@ N'drop table if exists [core].[item_snapshot_item_key_buf_' + cast(@@SPID as nva
 drop table if exists [core].[item_snapshot_buf_' + cast(@@SPID as nvarchar(10)) + ']'
 
 exec sp_executesql @sql
+```

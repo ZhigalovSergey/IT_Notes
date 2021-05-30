@@ -1,4 +1,4 @@
-﻿
+﻿```sql
 -- Посмотрим что получилось
 select *
 from sys.partition_functions as pf
@@ -62,7 +62,7 @@ from
 	join sys.filegroups as fg on
 		fg.data_space_id = au.data_space_id
 where
-	so.object_id = object_id('core.item_snapshot')
+	so.object_id = object_id('core.item_snapshot_tgt')
 order by
 	[Schema.Table], [Index ID], [Partition Function], [Partition #];
 
@@ -70,7 +70,7 @@ order by
 
 -- Итоговая статистика
 exec sp_spaceused
-	@objname = N'core.item_snapshot'
+	@objname = N'core.item_snapshot_tgt'
 	,@updateusage = N'TRUE';
 
 -- Размер индекса
@@ -105,21 +105,21 @@ cte as (
 )
 select * from cte where rn = 1 order by insert_dt desc
 
-
--- 4 sessions - 115 rows per sec - появились блокировки при вставке в tgt - 
--- 2 sessions - 115 rows per sec
--- 1 sessions - 100 rows per sec
+-- 8 sessions - 120 rows per sec
+-- 4 sessions - 90 rows per sec
+-- 2 sessions - 50 rows per sec
+-- 1 sessions - 20 rows per sec
 
 -- средняя скорость за последнии 100 вставок
 with cte as
 (
 select *, row_number() over (partition by 1 order by insert_dt desc) rn
 from [core].[item_snapshot_log] (nolock)
-where comment like 'filled item_snapshot_tgt%'
+where step like 'filled item_snapshot_tgt'
 )
-select sum(inserted_item_snapshot_tgt)/datediff(ms, min(insert_dt), max(insert_dt)) as speed, min(insert_dt), max(insert_dt)
+select sum(cast(inserted_item_snapshot_tgt as bigint))/datediff(ms, min(insert_dt), max(insert_dt)) as speed, datediff(mi, min(insert_dt), max(insert_dt)) tm
 from cte 
-where rn < 100
+where rn < 800
 
 
 -- средняя время на шаг
@@ -132,8 +132,9 @@ from [core].[item_snapshot_log] (nolock)
 )
 select step, comment, sum(diff_dt)/count(diff_dt) as avg_dt
 from cte
+where rn < 80
 group by step, comment
-order by step, comment
+order by step, avg_dt, comment
 
 
 -- доля времени на шаг
@@ -146,17 +147,23 @@ from [core].[item_snapshot_log] (nolock)
 )
 select step, sum(diff_dt)/count(diff_dt) as avg_dt, sum(diff_dt)/count(diff_dt)*100/sum(sum(diff_dt)/count(diff_dt)) over (partition by 1) as 'percent of total'
 from cte
+where rn < 80
 group by step
 order by step
 
-
+-- общее время работы
+select datediff(mi, min(insert_dt), max(insert_dt)) in_min, datediff(hh, min(insert_dt), max(insert_dt)) in_hour 
+from [core].[item_snapshot_log] (nolock)
 
 select *
 from [core].[item_snapshot_log] (nolock)
+where step like 'filled item_snapshot_tgt' --and spid = 388
+--where spid = 388
 order by insert_dt desc
 
 
 -- нагрузка на лог транзакций при вставке
+-- РАБОТЕТ ДОЛГО!!!
 -- group by each operation
 SELECT Operation, AllocUnitName, Context, count(*)
 FROM sys.fn_dblog(NULL,NULL)
@@ -172,10 +179,10 @@ GROUP BY Operation, AllocUnitName, Context
 select sum(src_cnt) as src_cnt, sum(check_cnt) as check_cnt, sum(src_cnt) - sum(check_cnt) as diff
 from
 (
-select 0 as src_cnt, count(*) check_cnt
+select 0 as src_cnt, count(*) as check_cnt
 from [core].[item_snapshot_item_key_check]
 union all
-select count(*) cnt, 0
+select count(*) as src_cnt, 0 as check_cnt
 from [core].[item_snapshot_item_key]
 ) t
 
@@ -186,7 +193,40 @@ where not exists (select top (1) 1
 					from [core].[item_snapshot_item_key_check] tgt 
 					where tgt.[item_key] = src.item_key)
 
+-- при параллельном запуске
+declare @sql nvarchar(4000),
+		@name nvarchar(100)
 
+set @sql = N'select sum(src_cnt) as src_cnt, sum(check_cnt) as check_cnt, sum(src_cnt) - sum(check_cnt) as diff 
+			from 
+			( 
+			select count(*) as src_cnt, 0 as check_cnt 
+			from [core].[item_snapshot_item_key] '
+
+declare cursor_name cursor
+for
+select name from sys.tables where name like 'item_snapshot_item_key_check_%'
+
+open cursor_name
+fetch next from cursor_name into @name
+while @@FETCH_STATUS = 0
+begin
+	set @sql = @sql +
+	N' union all 
+	select 0 as src_cnt, count(*) check_cnt from core.' + @name
+	
+	fetch next from cursor_name into @name
+end
+close cursor_name
+deallocate cursor_name
+
+select @sql = @sql + N' ) t'
+		
+exec sp_executesql @sql
+
+
+
+-- статистика
 select min(item_key) mn, max(item_key) mx, count(*) cnt
 from [core].[item_snapshot_item_key]
 
@@ -194,6 +234,7 @@ from [core].[item_snapshot_item_key]
 -- просмотр лога дублей
 -- truncate table [core].[item_snapshot_errors]
 select * from [core].[item_snapshot_errors] (nolock)
+
 
 -- сравнение разных уровней изоляции
 select * 
@@ -264,9 +305,11 @@ from
 	outer apply sys.dm_exec_query_plan(er.plan_handle) as qp
 where
 	--es.is_user_process = 1 and
+	es.login_name = 'CORP\zhigalov' and  
 	es.session_id not in (@@spid)
 order by
 	es.login_name
 --er.logical_reads desc
 --[individual_query], er.session_id desc
 option (recompile);
+```
