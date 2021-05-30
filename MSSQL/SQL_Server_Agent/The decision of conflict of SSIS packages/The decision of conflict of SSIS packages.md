@@ -1,4 +1,6 @@
-# Описание проблемы
+# Решение конфликтов между SSIS пакетами
+
+## Описание проблемы
 
 *[Синтаксис MarkDown](https://www.markdownguide.org/basic-syntax/)*  
 [Заметки по SQL Server Agent](../SQLAgent_note.md)  

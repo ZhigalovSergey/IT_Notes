@@ -472,11 +472,63 @@ ORDER BY [Schema.Table], [Index ID], [Partition Function], [Partition #];
 
   logical reads **36**, physical reads 2, read-ahead reads 0,
 
+## Распараллеливание прогрузки данных
+
+При переносе изменений на проде, скрипт [fill_disappeared_offers.sql](./fill_disappeared_offers.sql.md) скрипт не успел отработать в технологическое окно (12 часов). Отработало только 1/5 всего объема данных. Поэтому возникла задача оптимизировать прогрузку. Одна из идей, это организовать параллельную обработку данных, задача [Параллельное удаление строк в таблице](../Delete_parallel/Delete_parallel.md) На основе этого шаблона напишем наши скрипты. 
+
+- для инициализации - 
+- процедура для параллельной обработки - 
+- для завершающей обработки -
+- для мониторинга - 
+
+Проведем анализ зависимости средней скорости вставки данных от количества сессий в **Dev среде**
+
+| Кол-во сессий | Скорость (тыс. строк в секунду) | TabLock |
+| ------------- | ------------------------------- | ------- |
+| 1             | 100                             | YES     |
+| 2             | 115                             | YES     |
+| 4             | 115                             | YES     |
+
+При увеличении количества параллельно работающих сессий время выполнения шага на вставку и извлечение данных увеличивается. Причем доля шага на извлечение данных падает, а доля на вставку в итоговую таблицу растёт. Взаимных блокировок между сессиями не наблюдается. При 4-х сессиях время на извлечение данных сравнялось с временем на вставку (1 транзакция вставляет данные, в то время как три другие извлекают). Появились взаимные блокировки LCK_M_X (использую хинт TabLock). Сравним с результатами без TabLock.
+
+Добавим построчное сжатие для таблицы [core].[item_snapshot]
+
+```sql
+alter table [core].[item_snapshot] rebuild partition = all 
+with (data_compression = row)
+go
+```
+
+| name          | rows          | reserved       | data              | index_size    | unused  |
+| ------------- | ------------- | -------------- | ----------------- | ------------- | ------- |
+| item_snapshot | 4 750 246 198 | 151 908 112 KB | **67** 625 664 KB | 84 278 104 KB | 4344 KB |
+
+Размер данных сократился с **159** 901 536 KB до **67** 625 664 KB
+
+Проведем анализ зависимости средней скорости вставки данных от количества сессий в **Prod среде**.
+
+| Кол-во сессий | Скорость (тыс. строк в секунду) | TabLock | row compression |
+| ------------- | ------------------------------- | ------- | --------------- |
+| 1             | 20                              | NO      | YES             |
+| 2             | 50                              | NO      | YES             |
+| 4             | 90                              | NO      | YES             |
+| 8             | 135 (ночью 180)                 | NO      | YES             |
+
+При 8 сессиях начали появляться редкие взаимные блокировки при вставки данных. При увеличении кол-ва сессий доля шага на извлечение данных немного увеличивается с 70% до 85% в отличие от Dev среды.  
+
+Ночью скорость увеличилась и в среднем составляла **180**. Статистика по полученной таблице.
+
+| name              | rows              | reserved           | data               | index_size | unused   |
+| ----------------- | ----------------- | ------------------ | ------------------ | ---------- | -------- |
+| item_snapshot_tgt | **4** 754 858 462 | **189** 265 856 KB | **188** 354 008 KB | 839 168 KB | 72680 KB |
+
+
+
 
 
 ### Исходный код скриптов
 
-[fill_disappeared_offers.sql](./fill_disappeared_offers.sql.md)
+[fill_disappeared_offers.sql](./fill_disappeared/Delete_parallel.md_offers.sql.md)
 
 ### Полезные ссылки:
 
@@ -495,3 +547,6 @@ ORDER BY [Schema.Table], [Index ID], [Partition Function], [Partition #];
 - [$PARTITION](https://docs.microsoft.com/ru-ru/sql/t-sql/functions/partition-transact-sql?view=sql-server-ver15)  
 - [Partitioned Tables and Indexes](https://docs.microsoft.com/ru-ru/sql/relational-databases/partitions/partitioned-tables-and-indexes?view=sql-server-ver15)  
 - [Truncate Table with Partitions](https://www.mssqltips.com/sqlservertip/4436/sql-server-2016-truncate-table-with-partitions/)  
+- [Minimally Logging Bulk Load Inserts into SQL Server](https://www.mssqltips.com/sqlservertip/1185/minimally-logging-bulk-load-inserts-into-sql-server/)  
+- [When to Use Row or Page Compression in SQL Server](https://thomaslarock.com/2018/01/when-to-use-row-or-page-compression-in-sql-server/)  
+- [How Row Compression Affects Storage](https://docs.microsoft.com/en-us/previous-versions/sql/sql-server-2012/cc280576(v=sql.110)?redirectedfrom=MSDN)  
