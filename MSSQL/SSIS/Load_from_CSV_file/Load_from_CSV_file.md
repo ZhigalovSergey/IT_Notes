@@ -12,5 +12,5 @@
 - [Регулярные выражения .NET](https://docs.microsoft.com/ru-ru/dotnet/standard/base-types/regular-expressions)  
 - [Regex Класс](https://docs.microsoft.com/ru-ru/dotnet/api/system.text.regularexpressions.regex?view=netframework-4.5)  
 - [Курс по регулярным выражениям](https://regexone.com/)  
-- [Регулярные выражения *Фридл Дж* 2018.pdf](../../../../RegEx/Регулярные выражения__Фридл Дж__2018.pdf)  
+- [Регулярные выражения *Фридл Дж* 2018.pdf](../../../RegEx/Регулярные выражения__Фридл Дж__2018.pdf)  
 
