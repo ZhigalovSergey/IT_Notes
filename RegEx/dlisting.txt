@@ -1,0 +1,4938 @@
+preg_quote(input [, delimiter ])
+
+
+
+/* Given $MailSubject, find if $MailMessage is about that subject */
+$pattern = '/^Subject:\s+(Re:\s*)*' . preg_quote($MailSubject, '/') . '/mi';
+
+
+
+**Super Deal** (Act Now!)
+
+
+
+/^Subject:\s+(Re:\s*)*\*\*Super Deal\*\* \(Act Now\!\)/mi
+
+
+
+/*
+ * Given a raw regex in a string (and, optionally, a pattern-modifiers string), return a string suitable
+ * for use as a preg pattern. The regex is wrapped in delimiters, with the modifiers (if any) appended.
+ */
+function preg_regex_to_pattern($raw_regex, $modifiers = "")
+{
+
+  /*
+   * To convert a regex to a pattern, we must wrap the pattern in delimiters (we'll use a pair of
+   * forward slashes) and append the modifiers. We must also be sure to escape any unescaped
+   * occurrences of the delimiter within the regex, and to escape a regex-ending escape
+   * (which, if left alone, would end up escaping the delimiter we append).
+   *
+   * We can't just blindly escape embedded delimiters, because it would break a regex containing
+   * an already-escaped delimiter. For example, if the regex is '\/', a blind escape results
+   * in '\\/' which would not work when eventually wrapped with delimiters: '/\\//'.
+   *
+   * Rather, we'll break down the regex into sections: escaped characters, unescaped forward
+   * slashes (which we'll need to escape), and everything else. As a special case, we also look out
+   * for, and escape, a regex-ending escape.
+   */
+  if (! preg_match('{\\\\(?:/|$)}', $raw_regex)) /* '/' followed by '\' or EOS */
+  {
+
+     /* There are no already-escaped forward slashes, and no escape at the end, so it's
+      * safe to blindly escape forward slashes. */
+     $cooked = preg_replace('!/!', '\/', $raw_regex);
+
+  }
+  else
+  {
+
+     /* This is the pattern we'll use to parse $raw_regex.
+      * The two parts whose matches we'll need to escape are within capturing parens. */
+     $pattern = '{  [^\\\\/]+  |  \\\\.  |  (  /  |  \\\\$  )  }sx';
+
+     /* Our callback function is called upon each successful match of $pattern in $raw-regex.
+      * If $matches[1] is not empty, we return an escaped version of it.
+      * Otherwise, we simply return what was matched unmodified. */
+     $f = create_function('$matches', '     // This long
+          if (empty($matches[1]))          // singlequoted
+              return $matches[0];          // string becomes
+          else                             // our function
+              return "\\\\" . $matches[1]; // code.
+     ');
+
+     /* Actually apply $pattern to $raw_regex, yielding $cooked */
+     $cooked = preg_replace_callback($pattern, $f, $raw_regex);
+
+  }
+
+  /* $cooked is now safe to wrap -- do so, append the modifiers, and return */
+  return "/$cooked/$modifiers";
+}
+
+
+
+$var =~ s/Jeff/Jeffrey/;
+
+
+
+$var =~ s/\bJeff\b/Jeffrey/;
+
+
+
+$var =~ s/\bJeff\b/Jeff/i;
+
+
+
+Dear =FIRST=,
+You have been chosen to win a brand new =TRINKET=! Free!
+Could you use another =TRINKET= in the =FAMILY= household?
+Yes =SUCKER=, I bet you could! Just respond by.....
+
+
+
+if ($type =~ m/c/i) {
+
+
+
+print "Enter a temperature (e.g., 32F, 100C):\n";
+$input = <STDIN>; # This reads one line from the user.
+chomp($input);    # This removes the ending newline from $input.
+
+if ($input =~ m/^([-+]?[0-9]+(\.[0-9]*)?)\s*([CF])$/i)
+{
+    # If we get in here, we had a match. $1 is the number, $3 is "C" or "F".
+    $InputNum = $1;  # Save to named variables to make the ...
+    $type     = $3;  # ... rest of the program easier to read.
+
+    if ($type =~ m/c/i) {    # Is it "c" or "C"?
+        # The input was Celsius, so calculate Fahrenheit
+        $celsius = $InputNum;
+        $fahrenheit = ($celsius * 9 / 5) + 32;
+    } else {
+        # If not "C", it must be an "F", so calculate Celsius
+        $fahrenheit = $InputNum;
+        $celsius = ($fahrenheit - 32) * 5 / 9;
+    }
+    # At this point we have both temperatures, so display the results:
+    printf "%.2f C is %.2f F\n", $celsius, $fahrenheit;
+} else {
+    # The initial regex did not match, so issue a warning.
+    print "Expecting a number followed by \"C\" or \"F\",\n";
+    print "so I don't understand \"$input\".\n";
+}
+
+
+
+
+Pattern pWord    = Pattern.compile("\\G\\w+");
+Pattern pNonHtml = Pattern.compile("\\G[^\\w<>&]+");
+Pattern pImgTag  = Pattern.compile("\\G(?i)<img\\s+([^>]+)>");
+Pattern pLink    = Pattern.compile("\\G(?i)<A\\s+([^>]+)>");
+Pattern pLinkX   = Pattern.compile("\\G(?i)</A>");
+Pattern pEntity  = Pattern.compile("\\G&(#\\d+|\\w+);");
+Boolean needClose = false;
+Matcher m = pWord.matcher(html);  // Any Pattern object can create our Matcher object
+Integer currentLoc = 0;           // Begin at the start of the string
+
+while (currentLoc < html.length())
+{
+
+   if (m.usePattern(pWord).find(currentLoc)) {
+       . . . have a word or number in m.group() -- can now check for profanity, etc . . . 
+   } else if (m.usePattern(pNonHtml).find(currentLoc)) {
+      // Other (non-word) non-HTML stuff -- simply allow it
+   } else if (m.usePattern(pImgTag).find(currentLoc)) {
+       . . . have an image tag -- can check that it's appropriate . . . 
+   } else if (! needClose && m.usePattern(pLink).find(currentLoc)) {
+       . . . have a link anchor -- can validate it . . . 
+      needClose = true;
+   } else if (needClose && m.usePattern(pLinkX).find(currentLoc)) {
+      System.out.println("/LINK [" + m.group() + "]");
+      needClose = false;
+   } else if (m.usePattern(pEntity).find(currentLoc)) {
+      // Allow entities like &gt; and &#123;
+   } else {
+      // Nothing matched at this point, so it must be an error. Grab a dozen or so characters
+      // at our current location so that we can issue an informative error message
+      m.usePattern(Pattern.compile("\\G(?s).{1,12}")).find(currentLoc);
+      System.out.println("Bad char at '" + m.group() + "'");
+      System.exit(1);
+
+   }
+   currentLoc = m.end(); // The `current location' is now where the previous match ended
+
+}
+
+if (needClose) {
+   System.out.println("Missing Final </A>");
+   System.exit(1);
+
+}
+
+
+
+$html_regex = '{
+   ^(
+
+      (?: <(\w++) [^>]*+ (?<!/)> (?1) </\2>  # matched pair of tags
+        | [^<>]++                            # non-tag stuff
+        | <\w[^>]*+/>                        # self-closing tag
+        | <!--.*?-->                         # comment
+        | <script\b[^>]*>.*?</script>        # script block
+
+      )*+
+
+   )$
+
+}isx';
+
+if (preg_match($html_regex, $html_string))
+     echo "block structure seems valid\n";
+else
+     echo "block structure seems invalid\n";
+
+
+
+% egrep -i  '^(From|Subject|Date): '  mailbox
+
+
+
+% egrep  '^(From|Subject|Date): '  mailbox
+From: elvis@tabloid.org (The King)
+Subject: be seein' ya around
+Date: Mon, 23 Oct 2006 11:04:13
+From: The Prez <president@whitehouse.gov>
+Date: Wed, 25 Oct 2006 8:36:24
+Subject: now, about your vote...
+
+
+
+$text =~ s{
+   \b
+   # Capture the <ACRONYM>URL</ACRONYM> to $1 . . . 
+   (
+      http:// [-a-z0-9]+(\.[-a-z0-9]+)*\.(com|edu|info) \b # hostname
+      (
+         / [-a-z0-9_:\@&?=+,.!/~*'%\$]*  # optional path
+      )?
+   )
+}{<a href="$1">$1</a>}gix;
+
+
+
+undef $/;    # Enter "file-slurp" mode
+$text = <>; # Slurp up the first file given on the command line.
+
+$text =~ s/&/&amp;/g;      # Make the basic <ACRONYM>HTML</ACRONYM> . . . 
+$text =~ s/</&lt;/g;  #  . . . characters &, <, and > . . . 
+$text =~ s/>/&gt;/g;  #  . . . <ACRONYM>HTML</ACRONYM> safe.
+
+$text =~ s/^\s*$/<p>/mg; # Separate paragraphs.
+
+# Turn email addresses into links . . . 
+$text =~ s{
+   \b
+   # Capture the address to $1 . . . 
+   (
+     \w[-.\w]*                                    # username
+     \@
+     [-a-z0-9]+(\.[-a-z0-9]+)*\.(com|edu|info)  # hostname
+   )
+   \b
+}{<a href="mailto:$1">$1</a>}gix;
+
+# Turn <ACRONYM>HTTP</ACRONYM> <ACRONYM>URL</ACRONYM>s into links . . . 
+$text =~ s{
+   \b
+   # Capture the <ACRONYM>URL</ACRONYM> to $1 . . . 
+   (
+      http:// [-a-z0-9]+(\.[-a-z0-9]+)*\.(com|edu|info) \b   # hostname
+      (
+         / [-a-z0-9_:\@&?=+,.!/~*'%\$]* # Optional path
+           (?<![.,?!])    # Not allowed to end with [.,?!]
+      )?
+   )
+}{<a href="$1">$1</a>}gix;
+
+print $text; # Finally, display the <ACRONYM>HTML</ACRONYM>-ized text.
+
+
+
+$text =~ s{
+   \b
+   # Capture the <ACRONYM>URL</ACRONYM> to $1 . . . 
+   (
+      http:// hostname
+      (
+         / path
+      )?
+   )
+}{<a href="$1">$1</a>}gix;
+
+
+
+undef $/;    # Enter "file-slurp" mode.
+$text = <>; # Slurp up the first file given on the command line.
+
+$text =~ s/&/&amp;/g;      # Make the basic <ACRONYM>HTML</ACRONYM> . . . 
+$text =~ s/</&lt;/g;  #  . . . characters &, <, and > . . . 
+$text =~ s/>/&gt;/g;  #  . . . <ACRONYM>HTML</ACRONYM> safe.
+
+$text =~ s/^\s*$/<p>/mg; # Separate paragraphs.
+
+# Turn email addresses into links . . . 
+$text =~ s{
+   \b
+   # Capture the address to $1 . . . 
+   (
+     \w[-.\w]*                                    # username
+     \@
+     [-a-z0-9]+(\.[-a-z0-9]+)*\.(com|edu|info)  # hostname
+   )
+   \b
+}{<a href="mailto:$1">$1</a>}gix;
+
+print $text; # Finally, display the <ACRONYM>HTML</ACRONYM>-ized text.
+
+
+
+$text =~ s/^\s*$/<p>/mg;
+
+
+
+... with.
+<p>
+Therefore ...
+
+
+
+$text =~ s/\b(usernameregex\@hostnameregex)\b/<a href="mailto:$1">$1<\/a>/g;
+
+
+
+$text =~ s{\b(usernameregex\@hostnameregex)\b}{<a href="mailto:$1">$1</a>}gi;
+
+
+
+$text =~ s{
+   \b
+   # Capture the address to $1 . . . 
+   (
+     usernameregex
+     \@
+     hostnameregex
+   )
+   \b
+}{<a href="mailto:$1">$1</a>}gix;
+
+
+
+$text =~ s/^$/<p>/mg;
+
+
+
+... with.
+
+
+	 
+Therefore ...
+
+
+
+$text =~ s/^[ \t\r]*$/<p>/mg;
+
+
+
+... with.
+<p>
+<p>
+<p>
+Therefore ...
+
+
+
+$text =~ s/^$/<p>/g;
+
+
+
+$text =~ s/&/&amp;/g; # Make the basic <ACRONYM>HTML</ACRONYM> . . . 
+$text =~ s/</&lt;/g;  #  . . . characters &, <, and > . . . 
+$text =~ s/>/&gt;/g;  #  . . . <ACRONYM>HTML</ACRONYM> safe.
+
+
+
+This is a sample file.
+It has three lines.
+That's all
+
+
+
+This is a sample file.
+It has three lines.
+That's all
+
+
+
+This is a sample file.
+It has three lines.
+That's all
+
+
+
+undef $/;    # Enter "file-slurp" mode.
+$text = <>; # Slurp up the first file given on the command line.
+
+
+
+while ( $text =~ s/(\d)((\d\d\d)+\b)/$1,$2/g ) {
+   # Nothing to do inside the body of the while -- we merely want to reapply the regex until it fails
+}
+
+
+
+$text =~ s/(\d)((\d\d\d)+\b)/$1,$2/g;
+
+
+
+$text =~ s/(\d)(?=(\d\d\d)+(?!\d))/$1,/g;
+
+
+
+$text =~ s/(?<=\d)(?=(\d\d\d)+(?!\d))/,/g;
+
+
+
+$text = "The population of 298444215 is growing";
+   
+$text =~ s/(?<=\d)(?=(\d\d\d)+$)/,/g;
+print "$text\n";
+
+
+
+s/(?<=\bJeff)(?=s\b)/'/g
+
+
+
+$pop =~ s/(?<=\d)(?=(\d\d\d)+$)/,/g;
+print "The US population is $pop\n";
+
+
+
+... by Thomas Jefferson
+
+
+
+s/\bJeff(?=s\b)/Jeff'/g
+
+
+
+... by Jeffrey Friedl.
+
+
+
+... by Jeffrey Friedl.
+
+
+
+... by Jeffrey Friedl.
+
+
+
+if (    not defined($reply_address)
+     or not defined($from_name)
+     or not defined($subject)
+     or not defined($date) )
+{
+    die "couldn't glean the required information!";
+}
+
+
+
+print "The US population is $pop\n";
+
+
+
+$line =~ s/^/|> /;
+print $line;
+
+
+
+while ($line = <>) {
+    print "|> $line";
+}
+
+
+
+print "On $date $from_name wrote:\n";
+
+
+
+print "To: $reply_address ($from_name)\n";
+print "From: jfriedl\@regex.info (Jeffrey Friedl)\n";
+print "Subject: Re: $subject\n";
+print "\n" ; # blank line to separate the header from message body.
+
+
+
+while ($line = <>) {
+    ... work with $line here ...
+}
+
+
+
+# Process the header
+while ($line = <>) {
+   if ($line =~ m/^\s*$/) {
+       last; # stop processing within this while loop, continue below
+   }
+   ... process header line here ...
+}
+... processing for the rest of the message follows ...
+
+
+
+if ($line =~ m/^Subject: (.*)/i) {
+    $subject = $1;
+}
+
+
+
+if ($line =~ m/^Date: (.*)/i) {
+   $date = $1;
+}
+if ($line =~ m/^Reply-To: (.*)/i) {
+   $reply_address = $1;
+}
+
+
+
+From: elvis@tabloid.org (The King)
+
+
+
+if ($line =~ m/^From: (\S+) \(([^()]*)\)/i) {
+    $reply_address = $1;
+    $from_name = $2;
+}
+
+
+
+
+while ($line = <>)
+{
+
+    if ($line =~ m/^\s*$/ ) { # If we have an empty line...
+        last; # this immediately ends the `while' loop.
+    }
+
+    if ($line =~ m/^Subject: (.*)/i) {
+        $subject = $1;
+    }
+
+    if ($line =~ m/^Date: (.*)/i) {
+        $date = $1;
+    }
+
+    if ($line =~ m/^Reply-To: (\S+)/i) {
+        $reply_address = $1;
+    }
+
+    if ($line =~ m/^From: (\S+) \(([^()]*)\)/i) {
+        $reply_address = $1;
+        $from_name = $2;
+    }
+
+}
+
+
+
+To: elvis@hh.tabloid.org (The King)
+From: jfriedl@regex.info (Jeffrey Friedl)
+Subject: Re: Be seein' ya around
+
+On Thu, Feb 29 2007 11:15 The King wrote:
+|> Sorry I haven't been around lately. A few years back I checked
+|> into that ole heartbreak hotel in the sky, ifyaknowwhatImean.
+|> The Duke says "hi".
+|>         Elvis
+
+
+
+$given = "Tom";
+$family = "Cruise";
+$wunderprize = "100% genuine faux diamond";
+
+
+
+$letter =~ s/=FIRST=/$given/g;
+$letter =~ s/=FAMILY=/$family/g;
+$letter =~ s/=SUCKER=/$given $family/g;
+$letter =~ s/=TRINKET=/fabulous $wunderprize/g;
+
+
+
+$price =~ s/(\.\d\d[1-9]?)\d*/$1/
+
+
+
+From elvis Thu Feb 29 11:15 2007
+Received: from elvis@localhost by tabloid.org (8.11.3) id KA8CMY
+Received: from tabloid.org by gateway.net (8.12.5/2) id N8XBK
+To: jfriedl@regex.info (Jeffrey Friedl)
+From: elvis@tabloid.org (The King)
+Date: Thu, Feb 29 2007 11:15
+Message-Id: <2007022939939.KA8CMY@tabloid.org>
+Subject: Be seein' ya around
+Reply-To: elvis@hh.tabloid.org
+X-Mailer: Madam Zelda's Psychic Orb [version 3.7 PL92]
+
+Sorry I haven't been around lately. A few years back I checked
+into that ole heartbreak hotel in the sky, ifyaknowwhatImean.
+The Duke says "hi".
+        Elvis
+
+
+
+# Either some non-quote/non-comma text . . . 
+[^",]+
+# . . . or . . . 
+ |
+# . . . a double-quoted field (inside, paired double quotes are allowed)
+" # field's opening quote
+ (?: [^"] | "" )*
+" # field's closing quote
+
+
+
+$celsius = 30;
+$fahrenheit = ($celsius * 9 / 5) + 32;  # calculate Fahrenheit
+print "$celsius C is $fahrenheit F.\n";# report both temperatures
+
+
+
+$celsius = 20;
+while ($celsius <= 45)
+{
+  $fahrenheit = ($celsius * 9 / 5) + 32; # calculate Fahrenheit
+  print "$celsius C is $fahrenheit F.\n";
+  $celsius = $celsius + 5;
+}
+
+
+
+if ($reply =~ m/^[0-9]+$/) {
+    print "only digits\n";
+} else {
+    print "not only digits\n";
+}
+
+
+
+if ($reply =~ m/^[0-9]+$/)
+
+
+
+print "Enter a temperature in Celsius:\n";
+$celsius = <STDIN>; # this reads one line from the user
+chomp($celsius);   # this removes the ending newline from $celsius
+
+if ($celsius =~ m/^[0-9]+$/) {
+    $fahrenheit = ($celsius * 9 / 5) + 32; # calculate Fahrenheit
+    print "$celsius C is $fahrenheit F\n";
+} else {
+    print "Expecting a number, so I don't understand \"$celsius\".\n";
+}
+
+
+
+printf "%.2f C is %.2f F\n", $celsius, $fahrenheit;
+
+
+
+if ($celsius =~ m/^[-+]?[0-9]+(\.[0-9]*)?$/)  {
+
+
+
+$celsius =~ m/^[-+]?[0-9]+[CF]$/
+$celsius =~ m/^([-+]?[0-9]+)([CF])$/
+
+
+
+print "Enter a temperature (e.g., 32F, 100C):\n";
+$input = <STDIN>; # This reads one line from the user.
+chomp($input);    # This removes the ending newline from $input.
+
+if ($input =~ m/^([-+]?[0-9]+)([CF])$/)
+{
+    # If we get in here, we had a match. $1 is the number, $2 is "C" or "F".
+    $InputNum = $1;  # Save to named variables to make the ...
+    $type     = $2;  # ... rest of the program easier to read.
+
+    if ($type eq "C") {      # `eq' tests if two strings are equal
+        # The input was Celsius, so calculate Fahrenheit
+        $celsius = $InputNum;
+        $fahrenheit = ($celsius * 9 / 5) + 32;
+    } else {
+        # If not "C", it must be an "F", so calculate Celsius
+        $fahrenheit = $InputNum;
+        $celsius = ($fahrenheit - 32) * 5 / 9;
+    }
+    # At this point we have both temperatures, so display the results:
+    printf "%.2f C is %.2f F\n", $celsius, $fahrenheit;
+} else {
+    # The initial regex did not match, so issue a warning.
+    print "Expecting a number followed by \"C\" or \"F\",\n";
+    print "so I don't understand \"$input\".\n";
+}
+
+
+
+if ($input =~ m/^([-+]?[0-9]+(\.[0-9]*)?)([CF])$/)
+
+
+
+if ($input =~ m/^([-+]?[0-9]+(?:\.[0-9]*)?)([CF])$/)
+
+
+
+if ($input =~ m/^([-+]?[0-9]+(\.[0-9]*)?) *([CF])$/)
+
+
+
+$input =~ m/^([-+]?[0-9]+(\.[0-9]*)?)\s*([CF])$/
+
+
+
+$input =~ m/^([-+]?[0-9]+(\.[0-9]*)?)\s*([CF])$/i
+
+
+
+if ($input =~ m/^([-+]?[0-9]+(\.[0-9]*)?)\s*([CF])$/i)
+{
+ 
+    $type = $3;  # save to a named variable to make rest of program more readable
+
+    if ($type eq "C") { # `eq' tests if two strings are equal
+ 
+    } else {
+
+
+
+$/ = ".\n";
+while (<>) {
+  next if !s/\b([a-z]+)((?:\s|<[^>]+>)+)(\1\b)/\e[7m$1\e[m$2\e[7m$3\e[m/ig;
+  s/^(?:[^\e]*\n)+//mg;   # Remove any unmarked lines.
+  s/^/$ARGV: /mg;      # Ensure lines begin with filename.
+  print;
+}
+
+
+
+if (phpversion() >= 5)
+   date_default_timezone_set("GMT");
+
+
+
+
+import java.util.regex.*;
+public class JavaBenchmark {
+ public static void main(String [] args)
+ {
+   Matcher regex1 = Pattern.compile("^(a|b|c|d|e|f|g)+$").matcher("");
+   Matcher regex2 = Pattern.compile("^[a-g]+$").matcher("");
+   long timesToDo = 1000;
+
+   StringBuffer temp = new StringBuffer();
+   for (int i = 1000; i > 0; i--)
+           temp.append("abababdedfg");
+   String testString = temp.toString();
+
+   // Time first one . . . 
+   long count = timesToDo;
+   long startTime = System.currentTimeMillis();
+   while (--count > 0)
+         regex1.reset(testString).find();
+   double seconds = (System.currentTimeMillis() - startTime)/1000.0;
+   System.out.println("Alternation takes " + seconds + " seconds");
+
+   // Time second one . . . 
+   count = timesToDo;
+   startTime = System.currentTimeMillis();
+   while (--count > 0)
+         regex2.reset(testString).find();
+   seconds = (System.currentTimeMillis() - startTime)/1000.0;
+   System.out.println("Character class takes " + seconds + " seconds");
+ }
+}
+
+
+
+Imports System.Text.RegularExpressions
+   
+Dim FieldRegex as Regex = New Regex( _
+       "(?:^|,)                                        " & _
+       "(?:                                            " & _
+       "   (?# Either a doublequoted field ...)        " & _
+       "   ""  (?# field's opening quote )             " & _
+       "    (   (?> [^""]+ | """" )*   )               " & _
+       "   ""  (?# field's closing quote )             " & _
+       " (?# ... or ...)                               " & _
+       " |                                             " & _
+       "   (?# ... some non-quote/non-comma text ...)  " & _
+       "   ( [^"",]* )                                 " & _
+       " )", RegexOptions.IgnorePatternWhitespace)
+
+Dim QuotesRegex as Regex = New Regex("""""") 'A string with two double quotes
+    
+Dim FieldMatch as Match = FieldRegex.Match(Line)
+While FieldMatch.Success
+   Dim Field as String
+   If FieldMatch.Groups(1).Success
+     Field = QuotesRegex.Replace(FieldMatch.Groups(1).Value, """")
+   Else
+     Field = FieldMatch.Groups(2).Value
+   End If
+
+   Console.WriteLine("[" & Field & "]")
+   ' Can now work with 'Field'....
+
+   FieldMatch = FieldMatch.NextMatch
+End While
+
+
+
+[Ten Thousand][10000][ 2710 ][10,000][It's "10 Grand", baby][10K]
+
+
+
+(?:^|,)
+(?:
+    # Either some non-quote/non-comma text....
+    ( [^",]* )
+  # ... or...
+  |
+    # ... a double-quoted field (inside, paired double quotes are allowed)
+    " # field's opening quote
+     (  (?: [^"] | "" )*   )
+    " # field's closing quote
+)
+
+
+
+
+(?:^|,)
+(?: # Now, match either a double-quoted field (inside, paired double quotes are allowed) . . . 
+        " # (double-quoted field's opening quote)
+         (   (?: [^"] | "" )*   )
+        " # (double-quoted field's closing quote)
+  |
+    #  . . . or, some non-quote/non-comma text . . . 
+        ( [^",]* )
+)
+
+
+
+
+import java.util.regex.*;
+
+        
+
+String regex = // Puts a doublequoted field into group(1), an unquoted field into group(2)
+   "\\G(?:^|,)                                  \n"+
+   "(?:                                         \n"+
+   "   # Either a double-quoted field . . .        \n"+
+   "   \"  # field's opening quote              \n"+
+   "    (   (?: [^\"]++ | \"\" )*+   )          \n"+
+   "   \"  # field's closing quote              \n"+
+   " |#  . . . or . . .                               \n"+
+   "       # some non-quote/non-comma text . . .  \n"+
+   "   ( [^\",]* )                              \n"+
+   " )                       \n";
+// Create a matcher, using the regex above, with dummy text for the time being.
+Matcher mMain = Pattern.compile(regex, Pattern.COMMENTS).matcher("");
+
+// Create a matcher for  「"" , with dummy text for the time being
+Matcher mQuote = Pattern.compile("\"\"").matcher("");
+
+        
+
+// Above is the preparation; the code below is executed on a per-line basis
+mMain.reset(line); // Use this line of <ACRONYM>CSV</ACRONYM> text in the processing below
+
+while (mMain.find())
+{
+    String field;
+    if (mMain.start(2) >= 0)
+        field = mMain.group(2); // The field is unquoted, so we can use it as is
+    else
+        // The field is quoted, so we must replace paired doublequotes with one double quote
+        field = mQuote.reset(mMain.group(1)).replaceAll("\"");
+
+    // We can now work with field . . . 
+    System.out.println("Field [" + field + "]");
+}
+
+
+
+
+Option Explicit On
+Option Strict On
+
+Imports System.Text.RegularExpressions
+Imports System.Reflection
+
+Module BuildMyLibrary
+Sub Main()
+ 'The calls to RegexCompilationInfo below provide the pattern, regex options, name within the class,
+ 'class name, and a Boolean indicating whether the new class is public. The first class, for example,
+ 'will be available to programs that use this assembly as "jfriedl.Mail.Subject", a Regex constructor.
+ Dim RCInfo() as RegexCompilationInfo = {                           _
+   New RegexCompilationInfo(                                        _
+     "^Subject:\s*(.*)", RegexOptions.IgnoreCase,                   _
+     "Subject", "jfriedl.Mail", true),                              _
+   New RegexCompilationInfo(                                        _
+     "^From:\s*(.*)", RegexOptions.IgnoreCase,                      _
+     "From", "jfriedl.Mail", true),                                 _
+   New RegexCompilationInfo(                                        _
+     "\G(?:^|,)                                    " &              _
+     "(?:                                          " &              _
+     "  (?# Either a double-quoted field... )      " &              _
+     "  ""  (?# field's opening quote )            " &              _
+     "   (?<QuotedField>  (?> [^""]+ | """" )*   ) " &              _
+     "  ""  (?# field's closing quote )            " &              _
+     " (?# ...or... )                              " &              _
+     " |                                           " &              _
+     "  (?# ...some non-quote/non-comma text... )  " &              _
+     "  (?<UnquotedField> [^"",]* )                " &              _
+     " )",                                                          _
+     RegexOptions.IgnorePatternWhitespace,                          _
+     "GetField", "jfriedl.CSV", true)                               _
+ }
+ 'Now do the heavy lifting to build and write out the whole thing . . . 
+ Dim AN as AssemblyName = new AssemblyName()
+ AN.Name = "JfriedlsRegexLibrary" 'This will be the DLL's filename
+ AN.Version = New Version("1.0.0.0")
+ Regex.CompileToAssembly(RCInfo, AN) 'Build everything
+End Sub
+End Module
+
+
+
+
+Dim UserRegex as Regex = New Regex("^" & Regex.Escape(SearchTerm) & "$", _
+                                   RegexOptions.IgnoreCase)
+
+
+
+Dim SubMatch as Match = Match.Empty 'Initialize, in case it's not set in the loop below
+  
+Dim Line as String
+For Each Line in EmailHeaderLines
+   'If this is the subject, save the match info for later . . . 
+   Dim ThisMatch as Match = Regex.Match(Line, "^Subject:\s*(.*)", _
+                                        RegexOptions.IgnoreCase)
+   If ThisMatch.Success
+      SubMatch = ThisMatch
+   End If
+     
+Next
+  
+If SubMatch.Success
+   Console.WriteLine(SubMatch.Result("The subject is: $1"))
+Else
+   Console.WriteLine("No subject!")
+End If
+
+
+
+Dim R As Regex = New Regex _
+("\b                                                 " & _
+ "(?# Capture the address to $1 . . . )                    " & _
+ "(                                                                 " & _
+ "  \w[-.\w]*                         (?# username)    " & _
+ "  @                                                               " & _
+ "  [-\w]+(\.[-\w]+)*\.(com|edu|info) (?# hostname)    " & _
+ ")                                                                 " & _
+ "\b",  _
+ RegexOptions.IgnoreCase Or RegexOptions.IgnorePatternWhitespace)
+
+text = R.Replace(text, "<a href=""mailto:${1}"">${1}</a>")
+
+
+
+If Not Regex.IsMatch(Line, "^\s*$") Then
+   '  . . . line is not blank . . . 
+End If
+
+
+
+if (preg_match('/^Subject: (.*)/i', $line, $matches))
+     $Subject = $matches[1];
+
+
+
+import re;
+    
+R = re.compile("^Subject: (.*)", re.IGNORECASE);
+M = R.search(line)
+if M:
+    subject = M.group(1)
+
+
+
+$text =~ s{
+   \b
+   # Capture the address to $1 . . . 
+   (
+     \w[-.\w]*                          # username
+     @
+     [-\w]+(\.[-\w]+)*\.(com|edu|info)  # hostname
+   )
+   \b
+}{<a href="mailto:$1">$1</a>}gix;
+
+
+
+import java.util.regex.*; // Make regex classes easily available
+     
+Pattern r = Pattern.compile(
+   "\\b                                                  \n"+
+   "# Capture the address to $1 . . . \n"+
+   "(\n"+
+   "  \\w[-.\\w]*                            # username\n"+
+   "  @\n"+
+   "  [-\\w]+(\\.[-\\w]+)*\\.(com|edu|info)  # hostname\n"+
+   ")\n"+
+   "\\b\n",
+   Pattern.CASE_INSENSITIVE|Pattern.COMMENTS);
+
+Matcher m = r.matcher(text);
+text = m.replaceAll("<a href=\"mailto:$1\">$1</a>");
+
+
+
+if ($line =~ m/^Subject: (.*)/i) {
+    $subject = $1;
+}
+
+
+
+    import java.util.regex.*; // Make regex classes easily available
+        
+Pattern r = Pattern.compile("^Subject: (.*)", Pattern.CASE_INSENSITIVE);
+Matcher m = r.matcher(line);
+if (m.find()) {
+    subject = m.group(1);
+ }
+
+
+
+if (! Pattern.matches("\\s*", line))
+{
+    //  . . . line is not blank . . . 
+}
+
+
+
+if (! line.matches("\\s*", ))
+{
+    //  . . . line is not blank . . . 
+}
+
+
+
+Imports System.Text.RegularExpressions   ' Make regex classes easily available
+   
+Dim R as Regex = New Regex("^Subject: (.*)", RegexOptions.IgnoreCase)
+Dim M as Match = R.Match(line)
+If M.Success
+    subject = M.Groups(1).Value
+End If
+
+
+
+substr($tag, $matches[0][1], strlen($matches[0][0]));
+
+
+
+
+function reg_match($regex, $subject, &$matches, $offset = 0)
+{
+    $result = preg_match($regex, $subject, $matches,
+                         PREG_OFFSET_CAPTURE, $offset);
+    if ($result) {
+        $f = create_function('&$X', '$X = $X[1] < 0 ?  NULL : $X[0];');
+        array_walk($matches, $f);
+    }
+    return $result;
+}
+
+
+
+preg_match_all(pattern, subject, matches [, flags [, offset ]])
+
+
+
+if (preg_match_all('/<title>/i', $html, $all_matches) > 1)
+  print "whoa, document has more than one <title>!\n";
+
+
+
+$subject = "
+Jack A. Smith
+Mary B. Miller";
+
+/* No order-related flag implies PREG_PATTERN_ORDER */
+preg_match_all('/^(\w+) (\w\.) (\w+)$/m', $subject, $all_matches);
+
+
+
+
+import java.io.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public class TwoWord
+{
+ public static void main(String [] args)
+ {
+   Pattern regex1 = Pattern.compile(
+       "\\b([a-z]+)((?:\\s|\\<[^>]+\\>)+)(\\1\\b)",
+       Pattern.CASE_INSENSITIVE);
+   String replace1 = "\033[7m$1\033[m$2\033[7m$3\033[m";
+   Pattern regex2 = Pattern.compile("^(?:[^\\e]*\\n)+", Pattern.MULTILINE);
+   Pattern regex3 = Pattern.compile("^([^\\n]+)", Pattern.MULTILINE);
+
+   // For each command-line argument....
+   for (int i = 0; i < args.length; i++)
+   {
+     try {
+       BufferedReader in = new BufferedReader(new FileReader(args[i]));
+       String text;
+
+       // For each paragraph of each file.....
+       while ((text = getPara(in)) != null)
+       {
+           // Apply the three substitutions
+           text = regex1.matcher(text).replaceAll(replace1);
+           text = regex2.matcher(text).replaceAll("");
+           text = regex3.matcher(text).replaceAll(args[i] + ": $1");
+
+           // Display results
+           System.out.print(text);
+       }
+     } catch (IOException e) {
+       System.err.println("can't read ["+args[i]+"]: " + e.getMessage());
+     }
+   }
+ }
+
+ // Routine to read next "paragraph" and return as a string
+ static String getPara(BufferedReader in) throws java.io.IOException
+ {
+   StringBuffer buf = new StringBuffer();
+   String line;
+
+   while ((line = in.readLine()) != null &&
+          (buf.length() == 0 || line.length() != 0))
+   {
+       buf.append(line + "\n");
+   }
+   return  buf.length() == 0 ? null : buf.toString();
+ }
+}
+
+
+
+if ($target =~ m/.../) {
+    #  . . . processing after successful match . . . 
+ 
+} else {
+    #  . . . processing after unsuccessful match . . . 
+ 
+}
+
+
+
+\b
+# Match the leading part (proto://hostname, or just hostname)
+(
+    # ftp://, http://, or https:// leading part
+    (ftp|https?)://[-\w]+(\.\w[-\w]*)+
+  |
+    # or, try to find a hostname with our more specific sub-expression
+    (?i: [a-z0-9] (?:[-a-z0-9]*[a-z0-9])? \. )+ # sub domains
+    # Now ending .com, etc. For these, require lowercase
+    (?-i: com\b
+        | edu\b
+        | biz\b
+        | gov\b
+        | in(?:t|fo)\b # .int or .info
+        | mil\b
+        | net\b
+        | org\b
+        | [a-z][a-z]\b # two-letter country codes
+    )
+)
+
+# Allow an optional port number
+( : \d+ )?
+
+# The rest of the URL is optional, and begins with / . . . 
+(
+     /
+     # The rest are heuristics for what seems to work well
+     [^.!,?;"'<>()\[\]{}\s\x7F-\xFF]*
+     (?:
+        [.!,?]+  [^.!,?;"'<>()\[\]{}\s\x7F-\xFF]+
+     )*
+)?
+
+
+
+@zips = m/\G(?:(?!44)\d\d\d\d\d)*(44\d\d\d)/g;
+
+
+
+@zips = ( ); # Ensure the array is empty
+
+while (m/(\d\d\d\d\d)/g) {
+   $zip = $1;
+   if (substr($zip, 0, 2) eq "44") {
+       push @zips, $zip;
+   }
+}
+
+
+
+Ten Thousand,10000, 2710 ,,"10,000","It's ""10 Grand"", baby",10K
+
+
+
+@zips = m/(?:\d\d\d\d\d)*?(44\d\d\d)/g;
+
+
+
+String SubDomain  = "(?i:[a-z0-9]|[a-z0-9][-a-z0-9]*[a-z0-9])";
+String TopDomains = "(?x-i:com\\b        \n" +
+                    "     |edu\\b        \n" +
+                    "     |biz\\b        \n" +
+                    "     |in(?:t|fo)\\b \n" +
+                    "     |mil\\b        \n" +
+                    "     |net\\b        \n" +
+                    "     |org\\b        \n" +
+                    "     |[a-z][a-z]\\b \n" + // country codes
+                    ")                   \n";
+String Hostname = "(?:" + SubDomain + "\\.)+" + TopDomains;
+
+String NOT_IN   = ";\"'<>()\\[\\]{}\\s\\x7F-\\xFF";
+String NOT_END  = "!.,?";
+String ANYWHERE = "[^" + NOT_IN + NOT_END + "]";
+String EMBEDDED = "[" + NOT_END + "]";
+String UrlPath  = "/"+ANYWHERE + "*("+EMBEDDED+"+"+ANYWHERE+"+)*";
+String Url = 
+  "(?x:                                                \n"+
+  "  \\b                                               \n"+
+  "  ## match the hostname part                        \n"+
+  "  (                                                 \n"+
+  "    (?: ftp | http s? ): // [-\\w]+(\\.\\w[-\\w]*)+ \n"+
+  "   |                                                \n"+
+  "    " + Hostname + "                                \n"+
+  "  )                                                 \n"+
+  "  # allow optional port                             \n"+
+  "  (?: :\\d+ )?                                      \n"+
+  "                                                    \n"+
+  "  # rest of url is optional, and begins with /      \n"+
+  " (?: " + UrlPath + ")?                              \n"+
+  ")";
+
+// Now convert string we've built up into a real regex object
+Pattern UrlRegex = Pattern.compile(Url);
+// Now ready to apply to raw text to find urls . . .
+
+
+
+\b
+# Match the leading part (proto://hostname, or just hostname)
+(
+    # ftp://, http://, or https:// leading part
+    (ftp|https?)://[-\w]+(\.\w[-\w]*)+
+  |
+    # or, try to find a hostname with our more specific sub-expression
+    full-hostname-regex
+)
+
+# Allow an optional port number
+( : \d+ )?
+
+# The rest of the <ACRONYM>URL</ACRONYM> is optional, and begins with / . . . 
+(
+   / path-part
+)?
+
+
+
+Read his comments at http://www.oreilly.com/ask_tim/index.html. He ...
+
+
+
+
+(?i: [a-z0-9] (?:[-a-z0-9]*[a-z0-9])? \. )+ # sub domains
+# Now ending .com, etc. For these, we require lowercase
+(?-i: com\b
+    | edu\b
+    | biz\b
+    | org\b
+    | gov\b
+    | in(?:t|fo)\b # .int or .info
+    | mil\b
+    | net\b
+    | name\b
+    | museum\b
+    | coop\b
+    | aero\b
+    | [a-z][a-z]\b # two-letter country codes
+)
+
+
+
+...visit us at www.oreilly.com or mail to orders@oreilly.com.
+
+
+
+
+^
+ (?i)  # apply this regex in a case-insensitive manner.
+ # Zero or more dot-separated parts . . . 
+ (?: [a-z0-9]\. | [a-z0-9][-a-z0-9]{0,61}[a-z0-9]\. )*
+ # Followed by the final suffix part . . . 
+ (?: com|edu|gov|int|mil|net|org|biz|info|name|museum|coop|aero|[a-z][a-z] )
+$
+
+
+
+
+^
+ (?i)  # apply this regex in a case-insensitive manner.
+ # One or more dot-separated parts . . . 
+ (?: [a-z0-9]\. | [a-z0-9][-a-z0-9]*[a-z0-9]\. )+
+ # Followed by the final suffix part . . . 
+ (?: com|edu|gov|int|mil|net|org|biz|info|name|museum|coop|aero|[a-z][a-z] )
+$
+
+
+
+if ($url =~ m{^http://([^/:]+)(:(\d+))?(/.*)?$}i)
+{
+  my $host = $1;
+  my $port = $3 || 80;  # Use $3 if it exists; otherwise default to 80.
+  my $path = $4 || "/"; # Use $4 if it exists; otherwise default to "/".
+  print "Host: $host\n";
+  print "Port: $port\n";
+  print "Path: $path\n";
+} else {
+  print "Not an HTTP URL\n";
+}
+
+
+
+
+Imports System.Text.RegularExpressions
+   
+' Set up the regular expressions we'll use in the loop
+Dim A_Regex as Regex = New Regex(                  _
+            "<a\b(?<guts>[^>]+)>(?<Link>.*?)</a>", _
+            RegexOptions.IgnoreCase)
+
+Dim GutsRegex as Regex = New Regex( _
+   "\b HREF                (?#  'href' attribute             )" & _
+   "\s* = \s*              (?#  '=' with optional whitespace )" & _
+   "(?:                    (?#  Value is ...                 )" & _
+   "  ""(?<url>[^""]*)""   (?#    double-quoted string,      )" & _
+   "  |                    (?#    or ...                     )" & _
+   "  '(?<url>[^']*)'      (?#    single-quoted string,      )" & _
+   "  |                    (?#    or ...                     )" & _
+   "  (?<url>[^'"">\s]+)   (?#    'other stuff'              )" & _
+   ")                      (?#                               )",  _
+   RegexOptions.IgnoreCase OR RegexOptions.IgnorePatternWhitespace)
+
+' Now check the 'Html' Variable . . .  
+Dim CheckA as Match = A_Regex.Match(Html)
+
+' For each match within . . . 
+While CheckA.Success
+   ' We matched an <a> tag, so now check for the URL.
+   Dim UrlCheck as Match = _
+      GutsRegex.Match(CheckA.Groups("guts").Value)
+   If UrlCheck.Success
+      ' We've got a match, so have a URL/link pair
+      Console.WriteLine("Url " & UrlCheck.Groups("url").Value & _
+                        " WITH LINK " & CheckA.Groups("Link").Value)
+   End If
+   CheckA = CheckA.NextMatch
+End While
+
+
+
+% perl -w -Mre=debug -e 'use warnings'
+ . . . lots of debugging information . . .
+
+
+
+...<a href="http://www.oreilly.com">O'Reilly Media</a>...
+
+
+
+# Note: the regex in the while(...) is overly simplistic - see text for discussion
+while ($Html =~ m{<a\b([^>]+)>(.*?)</a>}ig)
+{
+  my $Guts = $1; # Save results from the match above, to their own . . . 
+  my $Link = $2; #  . . . named variables, for clarity below.
+
+  if ($Guts =~ m{
+                 \b HREF       # "href" attribute
+                 \s* = \s*     # "=" may have whitespace on either side
+                 (?:           # Value is . . . 
+                   "([^"]*)"   #   double-quoted string,
+                   |           #   or . . . 
+                   '([^']*)'   #   single-quoted string,
+                   |           #   or . . . 
+                   ([^'">\s]+) #   "other stuff"
+                 )             #
+                }xi)
+  {
+    my $Url = $+; # Gives the highest-numbered actually-filled $1, $2, etc.
+    print "$Url with link text: $Link\n";
+  }
+}
+
+
+
+SRC=array.c builtin.c eval.c field.c gawkmisc.c io.c main.c \
+        missing.c msg.c node.c re.c version.c
+
+
+
+$WholePath =~ m{([^/]*)$}; # Check variable $WholePath with regex.
+$FileName = $1; # Note text matched
+
+
+
+if ( $WholePath =~ m!^(.*)/([^/]*)$! ) {
+    # Have a match -- $1 and $2 are valid
+    $LeadingPath = $1;
+    $FileName = $2;
+} else {
+    # No match, so there's no `/' in the filename
+    $LeadingPath = "."; # so "file.txt" looks like ". / file.txt" ("." is the current directory)
+    $FileName = $WholePath;
+}
+
+
+
+\([^()]*(\([^()]*\)[^()]*)*\)
+
+
+
+$regex =  '\(' . '(?:[^()]|\(' x $depth . '[^()]*' . '\))*' x $depth . '\)';
+
+
+
+Darth Symbol: "/-|-\\" or "[^-^]"
+
+
+
+Darth Symbol: "/-|-\\" or "[^-^]"
+
+
+
+"You need a 2\"x3\" photo.
+
+
+
+s/^\s+//;
+s/\s+$//;
+
+
+
+s/^\s+//;
+s/\s+$//;
+
+
+
+$html =~ s/<[^>]+>//g;
+
+
+
+<              # Opening "<"
+  (            #    Any amount of . . . 
+     "[^"]*"   #      double-quoted string,
+     |         #      or . . . 
+     '[^']*'   #      single-quoted string,
+     |         #      or . . . 
+     [^'">]    #      "other stuff"
+  )*           #
+>              # Closing ">"
+
+
+
+if ($text =~ m/$regex/) {
+
+
+
+$text =~ m/.../;   # Just do it, presumably, for the side effects.
+ 
+if ($text =~ m/.../) {
+  # Do code if match is successful
+ 
+ 
+$result = ( $text =~ m/.../ ); # Set $result to result of match against $text
+$result =   $text =~ m/.../  ; # Same thing; =~ has higher precedence than = 
+ 
+  $copy = $text;             # Copy $text to $copy ...
+  $copy           =~ m/.../;# ... and perform match on $copy
+( $copy = $text ) =~ m/.../;# Same thing in one expression
+
+
+
+$text =~ m/regex/
+
+
+
+StringOperand =~ RegexOperand
+
+
+
+my $regex = qr/regex/;
+  
+if ($text =~ $regex) {
+
+
+
+Dim R As Regex = New Regex(" \(                    " & _
+                           "   (?>                 " & _
+                           "       [^()]+          " & _
+                           "     |                 " & _
+                           "       \( (?<DEPTH>)   " & _
+                           "     |                 " & _
+                           "       \) (?<-DEPTH>)  " & _
+                           "   )*                  " & _
+                           "   (?(DEPTH)(?!))      " & _
+                           " \)                    ",  _
+       RegexOptions.IgnorePatternWhitespace)
+
+
+
+Dim FieldRegex as GetField = New GetField 'This makes a new Regex object
+
+
+
+Dim FieldRegex as jfriedl.CSV.GetField = New jfriedl.CSV.GetField
+
+
+
+Dim FieldRegex as CSV.GetField = New CSV.GetField 'This makes a new Regex object
+    
+Dim FieldMatch as Match = FieldRegex.Match(Line) 'Apply the regex to a string . . . 
+While FieldMatch.Success
+  Dim Field as String
+  If FieldMatch.Groups(1).Success
+    Field = FieldMatch.Groups("QuotedField").Value
+    Field = Regex.Replace(Field, """""", """") 'replace two double quotes with one
+  Else
+    Field = FieldMatch.Groups("UnquotedField").Value
+  End If
+
+  Console.WriteLine("[" & Field & "]")
+  ' Can now work with 'Field'....
+
+  FieldMatch = FieldMatch.NextMatch
+End While
+
+
+
+Imports jfriedl
+
+
+
+$MatchField = "^Subject:"; # Normal string assignment
+   
+if ($text =~ $MatchField) {
+
+
+
+<B>              # Match the opening <B>
+  (?> [^<]* )    # Now match any "normal" . . . 
+  (?>                   # Any amount of . . . 
+     (?! </?B> ) #   if not at <B> or </B>,
+     <           #   match one "special"
+     [^<]*       #   and then any amount of "normal"
+   )*                   #
+</B>             # And finally the closing </B>
+
+
+
+^ \w+ =                 # leading field name and '='
+# Now read (and capture) the value . . . 
+(
+   (?> [^\n\\]* )       # "normal"*
+   (?> \\. [^\n\\]* )*  # ( "special" "normal"* )*
+)
+
+
+
+
+(?:^|,)
+(?: # Now, match either a double-quoted field (inside, paired double quotes are allowed) . . . 
+        " # (double-quoted field's opening quote)
+         (   (?: [^"] | "" )*   )
+        " # (double-quoted field's closing quote)
+  |
+    #  . . . or, some non-quote/non-comma text . . . 
+        ( [^",]* )
+)
+
+
+
+while ($line =~ m{
+          \G(?:^|,)
+          (?:
+             # Either a double-quoted field (with "" for each ")...
+             " # field's opening quote
+              ( (?> [^"]* ) (?> "" [^"]* )*  )
+             " # field's closing quote
+           # ..or...
+           |
+             # ... some non-quote/non-comma text....
+             ( [^",]* )
+          )
+      }gx)
+{
+   if (defined $2) {
+       $field = $2;
+   } else {
+       $field = $1;
+       $field =~ s/""/"/g;
+   }
+   print "[$field]"; # print the field, for debugging
+   Can work with $field now . . . 
+}
+
+
+
+<B>               # Match the opening <B>
+(# Now, as many of the following as possible . . . 
+  (?!  </?B>  )  #    If not <B>, and not </B> . . . 
+  .                          #        . . . any character is okay
+)* #<LineAnnotation> (now greedy)
+</B> # <ANNO> . . . until the closing delimiter can match.</LineAnnotation>
+
+
+
+if ($data =~ m/\(0x/
+    and
+    $data =~ m/(?:SCALAR|ARRAY|...|HASH)\(0x[0-9a-fA-F]+\)/)
+{
+   # warn about bogus data...
+}
+
+
+
+Regex.CacheSize = 123
+
+
+
+
+set TimesToDo 1000
+set TestString ""
+for {set i 1000} {$i > 0} {incr i -1} {
+    append TestString "abababdedfg"
+}
+
+set Count $TimesToDo
+set StartTime [clock clicks -milliseconds]
+for {} {$Count > 0} {incr Count -1} {
+    regexp {^(a|b|c|d|e|f|g)+$} $TestString
+}
+set EndTime [clock clicks -milliseconds]
+set Seconds [expr ($EndTime - $StartTime)/1000.0]
+puts [format "Alternation takes %.3f seconds" $Seconds]
+
+set Count $TimesToDo
+set StartTime [clock clicks -milliseconds]
+for {} {$Count > 0} {incr Count -1} {
+    regexp {^[a-g]+$} $TestString
+}
+set EndTime [clock clicks -milliseconds]
+set Seconds [expr ($EndTime - $StartTime)/1000.0]
+puts [format "Character class takes %.3f seconds" $Seconds]
+
+
+
+while (...) {
+    if ($line =~ m/^\s*$/ ) ...
+    if ($line =~ m/^Subject: (.*)/) ...
+    if ($line =~ m/^Date: (.*)/) ...
+    if ($line =~ m/^Reply-To: (\S+)/)...
+    if ($line =~ m/^From: (\S+) \(([^()]*)\)/)...
+      
+}
+
+
+
+$cooked = preg_replace(
+   /* Match with these . . .   */ array('/&/',   '/</',  '/>/',  '/"/' ),
+   /* Replace with these . . . */ array('&amp;', '&lt;', '&gt;', '&quot;'),
+   /*  . . . in a copy of this*/ $text
+);
+
+
+
+AT&T --> "baby Bells"
+
+
+
+AT&amp;T --&gt; &quot;baby Bells&quot;
+
+
+
+$patterns     = array('/&/',   '/</',  '/>/',  '/"/' );
+$replacements = array('&amp;', '&lt;', '&gt;', '&quot;');
+
+$cooked = preg_replace($patterns, $replacements, $text);
+
+
+
+$result_array = preg_replace($regex_array, $replace_array, $subject_array);
+
+
+
+$result_array = array();
+
+foreach ($subject_array as $subject)
+{
+   reset($regex_array);   // Prepare to walk through these two arrays
+   reset($replace_array); // in their internal array orders.
+   
+   while (list(,$regex) = each($regex_array))
+   {
+       list(,$replacement) = each($replace_array);
+       // The regex and replacemnet are ready, so apply to the subject . . . 
+       $subject = preg_replace($regex, $replacement, $subject);
+   }
+   // Having now been processed by all the regexes, we're done with this subject . . . 
+   $result_array[] = $subject;  // . . . so append to the results array.
+}
+
+
+
+$text =~ m/regex/;
+
+
+
+$text = m/regex/;
+
+
+
+$text =        m/regex/;
+$text = ($_ =~ m/regex/);
+
+
+
+while (<>)
+{
+   if (m/.../) {
+     
+   } elsif (m/.../) {
+
+
+
+if ($text !~ m/.../)
+
+if (not $text =~ m/.../)
+
+unless ($text =~ m/.../)
+
+
+
+$text =~ $MatchField
+
+
+
+$text =~ m/$MatchField/
+
+
+
+use Config;
+print "$Config{privlib}/unicore/UnicodeData.txt\n";
+
+
+
+m{
+    regex  # comments
+    here   # here
+}x;
+
+
+
+Pattern pAtEnd   = Pattern.compile("\\G\\z");
+Pattern pWord    = Pattern.compile("\\G\\w+");
+Pattern pNonHtml = Pattern.compile("\\G[^\\w<>&]+");
+Pattern pImgTag  = Pattern.compile("\\G(?i)<img\\s+([^>]+)>");
+Pattern pLink    = Pattern.compile("\\G(?i)<A\\s+([^>]+)>");
+Pattern pLinkX   = Pattern.compile("\\G(?i)</A>");
+Pattern pEntity  = Pattern.compile("\\G&(#\\d+|\\w+);");
+
+Boolean needClose = false;
+Matcher m = pAtEnd.matcher(html); // Any Pattern object can create our Matcher object
+
+while (! m.usePattern(pAtEnd).find())
+{
+   if (m.usePattern(pWord).find()) {
+       . . . have a word or number in m.group() -- can now check for profanity, etc . . . 
+   } else if (m.usePattern(pImgTag).find()) {
+       . . . have an image tag -- can check that it's appropriate . . . 
+   } else if (! needClose && m.usePattern(pLink).find()) {
+       . . . have a link anchor -- can validate it . . . 
+      needClose = true;
+   } else if (needClose && m.usePattern(pLinkX).find()) {
+      System.out.println("/LINK [" + m.group() + "]");
+      needClose = false;
+   } else if (m.usePattern(pEntity).find()) {
+      // Allow entities like &gt; and &#123;
+   } else if (m.usePattern(pNonHtml).find()) {
+      // Other (non-word) non-HTML stuff -- simply allow it
+   } else {
+      // Nothing matched at this point, so it must be an error. Grab a dozen or so characters
+      // at our current location so that we can issue an informative error message
+      m.usePattern(Pattern.compile("\\G(?s).{1,12}")).find();
+      System.out.println("Bad char before '" + m.group() + "'");
+      System.exit(1);
+
+   }
+
+}
+
+if (needClose) {
+   System.out.println("Missing Final </A>");
+   System.exit(1);
+
+}
+
+
+
+$TimesToDo = 1000000;
+$TestString = "abababdedfg";
+
+
+
+$TimesToDo = 1000;
+
+/* Prepare the test string */
+$TestString = "";
+for ($i = 0; $i < 1000; $i++)
+    $TestString .= "abababdedfg";
+
+/* Do the first test */
+$start = gettimeofday();
+for ($i = 0; $i < $TimesToDo; $i++)
+     preg_match('/^(a|b|c|d|e|f|g)+$/', $TestString);
+$final = gettimeofday();
+$sec = ($final['sec'] + $final['usec']/1000000) -
+       ($start['sec'] + $start['usec']/1000000);
+printf("Alternation takes %.3f seconds\n", $sec);
+
+/* And now the second test */
+$start = gettimeofday();
+for ($i = 0; $i < $TimesToDo; $i++)
+     preg_match('/^[a-g]+$/', $TestString);
+$final = gettimeofday();
+$sec = ($final['sec'] + $final['usec']/1000000) -
+       ($start['sec'] + $start['usec']/1000000);
+printf("Character class takes %.3f seconds\n", $sec);
+
+
+
+use Time::HiRes 'time'; # So time() gives a high-resolution value.
+$TimesToDo = 1000;                  # Simple setup
+$TestString = "abababdedfg" x 1000; # Makes a huge string
+
+$Count = $TimesToDo;
+$StartTime = time();
+while ($Count-- > 0) {
+      $TestString =~ m/^(a|b|c|d|e|f|g)+$/;
+}
+$EndTime = time();
+printf("Alternation takes %.3f seconds.\n", $EndTime - $StartTime);
+
+$Count = $TimesToDo;
+$StartTime = time();
+while ($Count-- > 0) {
+      $TestString =~ m/^[a-g]+$/;
+}
+$EndTime = time();
+printf("Character class takes %.3f seconds.\n", $EndTime - $StartTime);
+
+
+
+"You need a 2\"3\" photo."
+
+
+
+use Time::HiRes 'time'; # So time() gives a high-resolution value.
+
+$StartTime = time();
+"abababdedfg" =~ m/^(a|b|c|d|e|f|g)+$/;
+$EndTime = time();
+printf("Alternation takes %.3f seconds.\n", $EndTime - $StartTime);
+
+$StartTime = time();
+"abababdedfg" =~ m/^[a-g]+$/;
+$EndTime = time();
+printf("Character class takes %.3f seconds.\n", $EndTime - $StartTime);
+
+
+
+M.Groups(1).Captures( M.Groups(1).Captures.Count - 1 ).Value
+
+
+
+$text =~ m/.../;
+$text =~  /.../;
+
+
+
+$s = expression one;
+@a = expression two;
+
+
+
+$var = ($this, &is, 0xA, 'list');
+
+
+
+{
+    local($Acme::Widget::Debug) = 1; # Ensure it's turned on
+    # work with Acme::Widget while debugging is on
+      
+}
+# $Acme::Widget::Debug is now back to whatever it had been before
+
+
+
+{
+    local $^W = 0; # Ensure warnings are off.
+    UnrulyFunction(...);
+}
+# Exiting the block restores the original value of $^W.
+
+
+
+if (m/(...)/)
+{
+    DoSomeOtherStuff();
+    print "the matched text was $1.\n";
+}
+
+
+
+if ($result =~ m/ERROR=(.*)/) {
+   warn "Hey, tell $Config{perladmin} about $1!\n";
+}
+
+
+
+
+"Pi is 3.14159, roughly" =~ m/\b(;(;tasty|fattening);|(;\d+(;\.\d*);?););\b/;
+
+
+
+$url =~ m{
+   href \s* = \s*   # Match the "href = " part, then the value . . . 
+   (?: "([^"]*)"    # a double-quoted value, or . . . 
+     | '([^']*)'    # a single-quoted value, or . . . 
+     | ([^'"<>]+) ) # an unquoted value.
+}ix;
+
+
+
+$text = "Version 6 coming soon?";
+   
+$text =~ m/\d+/;
+
+
+
+1 while $line =~ s/\t/' ' x (8 - $-[0] % 8)/e;
+
+
+
+my $HostnameRegex = qr/[-a-z0-9]+(?:\.[-a-z0-9]+)*\.(?:com|edu|info)/i;
+
+my $HttpUrl = qr{
+   http:// $HostnameRegex \b  # Hostname
+   (?:
+        / [-a-z0-9_:\@&?=+,.!/~*'%\$]* # Optional path
+           (?<![.,?!])                 # Not allowed to end with [.,?!]
+   )?
+}ix;
+
+
+
+if ($text =~ $HttpUrl) {
+   print "There is a URL\n";
+}
+
+
+
+while ($text =~ m/($HttpUrl)/g) {
+   print "Found URL: $1\n";
+}
+
+
+
+my $HostnameRegex = qr{
+   # One or more dot-separated parts...
+   (?: [a-z0-9]\. | [a-z0-9][-a-z0-9]{0,61}[a-z0-9]\. )*
+   # Followed by the final suffix part...
+   (?: com|edu|gov|int|mil|net|org|biz|info|...|aero|[a-z][a-z] )
+}xi;
+
+
+
+my $WordRegex = qr/\b \w+ \b/; # Oops, missing the /x modifier!
+   
+if ($text =~ m/^($WordRegex)/x) {
+    print "found word at start of text: $1\n";
+}
+
+
+
+my $WordRegex = qr/\b \w+ \b/x;  # This works!
+   
+if ($text =~ m/^($WordRegex)/) {
+    print "found word at start of text: $1\n";
+}
+
+
+
+my $WordRegex = '\b \w+ \b';  # Normal string assignment
+   
+if ($text =~ m/^($WordRegex)/x) {
+    print "found word at start of text: $1\n";
+}
+
+
+
+my $WordRegex = '(?x:\b \w+ \b)'; # Normal string assignment
+   
+if ($text =~ m/^($WordRegex)/) {
+    print "found word at start of text: $1\n";
+}
+
+
+
+(?ix-sm:
+   http:// (?ix-sm:
+   # One or more dot-separated parts...
+   (?: [a-z0-9]\. | [a-z0-9][-a-z0-9]{0,61}[a-z0-9]\. )*
+   # Followed by the final suffix part...
+   (?: com|edu|gov|int|mil|net|org|biz|info|...|aero|[a-z][a-z] )
+) \b          # hostname
+   (?:
+        / [-a-z0-9_:\@&?=+,.!/~*'%\$]* # Optional path
+           (?<![.,?!])                 # Not allowed to end with [.,?!]
+   )?
+)
+
+
+
+my $success  =  $target =~ m/.../;
+  
+if ($success) {
+  
+}
+
+
+
+my ($year, $month, $day)  =  $date =~ m{^ (\d+) / (\d+) / (\d+) $}x;
+
+
+
+my @parts  =  $text =~ m/^(\d+)-(\d+)-(\d+)$/;
+
+
+
+my ($word)   =  $text =~ m/(\w+)/;
+my $success  =  $text =~ m/(\w+)/;
+
+
+
+
+if ( my ($year, $month, $day) = $date =~ m{^ (\d+) / (\d+) / (\d+) $}x ) {
+    # Process for when we have a match: $year and such are available
+} else {
+    # here if no match . . . 
+}
+
+
+
+my @nums  =  $text =~ m/\d+/g;
+
+
+
+my $hex_ip = join '', map { sprintf("%02x", $_) } $ip =~ m/\d+/g;
+
+
+
+my $ip = join '.', map { hex($_) } $hex_ip =~ m/../g
+
+
+
+my @nums  =  $text =~ m/\d+(?:\.\d+)?|\.\d+/g;
+
+
+
+my @Tags  =  $Html =~ m/<(\w+)/g;
+
+
+
+alias  Jeff      jfriedl@regex.info
+alias  Perlbug   perl5-porters@perl.org
+alias  Prez      president@whitehouse.gov
+
+
+
+( 'Jeff', 'jfriedl@regex.info', 'Perlbug',
+  'perl5-porters@perl.org', 'Prez', 'president@whitehouse.gov' )
+
+
+
+my %alias  =  $text =~ m/^alias\s+(\S+)\s+(.+)/mg;
+
+
+
+$text = "WOW! This is a SILLY test.";
+
+$text =~ m/\b([a-z]+\b)/g;
+print "The first all-lowercase word: $1\n";
+
+$text =~ m/\b([A-Z]+\b)/g;
+print "The subsequent all-uppercase word: $1\n";
+
+
+
+while ($ConfigData =~ m/^(\w+)=(.*)/mg) {
+    my($key, $value) = ($1, $2);
+      
+}
+
+
+
+while ($text =~ m/(\d+)/) { # dangerous!
+    print "found: $1\n";
+}
+
+
+
+while ($text =~ m/(\d+)/g) {
+    print "found: $1\n";
+}
+
+
+
+my $ip = "64.156.215.240";
+while ($ip =~ m/(\d+)/g) {
+   printf "found '$1' ending at location %d\n", pos($ip);
+}
+
+
+
+if ($logline =~ m/^.{32}(\S+)/) {
+    $RequestedPage = $1;
+}
+
+
+
+pos($logline) = 32; # The page starts at the 32nd character, so start the next match there . . . 
+if ($logline =~ m/(\S+)/g) {
+    $RequestedPage = $1;
+}
+
+
+
+pos($logline) = 32; # The page starts at the 32nd character, so start the next match there . . . 
+if ($logline =~ m/\G(\S+)/g) {
+    $RequestedPage = $1;
+}
+
+
+
+
+while (not $html =~ m/\G\z/gc) # While we haven't worked to the end . . . 
+{
+  if    ($html =~ m/\G( <[^>]+>   )/xgc) { print "TAG: $1\n"            }
+  elsif ($html =~ m/\G( &\w+;     )/xgc) { print "NAMED ENTITY: $1\n"   }
+  elsif ($html =~ m/\G( &\#\d+;   )/xgc) { print "NUMERIC ENTITY: $1\n" }
+  elsif ($html =~ m/\G( [^<>&\n]+ )/xgc) { print "TEXT: $1\n"           }
+  elsif ($html =~ m/\G  \n         /xgc) { print "NEWLINE\n"            }
+  elsif ($html =~ m/\G( .         )/xgc) { print "ILLEGAL CHAR: $1\n"   }
+  else {
+      die "$0: oops, this shouldn't happen!";
+  }
+}
+
+
+
+$html =~ m/\G ( <script[^>]*>.*?</script> )/xgcsi
+
+
+
+while ("Larry Curly Moe" =~ m/\w+/g) {
+   print "WHILE stooge is $&.\n";
+}
+print "\n";
+
+if ("Larry Curly Moe" =~ m/\w+/g) {
+   print "IF stooge is $&.\n";
+}
+print "\n";
+
+foreach ("Larry Curly Moe" =~ m/\w+/g) {
+   print "FOREACH stooge is $&.\n";
+}
+
+
+
+$text =~ s/regex/replacement/modifiers
+
+
+
+$text =~ s{
+  ...some big regex here, with lots of comments and such...
+} {
+  ...a Perl code snippet to be evaluated to produce the replacement text...
+}ex;
+
+
+
+$text =~ s/-time-/localtime/ge;
+
+
+
+$url =~ s/([^a-zA-Z0-9])/sprintf('%%%02x', ord($1))/ge;
+
+
+
+$url =~ s/%([0-9a-f][0-9a-f])/pack("C", hex($1))/ige;
+
+
+
+$data =~ s/(\$[a-zA-Z_]\w*)/$1/eeg;
+
+
+
+@Paragraphs = split(m/\s*<p>\s*/i, $html);
+
+
+
+@Lines = split(m/^/m, $lines);
+
+
+
+split(match operand, target string, chunk-limit operand)
+
+
+
+($var1, $var2, $var3, ...) = split(...);
+ 
+@array = split(...);
+ 
+for my $item (split(...)) {
+   
+}
+
+
+
+( 'IO.SYS', '225558', '95-10-03:-a-sh:optional' )
+
+
+
+('IO.SYS', '225558', '95-10-03', '-a-sh:optional')
+
+
+
+($filename, $size, $date) = split(/:/, $text);
+
+
+
+@nums = split(m/:/, "12:34::78");
+
+
+
+("12", "34", "", "78")
+
+
+
+@nums = split(m/:/, "12:34::78:::");
+
+
+
+("12", "34", "", "78")
+
+
+
+my @NonEmpty = grep { length } split(/:/, $text);
+
+
+
+@nums = split(m/:/, ":12:34::78");
+
+
+
+("", "12", "34", "", "78")
+
+
+
+... and <B>very <FONT color=red>very</FONT> much</B> effort...
+
+
+
+( '... and ', '<B>', 'very ', '<FONT color=red>',
+  'very', '</FONT>', ' much', '</B>', ' effort...' )
+
+
+
+( '... and ', 'very ', 'very', ' much', ' effort...' )
+
+
+
+"have a nice day" =~ m{
+   (?{ print "Starting match.\n" })
+   \b(?: the | an | a )\b
+}x;
+
+
+
+my $Level0 = qr/ \(  ( [^()] )*  \) /x; # Parenthesized text
+  
+if ($text =~ m/\b( \w+$Level0 )/x) {
+   print "found function call: $1\n";
+}
+
+
+
+my $Level0 = qr/ \(  ( [^()]          )*  \) /x; # Parenthesized text
+my $Level1 = qr/ \(  ( [^()]| $Level0 )*  \) /x; # One level of nesting
+
+
+
+my $Level0 = qr/ \(  ( [^()]           )*  \) /x; # Parenthesized text
+my $Level1 = qr/ \(  ( [^()] | $Level0 )*  \) /x; # One level of nesting
+my $Level2 = qr/ \(  ( [^()] | $Level1 )*  \) /x; # Two levels of nesting
+
+
+
+my $Level3 = qr/ \(  ( [^()] | $Level2 )*  \) /x; # Three levels of nesting
+my $Level4 = qr/ \(  ( [^()] | $Level3 )*  \) /x; # Four levels of nesting
+my $Level5 = qr/ \(  ( [^()] | $Level4 )*  \) /x; # Five levels of nesting
+
+
+
+my $LevelN; # This must be predeclared because it's used in its own definition.
+$LevelN = qr/ \(( [^()] | (??{ $LevelN }) )* \) /x;
+
+
+
+if ($text =~ m/\b( \w+$LevelN )/x) {
+   print "found function call: $1\n";
+}
+
+
+
+$LevelN = qr/ (?> [^()]+ | \( (??{ $LevelN }) \)  )* /x;
+
+
+
+if ($text =~ m/\b( \w+ \( $LevelN \) )/x) {
+   print "found function call: $1\n";
+}
+ 
+if (not $text =~ m/^ $LevelN $/x) {
+   print "mismatched parentheses!\n";
+}
+
+
+
+"abcdefgh" =~ m{
+  (?{ print "starting match at [$`|$']\n" })
+  (?:d|e|f)
+}x;
+
+
+
+print "starting match at [$`|$']\n"
+
+
+
+(?{ print "matched at [$`<$&>$']\n" })
+
+
+
+"abcdefgh" =~ m{
+  (?{  print "starting match at [$`|$']\n" })
+  [def]
+}x;
+
+
+
+panic: top_env
+
+
+
+"oneselfsufficient" =~ m{
+    one(self)?(selfsufficient)?
+   (?{ print "matched at [$`<$&>$']\n" })
+}x;
+
+
+
+"123" =~ m{
+   \d+
+   (?{ print "matched at [$`<$&>$']\n" })
+   (?!)
+}x;
+
+
+
+$longest_match = undef; # We'll keep track of the longest match here
+
+"oneselfsufficient" =~ m{
+   one(self)?(selfsufficient)?
+   (?{
+      # Check to see if the current match ($&) is the longest so far
+      if (not defined($longest_match)
+          or
+          length($&) > length($longest_match))
+      {
+          $longest_match = $&;
+      }
+   })
+   (?!) # Force failure so we'll backtrack to find further "matches"
+}x;
+
+# Now report the accumulated result, if any
+if (defined($longest_match)) {
+   print "longest match=[$longest_match]\n";
+} else {
+   print "no match\n";
+}
+
+
+
+my $RecordPossibleMatch = qr{
+   (?{
+      # Check to see if the current match ($&) is the longest so far
+      if (not defined($longest_match)
+          or
+          length($&) > length($longest_match))
+      {
+          $longest_match = $&;
+      }
+   })
+   (?!) # Force failure so we'll backtrack to find further "matches"
+}x;
+
+
+
+$longest_match = undef; # We'll keep track of the longest match here
+
+"800-998-9938" =~ m{  \d+  $RecordPossibleMatch  }x;
+
+# Now report the accumulated result, if any
+if (defined($longest_match)) {
+   print "longest match=[$longest_match]\n";
+} else {
+   print "no match\n";
+}
+
+
+
+my $BailIfAnyMatch = qr/(?(?{ defined $longest_match})(?!))/;
+
+
+
+"800-998-9938" =~ m{ $BailIfAnyMatch  \d+  $RecordPossibleMatch  }x;
+
+
+
+my $Count = 0;
+
+$text =~ m{
+   ^ (?> \d+ (?{ $Count++ }) \b | \w+ | \s+ )* $
+}x;
+
+
+
+our $Count = 0;
+
+$text =~ m{
+ ^ (?> \d+ (?{ local($Count) = $Count + 1 }) \b | \w+ | \s+ )* $
+}x;
+
+
+
+m{   (?{ print "starting\n" })  some regex...  }x;
+
+
+
+my $ShowStart = '(?{ print "starting\n" })';
+    
+m{ $ShowStart some regex...  }x;
+
+
+
+use re 'eval';
+
+
+
+my $Count = undef;
+our $TmpCount = 0;
+
+$text =~ m{
+ ^ (?> \d+ (?{ local($TmpCount) = $TmpCount + 1 }) \b | \w+ | \s+ )* $
+ (?{ $Count = $TmpCount }) # Save the "ending" $Count to a non-localized variable
+}x;
+if (defined $Count) {
+    print "Count is $Count.\n";
+} else {
+    print "no match\n";
+}
+
+
+
+sub CheckOptimizer
+{
+    my $text  = shift; # The first argument is the text to check.
+    my $start = undef; # We'll note here where the regex is first applied.
+
+    my $match = $text =~ m{
+      (?{ $start = $-[0] if not defined $start}) # Save the first starting position
+      \d # This is the regex being tested
+    }x;
+
+    if (not defined $start) {
+        print "The whole match was optimized away.\n";
+        if ($match) {
+            # This can't possibly happen!
+            print "Whoa, but it matched! How can this happen!?\n";
+        }
+    } elsif ($start == 0) {
+        print "The match start was not optimized.\n";
+    } else {
+        print "The optimizer started the match at character $start.\n"
+    }
+}
+
+
+
+CheckOptimizer("test 123");
+
+
+
+The optimizer started the match at character 5.
+
+
+
+The whole match was optimized away.
+Whoa, but it matched! How can this happen!?
+
+
+
+my $NestedGuts = qr{
+  (?>
+    (?:
+       # Stuff not parenthesis
+        [^()]+
+       # An opening parenthesis
+       |  \(
+       # A closing parenthesis
+       |  \)
+    )*
+  )
+}x;
+
+
+
+(?{ local $OpenParens = 0 })
+
+
+
+(?{ $OpenParens++ })
+
+
+
+(?(?{ $OpenParens }) (?{ $OpenParens-- }) | (?!) )
+
+
+
+(?(?{ $OpenParens != 0 })(?!))
+
+
+
+my $NestedGuts = qr{
+  (?{ local $OpenParens = 0 }) #  Counts the number of nested opens waiting to close.
+  (?> # atomic-grouping for efficiency
+     (?:
+        # Stuff not parenthesis
+          [^()]+
+        #  An opening parenthesis
+        |  \(   (?{ $OpenParens++ })
+        #  Allow a closing parenthesis, if we're expecting any
+        |  \)  (?(?{ $OpenParens != 0 }) (?{ $OpenParens-- }) | (?!) )
+     )*
+  )
+  (?(?{ $OpenParens != 0 })(?!)) #  If there are any open parens left, don't finish
+}x;
+
+
+
+sub MungeRegexLiteral($)
+{
+   my ($RegexLiteral) = @_; # Argument is a string
+   $RegexLiteral =~ s/\\</(?<!\\w)(?=\\w)/g; # Mimic \< as start-of-word boundary
+   $RegexLiteral =~ s/\\>/(?<=\\w)(?!\\w)/g; # Mimic \> as end-of-word boundary
+   return $RegexLiteral; # Return possibly-modified string
+}
+
+
+
+package MyRegexStuff; # Best to call the package something unique
+use strict;   # Good practice to always use this
+use warnings; # Good practice to always use this
+use overload; # Allows us to invoke Perl's overloading mechanism
+# Have our regex handler installed when we're use'd . . . .
+sub import { overload::constant qr => \&MungeRegexLiteral }
+
+sub MungeRegexLiteral($)
+{
+   my ($RegexLiteral) = @_; # Argument is a string
+   $RegexLiteral =~ s/\\</(?<!\\w)(?=\\w)/g; # Mimic \< as start-of-word boundary
+   $RegexLiteral =~ s/\\>/(?<=\\w)(?!\\w)/g; # Mimic \> as end-of-word boundary
+   return $RegexLiteral; # Return possibly-modified string
+}
+
+1; # Standard idiom so that a 'use' of this file returns something true
+
+
+
+use lib '.';      # Look for library files in the current directory
+use MyRegexStuff; # We now have our new functionality available!
+   
+$text =~ s/\s+\</ /g; # Normalize any type of whitespace before a word to a single space
+
+
+
+$RegexLiteral =~ s/(  \( $LevelN \)[*+?]  )\+/(?>$1)/gx;
+
+
+
+$text =~ s/"(\\.|[^"])*+"//; # Remove double-quoted strings
+
+
+
+$RegexLiteral =~ s{
+ (
+   # Match something that can be quantified . . . 
+   (?:  \\[\\abCdDefnrsStwWX] # \n, \w, etc.
+     |  \\c.                  # \cA
+     |  \\x[\da-fA-F]{1,2}    # \xFF
+     |  \\x\{[\da-fA-F]*\}    # \x{1234}
+     |  \\[pP]\{[^{}]+\}      # \p{Letter}
+     |  \[\]?[^]]+\]          # "poor man's" class
+     |  \\\W                  # \*
+     |  \( $LevelN \)         # (...)
+     |  [^()*+?\\]            # almost anything else
+    )
+    #  . . . and is quantified . . . 
+    (?: [*+?] | \{\d+(?:,\d*)?\} )
+ )
+ \+  #  . . . and has an extra '+' after the quantifier.
+}{(?>$1)}gx;
+
+
+
+my $SaveUrl = qr{
+    ($HttpUrl)         # Match an <ACRONYM>HTTP</ACRONYM> <ACRONYM>URL</ACRONYM> . . . 
+    (?{ $url = $^N })  #  . . . and save to $url
+}x;
+
+$text =~ m{
+   http \s*=\s* ($SaveUrl)
+ | src  \s*=\s* ($SaveUrl)
+}xi;
+
+
+
+package MyRegexStuff;
+use strict;
+use warnings;
+use overload;
+sub import { overload::constant('qr' => \&MungeRegexLiteral) }
+
+my $NestedStuffRegex; # This should be predeclared, because it's used in its own definition.
+$NestedStuffRegex = qr{
+ (?>
+   (?:  # Stuff not parens, not '#', and not an escape . . . 
+        [^()\#\\]+
+        # Escaped stuff . . . 
+      | (?s: \\. )
+        # Regex comment . . . 
+      | \#.*\n
+        # Matching parens, with more nested stuff inside . . . 
+      |  \(  (??{ $NestedStuffRegex })   \)
+   )*
+ )
+}x;
+
+sub SimpleConvert($); # This must be predeclared, as it's used recursively
+sub SimpleConvert($)
+{
+  my $re = shift;  # Regex to mangle
+  $re =~ s{
+      \(\?                    #  "(?"
+        <  ( (?>\w+) ) >      #     < $1 > $1 is an identifier
+        ( $NestedStuffRegex ) #     $2 - possibly-nested stuff
+      \)                      #  ")"
+  }{
+    my $id   = $1;
+    my $guts = SimpleConvert($2);
+    # We change
+    #    (?<id>guts)
+    # to
+    #    (?: (guts)  # match the guts
+    #        (?{
+    #           local($^N{$id}) = $guts # Save to a localized element of %^T
+    #         })
+    #     )
+    "(?:($guts)(?{ local(\$^T{'$id'}) = \$^N }))"
+  }xeog;
+  return $re;  # Return mangled regex
+}
+
+sub MungeRegexLiteral($)
+{
+  my ($RegexLiteral) = @_; # Argument is a string
+  # print "BEFORE: $RegexLiteral\n"; # Uncomment this for debugging
+  my $new = SimpleConvert($RegexLiteral);
+  if ($new ne $RegexLiteral)
+  {
+     my $before = q/(?{ local(%^T) = () })/; # Localize temporary hash
+     my $after  = q/(?{ %^N = %^T       })/; # Copy temp to "real" hash
+     $RegexLiteral = "$before(?:$new)$after";
+  }
+  # print "AFTER:  $RegexLiteral\n"; # Uncomment this for debugging
+  return $RegexLiteral;
+}
+
+1;
+
+
+
+$ip = sprintf("%03d.%03d.%03d.%03d", split(/\./, $ip));
+
+
+
+$ip = sprintf("%03d.%03d.%03d.%03d", split(m/\./, $ip));
+
+
+
+substr($ip,  0, 0) = '0' if substr($ip,  1, 1) eq '.';
+substr($ip,  0, 0) = '0' if substr($ip,  2, 1) eq '.';
+substr($ip,  4, 0) = '0' if substr($ip,  5, 1) eq '.';
+substr($ip,  4, 0) = '0' if substr($ip,  6, 1) eq '.';
+substr($ip,  8, 0) = '0' if substr($ip,  9, 1) eq '.';
+substr($ip,  8, 0) = '0' if substr($ip, 10, 1) eq '.';
+substr($ip, 12, 0) = '0' while length($ip) < 15;
+
+
+
+$ip = sprintf("%03d.%03d.%03d.%03d", $ip =~ m/\d+/g);
+
+
+
+$ip = sprintf("%03d.%03d.%03d.%03d", $ip =~ m/(\d+)/g);
+
+
+
+$ip = sprintf("%03d.%03d.%03d.%03d",
+              $ip =~ m/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+
+
+
+$ip =~ s/\b(?=\d\b)/00/g;
+$ip =~ s/\b(?=\d\d\b)/0/g;
+
+
+
+$ip =~ s/\b(\d(\d?)\b)/$2 eq '' ? "00$1" : "0$1"/eg;
+
+
+
+$ip =~ s/\d+/sprintf("%03d", $&)/eg;
+
+
+
+$ip =~ s/(?:(?<=\.)|^)(?=\d\b)/00/g;
+$ip =~ s/(?:(?<=\.)|^)(?=\d\d\b)/0/g;
+
+
+
+$ip =~ s/\b(\d\d?\b)/'0' x (3-length($1)) . $1/eg;
+
+
+
+$ip =~ s/\b(\d\b)/00$1/g;
+$ip =~ s/\b(\d\d\b)/0$1/g;
+
+
+
+$ip =~ s/\b(\d\d?\b)/sprintf("%03d", $1)/eg;
+
+
+
+$ip =~ s/\b(\d{1,2}\b)/sprintf("%03d", $1)/eg;
+
+
+
+$ip =~ s/(\d+)/sprintf("%03d", $1)/eg;
+
+
+
+$ip =~ s/\b(\d\d?(?!\d))/sprintf("%03d", $1)/eg;
+
+
+
+$ip =~ s/(?:(?<=\.)|^)(\d\d?(?!\d))/sprintf("%03d", $1)/eg;
+
+
+
+my $today = (qw<Sun Mon Tue Wed Thu Fri Sat>)[(localtime)[6]];
+# $today now holds the day ("Mon", "Tue", etc., as appropriate)
+
+while (<LOGFILE>) {
+    if (m/^$today:/i) {
+
+
+
+my $today = (qw<Sun Mon Tue Wed Thu Fri Sat>)[(localtime)[6]];
+
+while (<LOGFILE>) {
+    if (m/^$today:/io) {
+
+
+
+sub CheckLogfileForToday()
+{
+  my $today = (qw<Sun Mon Tue Wed Thu Fri Sat>)[(localtime)[6]];
+
+  while (<LOGFILE>) {
+      if (m/^$today:/io) { #dangerous -- has a gotcha
+ 
+      }
+  }
+}
+
+
+
+sub CheckLogfileForToday()
+{
+  my $today = (qw<Sun Mon Tue Wed Thu Fri Sat>)[(localtime)[6]];
+
+  my $RegexObj = qr/^$today:/i; # compiles once per function call
+
+  while (<LOGFILE>) {
+      if ($_ =~ $RegexObj) {
+ 
+      }
+  }
+}
+
+
+
+if ($_ =~ $RegexObj) {
+
+
+
+if (m/$RegexObj/) {
+
+
+
+sub CheckLogfileForToday()
+{
+  my $today = (qw<Sun Mon Tue Wed Thu Fri Sat>)[(localtime)[6]];
+
+  # Keep trying until one matches, so the default regex is set.
+  "Sun:" =~ m/^$today:/i or
+  "Mon:" =~ m/^$today:/i or
+  "Tue:" =~ m/^$today:/i or
+  "Wed:" =~ m/^$today:/i or
+  "Thu:" =~ m/^$today:/i or
+  "Fri:" =~ m/^$today:/i or
+  "Sat:" =~ m/^$today:/i;
+
+  while (<LOGFILE>) {
+      if (m//) { # Now use the default regex
+ 
+      }
+  }
+}
+
+
+
+$Subject =~ s/^(?:Re:\s*)+//;
+
+
+
+if ($Subject =~ m/^SPAM:(.+)/i) {
+    $Subject = "-- spam subject removed --";
+    $SpamCount{$1}++;
+}
+
+
+
+use English '-no_match_vars';
+
+
+
+END {
+   require Devel::SawAmpersand;
+   if (Devel::SawAmpersand::sawampersand) {
+       print "Naughty variable was used!\n";
+   }
+ }
+
+
+
+use Time::HiRes;
+sub CheckNaughtiness()
+{
+  my $text = 'x' x 10_000; # Create some non-small amount of data.
+
+  # Calculate the overhead of a do-nothing loop.
+  my $start = Time::HiRes::time();
+  for (my $i = 0; $i < 5_000; $i++)  {  }
+  my $overhead = Time::HiRes::time() - $start;
+
+  # Now calculate the time for the same number of simple matches.
+  $start = Time::HiRes::time();
+  for (my $i = 0; $i < 5_000; $i++)  { $text =~ m/^/  }
+  my $delta = Time::HiRes::time() - $start;
+
+  # A differential of 5 is just a heuristic.
+  printf "It seems your code is %s (overhead=%.2f, delta=%.2f)\n",
+    ($delta > $overhead*5) ? "naughty" : "clean", $overhead, $delta;
+}
+
+
+
+while (<>)
+{
+   study($_); # Study the default target $_ before doing lots of matches on it
+   if (m/regex 1/) { ... }
+   if (m/regex 2/) { ... }
+   if (m/regex 3/) { ... }
+   if (m/regex 4/) { ... }
+}
+
+
+
+use Time::HiRes 'time';
+
+
+
+my $start = time;
+  
+my $delta = time - $start;
+printf "took %.1f seconds\n", $delta;
+
+
+
+ % perl -cw -Mre=debug -e 'm/^Subject: (.*)/'
+ Compiling REx `^Subject: (.*)'
+ rarest char j at 3
+    1: BOL(2)
+    2: EXACT <Subject: >(6)
+          
+   12: END(0)
+ anchored `Subject: ' at 0 (checking anchored) anchored(BOL) minlen 9
+ Omitting $` $& $' support.
+
+
+
+String[] result = Pattern.compile("\\.").split("209.204.146.22");
+
+
+
+Pattern.compile(regex).matcher(text).matches();
+
+
+
+Dim R as New Regex("\.")
+Dim Parts as String() = R.Split("209.204.146.22")
+
+
+
+
+Target = R.Replace(Target, "<<$&>>"))
+ 
+Function MatchFunc(ByVal M as Match) as String
+  return M.Result("<<$&>>")
+End Function
+Dim Evaluator as MatchEvaluator = New MatchEvaluator(AddressOf MatchFunc)
+   
+Target = R.Replace(Target, Evaluator)
+
+
+
+
+Function MatchFunc(ByVal M as Match) as String
+  'Get numeric temperature from $1, then convert to Fahrenheit
+  Dim Celsius as Double = Double.Parse(M.Groups(1).Value)
+  Dim Fahrenheit as Double = Celsius * 9/5 + 32
+  Return Fahrenheit & "F" 'Append an "F", and return
+End Function
+
+Dim Evaluator as MatchEvaluator = New MatchEvaluator(AddressOf MatchFunc)
+  
+Dim R_Temp as Regex = New Regex("(\d+)C\b", RegexOptions.IgnoreCase)
+Target = R_Temp.Replace(Target, Evaluator)
+
+
+
+Dim AnyWS     as New Regex("\s+")
+Dim LeadingWS as New Regex("^\s+")
+  
+Target = AnyWS.Replace(Target, " ", -1, LeadingWS.Match(Target).Length)
+
+
+
+Dim AnyWS as New Regex("\s+")
+  
+Target = AnyWS.Replace(Target, " ")
+
+
+
+Dim R_CapWord as New Regex("\b[A-Z]\w*")
+  
+Text = R_CapWord.Replace(Text, "<B>$0</B>")
+
+
+
+Dim MatchObj as Match = R.Match(Target)
+While MatchObj.Success
+    Console.WriteLine("Match: " & MatchObj.Value)
+    MatchObj = MatchObj.NextMatch()
+End While
+
+
+
+Dim R as New Regex("\w+")
+Dim Target as String = "a few words"
+
+
+
+Dim BunchOfMatches as MatchCollection = R.Matches(Target)
+Dim I as Integer
+For I = 0 to BunchOfMatches.Count - 1
+    Dim MatchObj as Match = BunchOfMatches.Item(I)
+    Console.WriteLine("Match: " & MatchObj.Value)
+Next
+
+
+
+Dim MatchObj as Match
+For Each MatchObj in R.Matches(Target)
+    Console.WriteLine("Match: " & MatchObj.Value)
+Next
+
+
+
+Dim R as RegexObj = New Regex("^\s*$")
+   
+If R.IsMatch(Line) Then
+   ' Line is blank . . . 
+        
+Endif
+
+
+
+Dim M as Match = Regex.Match(SampleText, "\d+\w+") 'Check pattern against string.
+
+
+
+Option Explicit On
+Option Strict On
+Imports System.Text.RegularExpressions
+
+
+
+Dim R as Regex = New Regex("\s+(\d+)")
+
+
+
+Dim M as Match = R.Match("May 16, 1998")
+
+
+
+Dim StripTrailWS = new Regex("\s+$") ' for removing trailing whitespace
+
+
+
+Dim GetSubject = new Regex("^subject: (.*)", RegexOptions.IgnoreCase)
+
+
+
+Dim GetSubject = new Regex("^subject: (.*)", _
+                   RegexOptions.IgnoreCase OR RegexOptions.Multiline)
+
+
+
+Dim R As Regex
+Try
+    R = New Regex(SearchRegex)
+Catch e As ArgumentException
+    Console.WriteLine("*ERROR* bad regex: " & e.ToString)
+    Exit Sub
+End Try
+
+
+
+Dim R as Regex = New Regex( _
+   "# Match a floating-point number ...           " & chr(10) & _
+   "  \d+(?:\.\d*)? # with a leading digit...     " & chr(10) & _
+   "  |             # or ...                      " & chr(10) & _
+   "  \.\d+         # with a leading decimal point", _
+   RegexOptions.IgnorePatternWhitespace)
+
+
+
+Dim R as Regex = New Regex( _
+   "(?# Match a floating-point number ...            )" & _
+   "  \d+(?:\.\d*)? (?# with a leading digit...      )" & _
+   "  |             (?# or ...                       )" & _
+   "  \.\d+         (?# with a leading decimal point )", _
+   RegexOptions.IgnorePatternWhitespace)
+
+
+
+$text = preg_replace('{
+                         \b
+                         # Capture the address to $1 . . . 
+                         (
+                           \w[-.\w]*                          # username
+                           @
+                           [-\w]+(\.[-\w]+)*\.(com|edu|info)  # hostname
+                         )
+                         \b
+                     }ix',
+                     '<a href="mailto:$1">$1</a>',  # replacement string
+                     $text);
+
+
+
+using System.Text.RegularExpressions; // This is for C#
+
+
+
+Dim R as Regex = New Regex("\d+\w+") 'Compile the pattern.
+Dim M as Match = R.Match(SampleText) 'Check against a string.
+
+
+
+m.usePattern(pWord).region(start,end).find(currentLoc)
+
+
+
+String regex = // Puts a double quoted field into group(1), an unquoted field into group(2).
+    "  \\G(?:^|,)                                    \n"+
+    "  (?:\n"+
+    "       # Either a double-quoted field . . . \n"+
+    "       \" # field's opening quote\n"+
+    "        (   [^\"]*+  (?: \"\" [^\"]*+ )*+  )\n"+
+    "       \" # field's closing quote\n"+
+    "   |# . . . or . . . \n"+
+    "       # some non-quote/non-comma text . . . \n"+
+    "       ( [^\",]*+ )\n"+
+    "  )\n";
+
+// Create a matcher for the <ACRONYM>CSV</ACRONYM> line of text, using the regex above.
+Matcher mMain = Pattern.compile(regex, Pattern.COMMENTS).matcher(line);
+
+// Create a matcher for  「"" , with dummy text for the time being.
+Matcher mQuote = Pattern.compile("\"\"").matcher("");
+
+while (mMain.find())
+{
+    String field;
+    if (mMain.start(2) >= 0)
+        field = mMain.group(2); // The field is unquoted, so we can use it as is.
+    else
+        // The field is quoted, so we must replace paired double quotes with one double quote.
+        field = mQuote.reset(mMain.group(1)).replaceAll("\"");
+
+    // We can now work with field . . . 
+    System.out.println("Field [" + field + "]");
+}
+
+
+
+Dim TheNum as String = Regex.Match(TestStr, "\d+").Value
+If TheNum <> ""
+   Console.WriteLine("Number is: " & TheNum)
+End If
+
+
+
+
+(s1;\w)s1;(s1;?<Num>\d+)s1;(s1;\s+)s1;
+
+
+
+RegexOptions.IgnoreCase
+RegexOptions.Multiline
+RegexOptions.Compiled
+
+
+
+Imports System.Text.RegularExpressions
+
+
+
+If Regex.IsMatch(TestStr, "^\s*$")
+   Console.WriteLine("line is empty")
+Else
+   Console.WriteLine("line is not empty")
+End If
+
+
+
+If Regex.IsMatch(TestStr, "^subject:", RegexOptions.IgnoreCase)
+   Console.WriteLine("line is a subject line")
+Else
+   Console.WriteLine("line is not a subject line")
+End If
+
+
+
+Dim ImgTag as String = Regex.Match(TestStr, "<img\b[^>]*>", _
+                                   RegexOptions.IgnoreCase).Value
+If ImgTag <> ""
+   Console.WriteLine("Image tag: " & ImgTag)
+End If
+
+
+
+Dim Subject as String = _
+    Regex.Match(TestStr, "^Subject: (.*)").Groups(1).Value
+If Subject <> ""
+   Console.WriteLine("Subject is: " & Subject)
+End If
+
+
+
+Dim Subject as String = _
+    Regex.Match(TestStr, "^subject: (.*)", _
+                RegexOptions.IgnoreCase).Groups(1).Value
+If Subject <> ""
+   Console.WriteLine("Subject is: " & Subject)
+End If
+
+
+
+Dim Subject as String = _
+    Regex.Match(TestStr, "^subject: (?<Subj>.*)", _
+                 RegexOptions.IgnoreCase).Groups("Subj").Value
+If Subject <> ""
+   Console.WriteLine("Subject is: " & Subject)
+End If
+
+
+
+TestStr = Regex.Replace(TestStr, "&", "&amp;")
+TestStr = Regex.Replace(TestStr, "<", "&lt;")
+TestStr = Regex.Replace(TestStr, ">", "&gt;")
+Console.WriteLine("Now safe in HTML: " & TestStr)
+
+
+
+TestStr = Regex.Replace(TestStr, "\b[A-Z]\w*", "<B>$&</B>")
+Console.WriteLine("Modified string: " & TestStr)
+
+
+
+TestStr = Regex.Replace(TestStr, "<b>(.*?)</b>", "<I>$1</I>", _
+                        RegexOptions.IgnoreCase)
+Console.WriteLine("Modified string: " & TestStr)
+
+
+
+Option Explicit On ' These are not specifically required to use regexes,
+Option Strict On   ' but their use is good general practice.
+
+' Make regex-related classes easily available.
+Imports System.Text.RegularExpressions
+
+Module SimpleTest
+Sub Main()
+     Dim SampleText as String = "this is the 1st test string"
+     Dim R as Regex = New Regex("\d+\w+") 'Compile the pattern.
+     Dim M as Match = R.match(SampleText) 'Check against a string.
+     If not M.Success
+         Console.WriteLine("no match")
+     Else
+         Dim MatchedText as String  = M.Value 'Query the results . . . 
+         Dim MatchedFrom as Integer = M.Index
+         Dim MatchedLen  as Integer = M.Length
+         Console.WriteLine("matched [" & MatchedText & "]" & _
+                           " from char#" & MatchedFrom.ToString() & _
+                           " for " & MatchedLen.ToString() & " chars.")
+     End If
+End Sub
+End Module
+
+
+
+if ($type eq "C" or $type eq "c") {
+
+
+
+array
+(
+
+    0       => 'http://regex.info',
+    'proto' => 'http',
+    1       => 'http',
+    'host'  => 'regex.info',
+    2       => 'regex.info'
+
+)
+
+
+
+Warning: preg_match(): Unknown modifier ']'
+
+
+
+preg_match('<(\w+)(.*?)>', $html)
+
+
+
+preg_match(pattern, subject [, matches [, flags [, offset ]]])
+
+
+
+preg_match($pattern, $subject)
+
+
+
+if (preg_match('/\.(jpe?g|png|gif|bmp)$/i', $url)) {
+  /* URL seems to be of an image */
+}
+
+
+
+if (preg_match('{^https?://}', $uri)) {
+  /* URI is http or https */
+}
+
+
+
+if (preg_match('/\b MSIE \b/x', $_SERVER['HTTP_USER_AGENT'])) {
+  /* Browser is IE */
+}
+
+
+
+/* Given a full path, isolate the filename */
+if (preg_match('{ / ([^/]+) $}x', $WholePath, $matches))
+  $FileName = $matches[1];
+
+
+
+/* Pluck the protocol, hostname, and port number from a URL */
+if (preg_match('{^(https?):// ([^/:]+) (?::(\d+))? }x', $url, $matches))
+{
+
+  $proto = $matches[1];
+  $host  = $matches[2];
+  $port  = $matches[3] ? $matches[3] : ($proto == "http" ? 80 : 443);
+
+  print "Protocol: $proto\n";
+  print "Host    : $host\n";
+  print "Port    : $port\n";
+
+}
+
+
+
+/* Pluck the protocol, hostname, and port number from a URL */
+if (preg_match('{^(?P<proto> https?   ) ://
+                  (?P<host>  [^/:]+  )
+            (?: :(?P<port>  \d+     ) )?  }x', $url, $matches))
+{
+
+  $proto = $matches['proto'];
+  $host  = $matches['host'];
+  $port  = $matches['port'] ? $matches['port'] : ($proto=="http"?80:443);
+
+  print "Protocol: $proto\n";
+  print "Host    : $host\n";
+  print "Port    : $port\n";
+
+}
+
+
+
+/* Pluck the protocol, hostname, and port number from a URL */
+if (preg_match('{^(?P<proto> https? )://
+                  (?P<host> [^/:]+  )
+            (?: :(?P<port> \d+     )  )?  }x', $url, $UrlInfo))
+{
+
+  if (! $UrlInfo['port'])
+     $UrlInfo['port'] = ($UrlInfo['proto'] == "http" ? 80 : 443);
+
+  echo "Protocol: ", $UrlInfo['proto'], "\n";
+  echo "Host    : ", $UrlInfo['host'], "\n";
+  echo "Port    : ", $UrlInfo['port'], "\n";
+
+}
+
+
+
+{ ( < [
+
+
+
+} ) > ]
+
+
+
+if (preg_match('{<title>(.*?)</title>}si', $html, $captures))
+
+
+
+preg_match('<(\w+)([^>]*)>', $html)
+
+
+
+Warning: Unknown modifier ']'
+
+
+
+preg_match('/<(\w+)(.*?)>/', $html)
+
+
+
+/* Create an array of values from a string filled with simple comma-separated values */
+$values_array = preg_split('!\s*,\s*!', $comma_separated_values);
+
+
+
+print '/^.*\/';        prints:  /^.*\/     
+print '/^.*\\/';       prints:  /^.*\/     
+print '/^.*\\\/';      prints:  /^.*\\/     
+print '/^.*\\\\/';     prints:  /^.*\\/
+
+
+
+/* Check whether HTML tag is a <table> tag */
+if (preg_match('/^<table\b/i', $tag))
+  print "tag is a table tag\n";
+
+
+
+/* Check whether text is an integer */
+if (preg_match('/^-?\d+$/', $user_input))
+  print "user input is an integer\n";
+
+
+
+/* Pluck HTML title from a string */
+if (preg_match('{<title>(.*?)</title>}si', $html, $matches))
+  print "page title: $matches[1]\n";
+
+
+
+/* Treat numbers in string as Fahrenheit values and replace with Celsius values */
+$metric = preg_replace('/(-?\d+(?:\.\d+)?)/e',     /* pattern */
+                       'floor(($1-32)*5/9 + 0.5)', /* replacement code */
+                       $string);
+
+
+
+SRC=array.c builtin.c eval.c field.c gawkmisc.c io.c main.c \
+        missing.c msg.c node.c re.c version.c
+
+
+
+$price =~ s/(\.\d\d[1-9]?)\d+/$1/
+
+
+
+$price =~ s/(\.\d\d[1-9]?)\d*/$1/;
+
+
+
+<B>               # Match the opening <B>
+(# Now, as many of the following as possible . . . 
+  (?!  </?B>  )  #    If not <B>, and not </B> . . . 
+  .                          #        . . . any character is okay
+)* #<LineAnnotation> (now greedy)
+</B> # <ANNO> . . . until the closing delimiter can match.</LineAnnotation>
+
+
+
+...<B>Billions and <B>Zillions</B> of suns...
+
+
+
+<B>            # Match the opening <B>
+(# Now, only as many of the following as needed . . . 
+  (?!  <B>  )  #    If not <B> . . . 
+  .                          #            . . . any character is okay
+)*? #
+</B> #  . . . until the closing delimiter can match
+
+
+
+The name "McDonald's" is said "makudonarudo" in Japanese
+
+
+
+The name "McDonald's" is said "makudonarudo" in Japanese
+
+
+
+...<B>Billions</B> and <B>Zillions</B> of suns...
+
+
+
+...<B>Billions</B> and <B>Zillions</B> of suns...
+
+
+
+...<B>Billions</B> and <B>Zillions</B> of suns...
+
+
+
+a 1234 num
+a 1234 num
+a 1234 num
+a 1234 num
+
+
+
+echo =XX========================================= | egrep 'X(.+)+X'
+
+
+
+The dragging belly indicates your cat is too fat
+
+
+
+array
+(
+  /* $all_matches[0] is an array of full matches */
+  0 => array ( 0 => "Jack A. Smith",  /* full text from first match    */
+               1 => "Mary B. Miller"  /* full text from second match */ ),
+
+  /* $all_matches[1] is an array of strings captured by 1st set of parens */
+  1 => array ( 0 => "Jack",  /* first match's 1st capturing parens */
+               1 => "Mary"   /* second match's 1st capturing parens */ ),
+
+  /* $all_matches[2] is an array of strings captured by 2nd set of parens */
+  2 => array ( 0 => "A.",    /* first match's 2nd capturing parens */
+               1 => "B."     /* second match's 2nd capturing parens */ ),
+
+  /* $all_matches[3] is an array of strings captured by 3rd set of parens */
+  3 => array ( 0 => "Smith", /* first match's 3rd capturing parens */
+               1 => "Miller" /* second match's 3rd capturing parens */ )
+)
+
+
+
+$replacement = array ('&' => '&amp;',
+                      '<' => '&lt;',
+                      '>' => '&gt;',
+                      '"' => '&quot;');
+
+$new_subject = preg_replace('/[&<">]/eS', '$replacement["$0"]', $subject);
+
+
+
+$html = preg_replace('/\b[A-Z]{2,}\b/e',
+                     'strtolower("<b>$0</b>")',
+                     $html);
+
+
+
+$html = preg_replace('/\b[A-Z]{2,}\b/', '<b>$0</b>', $html);
+
+
+
+$card_number = preg_replace('/\D+/', '', $card_number);
+/* $card_number now has only digits, or is empty */
+
+
+
+preg_replace(pattern, replacement, subject [, limit [, count ]])
+
+
+
+array
+(
+
+    0 => array ( 0      => "Jack A. Smith",
+
+                 Given  => "Jack",
+                 1      => "Jack",
+
+                 Middle => "A.",
+                 2      => "A.",
+
+                 Family => "Smith",
+                 3      => "Smith" ),
+
+    1 => array ( 0      => "Mary B. Miller",
+
+                 Given  => "Mary",
+                 1      => "Mary",
+
+                 Middle => "B.",
+                 2      => "B.",
+
+                 Family => "Miller",
+                 3      => "Miller" )
+
+)
+
+
+
+$subject = "
+Jack A. Smith
+Mary B. Miller";
+
+preg_match_all('/^(?P<Given>\w+) (?P<Middle>\w\.) (?P<Family>\w+)$/m',
+               $subject, $all_matches, PREG_SET_ORDER);
+
+
+
+$subject = "
+Jack A. Smith
+Mary B. Miller";preg_match_all('/^(\w+) (\w\.) (\w+)$/m', $subject, $all_matches, PREG_SET_ORDER);
+
+
+
+array
+(
+  /* $all_matches[0] is just like a preg_match's entire $matches */
+  0 => array ( 0 => "Jack A. Smith",  /* first match's full match           */
+               1 => "Jack",          /* first match's 1st capturing parens*/
+               2 => "A.",            /* first match's 2nd capturing parens*/
+               3 => "Smith"          /* first match's 3rd capturing parens*/ ),
+
+  /* $all_matches[1] is also just like a preg_match's entire $matches */
+  1 => array ( 0 => "Mary B. Miller", /* second match's full match*/
+               1 => "Mary",           /* second match's 1st capturing parens*/
+               2 => "B.",             /* second match's 2nd capturing parens*/
+               3 => "Miller"          /* second match's 3rd capturing parens*/ ),
+)
+
+
+
+preg_match_all($pattern, $subject, $all_matches,
+               PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+
+
+
+$subject = "
+Jack A. Smith
+Mary B. Miller";
+
+/* No order-related flag implies PREG_PATTERN_ORDER */
+preg_match_all('/^(?P<Given>\w+) (?P<Middle>\w\.) (?P<Family>\w+)$/m',
+               $subject, $all_matches);
+
+
+
+array
+(
+
+    0        => array ( 0 => "Jack A. Smith",  1 => "Mary B. Miller" ),
+
+    "Given"  => array ( 0 => "Jack",    1 => "Mary"   ),
+    1        => array ( 0 => "Jack",    1 => "Mary"   ),
+
+    "Middle" => array ( 0 => "A.",      1 => "B."     ),
+    2        => array ( 0 => "A.",      1 => "B."     ),
+
+    "Family" => array ( 0 => "Smith",   1 => "Miller" ),
+    3        => array ( 0 => "Smith",   1 => "Miller" )
+
+)
+
+
+
+Madagascar is much too large to see on foot, so you'll need a car.
+
+
+
+String regex = "\\bcar\\b"; // 「\bcar\b」
+String text  = "Madagascar is best seen by car or bike.";
+Matcher m = Pattern.compile(regex).matcher(text);
+m.region(7, text.length());
+m.find();
+System.out.println("Matches starting at character " + m.start());
+
+
+
+
+StringBuilder text = new StringBuilder("It's SO very RUDE to shout!");
+Matcher m = Pattern.compile("\\b[\\p{Lu}\\p{Lt}]+\\b").matcher(text);
+
+while (m.find())
+   text.replace(m.start(), m.end(), m.group().toLowerCase());
+
+System.out.println(text);
+
+
+
+
+It's so very rude to shout!
+
+
+
+
+StringBuilder text = new StringBuilder("It's SO very RUDE to shout!");
+Matcher m = Pattern.compile("\\b[\\p{Lu}\\p{Lt}]+\\b").matcher(text);
+
+int matchPointer = 0;// First search begins at the start of the string
+while (m.find(matchPointer)) {
+   matchPointer = m.end(); // Next search starts from where this one ended
+   text.replace(m.start(), m.end(), "<b>"+ m.group().toLowerCase() +"</b>");
+   matchPointer += 7; // Account for having added '<b>' and '</b>'
+}
+
+System.out.println(text);
+
+
+
+
+It's <b>so</b> very <b>rude</b> to shout!
+
+
+
+
+// Matcher to find an image tag. The 'html' variable contains the <ACRONYM>HTML</ACRONYM> in question
+Matcher mImg = Pattern.compile("(?id)<IMG\\s+(.*?)/?>").matcher(html);
+
+// Matcher to find an ALT attribute (to be applied to an IMG tag's body within the same 'html' variable)
+Matcher mAlt = Pattern.compile("(?ix)\\b ALT \\s* =").matcher(html);
+
+// For each image tag within the html . . . 
+while (mImg.find()) {
+   // Restrict the next <ACRONYM>ALT</ACRONYM> search to the body of the just-found image tag
+   mAlt.region( mImg.start(1), mImg.end(1) );
+
+   // Report an error if no <ACRONYM>ALT</ACRONYM> found, showing the whole image tag found above
+   if (! mAlt.find())
+       System.out.println("Missing ALT attribute in: " + mImg.group());
+}
+
+
+
+
+// Matcher to find an image tag. The 'html' variable contains the <ACRONYM>HTML</ACRONYM> in question
+Matcher mImg  = Pattern.compile("(?id)<IMG\\s+(.*?)/?>").matcher(html);
+// Matcher to find an ALT attribute (to be applied to an IMG tag's body within the same 'html' variable)
+Matcher mAlt  = Pattern.compile("(?ix)\\b ALT \\s* =").matcher(html);
+
+// Matcher to find a newline
+Matcher mLine = Pattern.compile("\\n").matcher(html);
+
+// For each image tag within the html . . . 
+while (mImg.find())
+{
+
+   // Restrict the next <ACRONYM>ALT</ACRONYM> search to the body of the just-found image tag
+   mAlt.region( mImg.start(1), mImg.end(1) );
+   // Report an error if no <ACRONYM>ALT</ACRONYM> found, showing the whole image tag found above
+   if (! mAlt.find()) {
+
+      // Restrict counting of newlines to the text before the start of the image tag
+      mLine.region(0, mImg.start());
+
+      int lineNum = 1; // The first line is numbered 1
+      while (mLine.find())
+              lineNum++; // Each newline bumps up the line number
+
+      System.out.println("Missing ALT attribute on line " + lineNum);
+   }
+
+}
+
+
+
+java.util.regex.Pattern
+java.util.regex.Matcher
+java.util.regex.MatchResult
+java.util.regex.PatternSyntaxException
+
+
+
+
+public class SimpleRegexTest {
+  public static void main(String[] args)
+  {
+     String myText = "this is my 1st test string";
+     String myRegex = "\\d+\\w+";  // This provides for  「\d+\w+」
+     java.util.regex.Pattern p = java.util.regex.Pattern.compile(myRegex);
+     java.util.regex.Matcher m = p.matcher(myText);
+     if (m.find()) {
+         String matchedText = m.group();
+         int    matchedFrom = m.start();
+         int    matchedTo   = m.end();
+         System.out.println("matched [" + matchedText + "] " +
+                            "from " + matchedFrom +
+                            " to " + matchedTo + ".");
+     } else {
+         System.out.println("didn't match");
+     }
+  }
+}
+
+
+
+import java.util.regex.*;
+
+
+
+Pattern pat = Pattern.compile(myRegex,
+                     Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+
+
+
+Pattern.UNIX_LINES | Pattern.CASE_INSENSITIVE
+
+
+
+String regex = "\\w+"; // 「\w+」
+String text  = "Mastering Regular Expressions";
+Matcher m = Pattern.compile(regex).matcher(text);
+if (m.find())
+   System.out.println("match [" + m.group() + "]");
+
+
+
+match [Mastering]
+
+
+
+while (m.find())
+   System.out.println("match [" + m.group() + "]");
+
+
+
+match [Mastering]
+match [Regular]
+match [Expressions]
+
+
+
+"1234".matches("\\d+"); // true
+"123!".matches("\\d+"); // false
+
+
+
+
+String url   = "http://regex.info/blog";
+String regex = "(?x) ^(https?):// ([^/:]+) (?:(\\d+))?";
+Matcher m = Pattern.compile(regex).matcher(url);
+
+if (m.find())
+{
+  System.out.print(
+      "Overall  [" + m.group()  + "]" +
+      " (from "    + m.start()  + " to " + m.end()  + ")\n" +
+
+      "Protocol [" + m.group(1) + "]" +
+      " (from "    + m.start(1) + " to " + m.end(1) + ")\n" +
+
+      "Hostname [" + m.group(2) + "]" +
+      " (from "    + m.start(2) + " to " + m.end(2) + ")\n"
+
+  );
+
+  // Group #3 might not have participated, so we must be careful here
+  if (m.group(3) == null)
+     System.out.println("No port; default of '80' is assumed");
+  else  {
+     System.out.print("Port is [" + m.group(3) + "] " +
+                      "(from " + m.start(3) + " to " + m.end(3) + ")\n");
+
+  }
+
+}
+
+
+
+Overall  [http://regex.info] (from 0 to 17)
+Protocol [http] (from 0 to 4)
+Hostname [regex.info] (from 7 to 17)
+No port; default of '80' is assumed
+
+
+
+string.replaceAll(regex, replacement)
+
+
+
+Pattern.compile(regex).matcher(string).replaceAll(replacement)
+
+
+
+
+String text = "Before Java 1.5 was Java 1.4.2. After Java 1.5 is Java 1.6";
+String regex = "\\bJava\\s*1\\.5\\b";
+Matcher m = Pattern.compile(regex).matcher(text);
+String result = m.replaceAll("Java 5.0");
+System.out.println(result);
+
+
+
+
+Before Java 5.0 was Java 1.4.2. After Java 5.0 is Java 1.6
+
+
+
+Pattern.compile("\\bJava\\s*1\\.5\\b").matcher(text).replaceAll("Java 5.0")
+
+
+
+Pattern.compile("\\bJava\\s*1\\.([56])\\b").matcher(text).replaceAll("Java $1.0")
+
+
+
+
+Before Java 5.0 was Java 1.4.2. After Java 5.0 is Java 6.0
+
+
+
+Pattern.compile(uRegex).matcher(text).replaceAll(Matcher.quoteReplacement(uRepl))
+
+
+
+while (m.find())
+    m.appendReplacement(sb, "XXX")
+
+
+
+m.appendTail(sb)
+
+
+
+public static String replaceAll(Matcher m, String replacement)
+{
+   m.reset(); // Be sure to start with a fresh Matcher object
+   StringBuffer result = new StringBuffer(); // We'll build the updated copy here
+
+   while (m.find())
+       m.appendReplacement(result, replacement);
+
+   m.appendTail(result);
+   return result.toString(); // Convert result  to a string and return
+}
+
+
+
+
+public static String replaceAllRegion(Matcher m, String replacement)
+{
+   Integer start = m.regionStart();
+   Integer end   = m.regionEnd();
+   m.reset().region(start, end); // Reset the matcher, but then restore the region
+
+   StringBuffer result = new StringBuffer(); // We'll build the updated copy here
+
+   while (m.find())
+       m.appendReplacement(result, replacement);
+
+   m.appendTail(result);
+   return result.toString(); // Convert to a String and return
+}
+
+
+
+
+// Build a matcher to find numbers followed by "C" within the variable "Metric"
+// The following regex is: 「(\d+(?:\.\d*)?)C\b」
+Matcher m = Pattern.compile("(\\d+(?:\\.\\d*)?)C\\b").matcher(metric);
+StringBuffer result = new StringBuffer(); // We'll build the updated copy here
+
+while (m.find())
+{
+  float celsius = Float.parseFloat(m.group(1));  // Get the number, as a number
+  int fahrenheit = (int) (celsius * 9/5 + 32);   // Convert to a Fahrenheit value
+  m.appendReplacement(result, fahrenheit + "F"); // Insert it
+}
+
+m.appendTail(result);
+System.out.println(result.toString()); // Display the result
+
+
+
+Compilation failed: nothing to repeat at offset 0
+
+
+
+/*
+ * Return an error message if the given pattern argument or its underlying regular expression
+ * are not syntactically valid. Otherwise (if they are valid), false is returned.
+ */
+function preg_pattern_error($pattern)
+{
+
+   /*
+    * To tell if the pattern has errors, we simply try to use it.
+    * To detect and capture the error is not so simple, especially if we want to be sociable and not
+    * tramp on global state (e.g., the value of $php_errormsg). So, if 'track_errors' is on, we preserve
+    * the $php_errormsg value and restore it later. If 'track_errors' is not on, we turn it on (because
+    * we need it) but turn it off when we're done.
+    */
+   if ($old_track = ini_get("track_errors"))
+       $old_message = isset($php_errormsg) ? $php_errormsg : false; 
+   else 
+       ini_set('track_errors', 1);
+   /* We're now sure that track_errors is on. */
+
+   unset($php_errormsg);
+   @ preg_match($pattern, ""); /* actually give the pattern a try! */
+   $return_value = isset($php_errormsg) ? $php_errormsg : false;
+
+   /* We've now captured what we need; restore global state to what it was. */
+   if ($old_track)
+       $php_errormsg = isset($old_message) ? $old_message : false;
+   else
+       ini_set('track_errors', 0);
+
+   return $return_value;
+
+}
+
+
+
+// This pattern, used in the function below, is compiled and saved here for efficiency.
+static final Pattern pNeverFail = Pattern.compile("^");
+
+// Return the target text associated with a matcher object.
+public static String text(Matcher m)
+{
+
+   // Remember these items so that we can restore them later.
+   Integer regionStart = m.regionStart();
+   Integer regionEnd   = m.regionEnd();
+   Pattern pattern     = m.pattern();
+
+   // Fetch the string the only way the class allows.
+   String text = m.usePattern(pNeverFail).replaceFirst("");
+
+   // Put back what we changed (or might have changed).
+   m.usePattern(pattern).region(regionStart, regionEnd);
+
+   // Return the text
+   return text;
+
+}
+
+
+
+java.util.regex.Matcher[pattern=(\w+) region=0,7 lastmatch=]
+java.util.regex.Matcher[pattern=(\w+) region=0,7 lastmatch=ABC]
+
+
+
+Matcher m = Pattern.compile("(\\w+)").matcher("ABC 123");
+System.out.println(m.toString());
+m.find();
+System.out.println(m.toString());
+
+
+
+
+Matcher m = Pattern.compile(regex).matcher(text).region(5,text.length())
+              .useAnchoringBounds(false).useTransparentBounds(true);
+
+
+
+Matches starting at character 7
+
+
+
+m.useTransparentBounds(true);
+
+
+
+Matches starting at character 27
+
+
+
+Pattern p = Pattern.compile(regex); // Compile regex.
+Matcher m = p.matcher(text);        // Associate regex with text, creating a Matcher.
+m.region(5, text.length());         // Bump start of region five characters forward.
+m.useAnchoringBounds(false);        // Don't let  「^」  et al. match at the region start.
+m.useTransparentBounds(true);       // Let looking constructs see across region edges.
+
+
+
+Matcher m = Pattern.compile(regex).matcher(text);
+m.region(5, text.length());   // Bump start of region five characters forward.
+m.useAnchoringBounds(false);  // Don't let  「^」  et al. match at the region start.
+m.useTransparentBounds(true); // Let looking constructs see across region edges.
+
+
+
+$xml_regex = '{
+   ^(
+
+      (?: <(\w++) [^>]*+ (?<!/)>  (?1)  </\2>  # matched pair of tags
+        | [^<>]++                              # non-tag stuff
+        | <\w[^>]*+/>                          # self-closing tag
+        | <!--.*?-->                           # comment
+        | <!\[CDATA\[.*?]]>                    # cdata block
+        | <\?.*?\?>                            # processing instruction
+        | <![A-Z].*?>                          # Entity declaration, etc.
+
+      )*+
+
+   )$
+
+}sx';
+
+if (preg_match($xml_regex, $xml_string))
+     echo "block structure seems valid\n";
+else
+     echo "block structure seems invalid\n";
+
+
+
+/* Apply the regex, filling $all_matches with all kinds of data */
+preg_match_all($csv_regex, $line, $all_matches);
+
+/* $Result will hold the array of fields we'll glean from $all_matches */
+$Result = array ();
+
+/* Run through each successful match . . .  */
+for ($i = 0; $i < count($all_matches[0]); $i++)
+{
+  /* If the 2nd set of capturing parentheses captured, use that directly */
+  if (strlen($all_matches[2][$i]) > 0)
+     array_push($Result, $all_matches[2][$i]);
+  else
+  {
+    /* It was a quoted value, so take care of an embedded double double-quote before using */
+    array_push($Result, preg_replace('/""/', '"', $all_matches[1][$i]));
+  }
+}
+
+/* The array $Result is now populated and available for use */
+
+
+
+$csv_regex = '{
+     \G(?:^|,)
+     (?:
+        # Either a double-quoted field . . . 
+        " # field opening quote
+         (  [^"]*+  (?: "" [^"]*+ )*+  )
+        " # field closing quote
+      | # . . . or . . . 
+        # . . . some non-quote/non-comma text . . . 
+        ( [^",]*+ )
+     )
+  }x';
+
+
+
+$pattern = '{
+    # The regular expression begins here . . . 
+    ^
+      (?P<stuff>
+          # Everything within this set of parentheses is named "stuff."
+          (?:
+              [^()]++            # anything not parentheses
+            |
+              \(  (?P>stuff)  \) # an open paren, more "stuff," and finally a close paren.
+          )*
+      )
+    $
+    # This is the end of the regular expression.
+}x'; # The 'x' here is a preg pattern modifier.
+
+if (preg_match($pattern, $text))
+   echo "text is balanced\n";
+else
+   echo "text is unbalanced\n";
+
+
+
+if (preg_match('/^ (  (?: [^()]++ | \( (?1) \)  )*  ) $/x', $text))
+   echo "text is balanced\n";
+else
+   echo "text is unbalanced\n";
+
+
+
+/*
+ * Return a descriptive error message if the given regular expression is invalid.
+ * If it's valid, false is returned.
+ */
+function preg_regex_error($regex)
+{
+    return preg_pattern_error(preg_regex_to_pattern($regex));
+}
+
+
+
+preg_grep('/^\S+$/', $input);
+
+
+
+% perl -w -Mre=debug -e '"this is a test" =~ m/^Subject:/;'
+    
+Did not find anchored substr `Subject:'...
+Match rejected by optimizer
+
+
+
+preg_match('/href \s*=\s* (?: "([^"]*)" | \'([^\']*)\' | ([^\s\'">]+) )/ix',
+           $tag,
+           $matches,
+           PREG_OFFSET_CAPTURE);
+
+
+
+<a name=bloglink href='http://regex.info/blog/' rel="nofollow">
+
+
+
+array
+(
+
+    /* Data for the overall match */
+    0 => array ( 0 => "href='http://regex.info/blog/'",
+                 1 => 17 ),
+
+    /* Data for the first set of parentheses */
+    1 => array ( 0 => "",
+                 1 => -1 ),
+
+    /* Data for the second set of parentheses */
+    2 => array ( 0 => "http://regex.info/blog/",
+                 1 => 23 )
+
+)
+
+
+
+If Regex.IsMatch(Line, "^\s*$")
+
+
+
+Dim TemporaryRegex = New Regex("^\s*$")
+If TemporaryRegex.IsMatch(Line)
+
+
+
+If New Regex("^\s*$").IsMatch(Line)
+
+
+
+M.Result("[$`<$&>$']"))
+
+
+
+Regex.IsMatch(target, pattern)
+Regex.IsMatch(target, pattern, options)
+
+Regex.Match(target, pattern)
+Regex.Match(target, pattern, options)
+
+Regex.Matches(target, pattern)
+Regex.Matches(target, pattern, options)
+
+Regex.Replace(target, pattern, replacement)
+Regex.Replace(target, pattern, replacement, options)
+
+Regex.Split(target, pattern)
+Regex.Split(target, pattern, options)
+
+
+
+Dim M as Match = Regex.Match(SomeString, "\w+")
+Console.WriteLine(M.Result("The first word is '$&'"))
+
+
+
+M.Result("$`") 'This is the text to the left of the match
+M.Result("$'") 'This is the text to the right of the match
+
+
+
+New Regex("^(\w+)://([^/]+)(/\S*)")
+
+New Regex("^(?<proto>\w+)://(?<host>[^/]+)(?<page>/\S*)",
+          RegexOptions.Compiled)
+
+
+
+Dim R as New Regex("\.")
+Dim Parts as String() = R.Split("209.204.146.22", 2)
+
+
+
+Dim R as New Regex("[-/]")
+Dim Parts as String() = R.Split(MyDate)
+
+
+
+
+'Display information known about the Regex object in the variable R
+Console.WriteLine("Regex is: " & R.ToString())
+Console.WriteLine("Options are: " & R.Options)
+If R.RightToLeft
+   Console.WriteLine("Is Right-To-Left: True")
+Else
+   Console.WriteLine("Is Right-To-Left: False")
+End If
+
+Dim S as String
+For Each S in R.GetGroupNames()
+    Console.WriteLine("Name """ & S & """ is Num #" & _
+                      R.GroupNumberFromName(S))
+Next
+Console.WriteLine("---")
+Dim I as Integer
+For Each I in R.GetGroupNumbers()
+    Console.WriteLine("Num #" & I & " is Name """ & _
+                      R.GroupNameFromNumber(I) & """")
+Next
+
+
+
+   $replacement = array ('&' => '&amp;',
+                         '<' => '&lt;',
+                         '>' => '&gt;',
+                         '"' => '&quot;');
+
+   /*
+    * Given a $matches from a successful match in which $matches[0] is the text character in need of
+    * conversion to HTML, return the appropriate HTML string. Because this function is used under only
+    * carefully controlled conditions, we feel safe blindly using the arguments.
+    */
+   function text2html_callback($matches)
+   {
+
+       global $replacement;
+       return $replacement[$matches[0]];
+
+   }
+
+   $new_subject = preg_replace_callback('/[&<">]/S',           /* pattern */
+                                        "text2html_callback",/* callback */
+                                        $subject);
+
+
+
+"AT&T" sounds like "ATNT"
+
+
+
+&quot;AT&amp;T&quot; sounds like &quot;ATNT&quot;
+
+
+
+$new_subject = preg_replace_callback('/[&<">]/S',
+                 create_function('$matches',
+                                 'global $replacement;
+                                  return $replacement[$matches[0]];'),
+                 $subject);
+
+
+
+preg_split(pattern, subject [, limit, [ flags ]])
+
+
+
+$tickers = explode(' ', $input);
+
+
+
+$tickers = preg_split('/\s+/', $input);
+
+
+
+$tickers = preg_split('/[\s,]+/', $input);
+
+
+
+$tags = preg_split('/\s*,\s*/', $input);
+
+
+
+$parts = preg_split('/\r? \n \r? \n/x', $response, 2);
+
+
+
+$fields = preg_split('/\s* , \s*/x', $data, 3);
+
+
+
+$tags = preg_split('/\s* , \s*/x', $input);
+
+
+
+$tags = preg_split('/\s* , \s*/x', $input, -1, PREG_SPLIT_NO_EMPTY);
+
+
+
+DLSR camera and Nikon D200 or Canon EOS 30D
+
+
+
+$parts = preg_split('/\s+ (and|or) \s+/x', $input);
+
+
+
+array ('DLSR camera', 'Nikon D200', 'Canon EOS 30D')
+
+
+
+$parts = preg_split('/\s+ (and|or) \s+/x', $input, -1,
+                    PREG_SPLIT_DELIM_CAPTURE);
+
+
+
+array ('DLSR camera', 'and', 'Nikon D200', 'or', 'Canon EOS 30D')
+
+
+
+$tickers = preg_split('/[\s,]+/', $input);
+
+
+
+$tickers = preg_split('/([\s,]+)/', $input, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+
+
+preg_grep(pattern, input [, flags ])
+
+
+
+preg_grep('/\s/', $input);
+
+
+
+preg_grep('/\s/', $input, PREG_GREP_INVERT);
+
+
+
+Dim M as Match = Regex.Match("abcdefghijk", "^(..)+")
+
+
+
+result: word<this> word<has> word<num><7> word<words>
+word<and> word<num><31> word<letters>
+
+
+
+preg_replace_callback(pattern, callback, subject [, limit [, count ]])
+
+
+
+result: word<this> word<has> num<7> word<words> word<and> num<31> word<letters>
+
+
+
+     $subject = "this has 7 words and 31 letters";
+
+     $result = preg_replace(array('/\d+/',   '/[a-z]+/'),
+                           array('num<\0>', 'word<\0>'),
+                           $subject);
+
+     print "result: $result\n";
+
+
+
+$subject = "this has 7 words and 31 letters";
+
+$result = preg_replace(array('/[a-z]+/', '/\d+/'),
+                       array('word<$0>', 'num<$0>'),
+                       $subject);
+
+print "result: $result\n";
+
+
+
+# Either some non-quote/non-comma text . . . 
+( [^",]+ )
+# . . . or . . . 
+ |
+# . .. a double-quoted field (inside, paired double quotes are allowed)
+" # field's opening quote
+ (   (?: [^"] | "" )*   )
+" # field's closing quote
+
+
+
+while ($line =~ m{
+           # Either some non-quote/non-comma text . . . 
+           ( [^",]+ )
+           # . . . or . . . 
+            |
+           # . . . a double-quoted field ("" allowed inside)
+           " # field's opening quote
+            (   (?: [^"] | "" )*   )
+           " # field's closing quote
+        }gx)
+{
+   if (defined $1) {
+       $field = $1;
+   } else {
+       $field = $2;
+       $field =~ s/""/"/g;
+   }
+   print "[$field]"; # print the field, for debugging
+   Can work with $field now . . . 
+}
+
+
+
+$regex = '(\w+)';
+$str =~ $regex;
+
+
+
+$regex = "(\\w+)";
+$str =~ $regex;
+
+
+
+(?!\p{Cn})\p{InThai}
+(?=\P{Cn})\p{InThai}
+\p{InThai}(?<!\p{Cn})
+\p{InThai}(?<=\P{Cn})
+
+
+
+
+my $need_close_anchor = 0; # True if we've seen <A>, but not its closing </A>.
+
+while (not $html =~ m/\G\z/gc) # While we haven't worked our way to the end . . . 
+{
+  if ($html =~ m/\G(\w+)/gc) {
+     . . . have a word or number in $1 -- can now check for profanity, for example . . . 
+  } elsif ($html =~ m/\G[^<>&\w]+/gc) {
+    # Other non-HTML stuff -- simply allow it.
+  } elsif ($html =~ m/\G<img\s+([^>]+)>/gci) {
+     . . . have an image tag -- can check that it's appropriate . . . 
+              
+  } elsif (not $need_close_anchor and $html =~ m/\G<A\s+([^>]+)>/gci){
+     . . . have a link anchor - can validate it . . . 
+              
+    $need_close_anchor = 1; # Note that we now need </A>
+  } elsif ($need_close_anchor and $html =~ m{\G</A>}gci){
+    $need_close_anchor = 0; # Got what we needed; don't allow again
+  } elsif ($html =~ m/\G&(#\d+|\w+);/gc){
+    # Allow entities like &gt; and &#123;
+  } else {
+    # Nothing matched at this point, so it must be an error. Note the location, and grab a dozen or so
+    # characters from the <ACRONYM>HTML</ACRONYM> so that we can issue an informative error message.
+    my $location = pos($html); # Note where the unexpected <ACRONYM>HTML</ACRONYM> starts.
+    my ($badstuff) = $html =~ m/\G(.{1,12})/s;
+    die "Unexpected HTML at position $location: $badstuff\n";
+  }
+}
+
+# Make sure there's no dangling <A>
+if ($need_close_anchor) {
+   die "Missing final </A>"
+}
+
+
+
+sub(/mizpel/, "misspell")
+
+
+
+regsub mizpel $var misspell newvar
+
+
+
+regsub -all mizpel $var misspell newvar
+
+
+
+
+(defun FindNextDbl ()
+  "move to next doubled word, ignoring <...> tags"   (interactive)
+  (re-search-forward "\\<\\([a-z]+\\)\\([\n \t]\\|<[^>]+>\\)+\\1\\>")
+)
+
+
+
+$str =~ m/(\w+)/;
+
+
+
+years = days /x divide x//365; /x assume non-leap year x/
+
+
+
+const char *cstart = "/*", *cend = "*/";
+
+
+
+$prog =~ s{/\*[^*]*\*+(?:[^/*][^*]*\*+)*/}{}g; # remove C comments (and more!)
+
+
+
+char *CommentStart = "/*";  /* start of comment */
+char *CommentEnd   = "*/";  /* end of comment */
+
+
+
+$COMMENT = qr{/\*[^*]*\*+(?:[^/*][^*]*\*+)*/}; # regex to match a comment
+$DOUBLE = qr{"(?:\\.|[^\\"])*"};# regex to match double-quoted string
+$text =~ s/$DOUBLE|$COMMENT//g;
+
+
+
+$COMMENT = qr{/\*[^*]*\*+(?:[^/*][^*]*\*+)*/}; # regex to match a comment
+$DOUBLE = qr{"(?:\\.|[^\\"])*"};# Regex to match double-quoted string
+$text =~ s/($DOUBLE)|$COMMENT/$1/g;
+
+
+
+$text =~ s/($DOUBLE)|$COMMENT/defined($1) ? $1 : ""/ge;
+
+
+
+$COMMENT = qr{/\*[^*]*\*+(?:[^/*][^*]*\*+)*/}; # regex to match a comment
+$COMMENT2 = qr{//[^\n]*};  # regex to match a C++ // comment
+$DOUBLE = qr{"(?:\\.|[^\\"])*"};# regex to match double-quoted string
+$SINGLE = qr{'(?:\\.|[^'\\])*'};# regex to match single-quoted string
+
+$text =~ s/($DOUBLE|$SINGLE)|$COMMENT|$COMMENT2/$1/g;
+
+
+
+$OTHER = qr{[^"'/]};  # Stuff that couldn't possibly begin one of the other alternatives
+  
+$text =~ s/($DOUBLE|$SINGLE|$OTHER+)|$COMMENT|$COMMENT2/$1/g;
+
+
+
+$DOUBLE = qr{"[^\\"]*(?:\\.[^\\"]*)*"};
+$SINGLE = qr{'[^'\\]*(?:\\.[^'\\]*)*'};
+
+
+
+([^"'/]+|"[^\\"]*(?:\\.[^\\"]*)*"[^"'/]*|'[^'\\]*
+(?:\\.[^'\\]*)*'[^"'/]*)|/\*[^*]*\*+(?:[^/*][^*]*\*+)*/|//[^\n]*
+
+
+
+( <A\s+[^>]+> \s* )?  # Match leading <A> tag, if there.
+<IMG\s+[^>]+>         # Match <IMG> tag.
+(?(1)\s*</A>)         # Match a closing </A>, if we'd matched an <A> before.
+
+
+
+$HostnameRegex = qr/[-a-z0-9]+(\.[-a-z0-9]+)*\.(com|edu|info)/i;
+
+
+
+
+// Matcher for isolating <img> tags
+Matcher mImg    = Pattern.compile("(?id)<IMG\\s+(.*?)/?>").matcher(html);
+
+// Matchers that isolate the <ACRONYM>SRC</ACRONYM>, <ACRONYM>WIDTH</ACRONYM>, and <ACRONYM>HEIGHT</ACRONYM> attributes within a tag (with very naive regexes)
+Matcher mSrc    = Pattern.compile("(?ix)\\bSRC   =(\\S+)").matcher(html);
+Matcher mWidth  = Pattern.compile("(?ix)\\bWIDTH =(\\S+)").matcher(html);
+Matcher mHeight = Pattern.compile("(?ix)\\bHEIGHT=(\\S+)").matcher(html);
+
+int imgMatchPointer = 0; // The first search begins at the start of the string
+while (mImg.find(imgMatchPointer))
+{
+
+   imgMatchPointer = mImg.end(); // Next image search starts from where this one ended
+
+   // Look for our attributes within the body of the just-found image tag
+   Boolean hasSrc    =    mSrc.region( mImg.start(1), mImg.end(1) ).find();
+   Boolean hasHeight = mHeight.region( mImg.start(1), mImg.end(1) ).find();
+   Boolean hasWidth  =  mWidth.region( mImg.start(1), mImg.end(1) ).find();
+
+   // If we have a SRC attribute, but are missing <ACRONYM>WIDTH</ACRONYM> and/or <ACRONYM>HEIGHT</ACRONYM> . . . 
+   if (hasSrc && (! hasWidth || ! hasHeight))
+   {
+
+      java.awt.image.BufferedImage i = // this fetches the image
+         javax.imageio.ImageIO.read(new java.net.URL(mSrc.group(1)));
+
+      String size; // Will hold the missing <ACRONYM>WIDTH</ACRONYM> and/or <ACRONYM>HEIGHT</ACRONYM> attributes
+      if (hasWidth)
+          // We're told the width, so compute the height that maintains the proper aspect ratio
+          size = "height='" + (int)(Integer.parseInt(mWidth.group(1)) *
+                                    i.getHeight() / i.getWidth())  + "' ";
+      else if (hasHeight)
+          // We're told the height, so compute the width that maintains the proper aspect ratio
+          size = "width='"  + (int)(Integer.parseInt(mHeight.group(1)) *
+                                    i.getWidth()  / i.getHeight()) + "' ";
+      else // We're told neither, so just insert the actual size
+          size = "width='"  + i.getWidth()  + "' " +
+                 "height='" + i.getHeight() + "' ";
+
+      html.insert(mImg.start(1), size); // Update the <ACRONYM>HTML</ACRONYM> in place
+      imgMatchPointer += size.length(); // Account for the new text in mImg's eyes
+
+   }
+
+}
+
+
+
+String[] result = Pattern.compile(":").split(":xx:", -1);
+
+
+
+Friedl,Jeffrey,Eric Francis,America,Ohio,Rootstown
+
+
+
+String[] NameInfo = Pattern.compile(",").split(Text, 4);
+// NameInfo[0] is the family name.
+// NameInfo[1] is the given name.
+// NameInfo[2] is the middle name (or in my case, middle names).
+// NameInfo[3] is everything else, which we don't need, so we'll just ignore it.
+
+
+
+
+String[] result = Pattern.compile("\\s*,\\s*").split(", one, two , ,, 3");
+
+
+
+String[] result = Pattern.compile(":").split(":xx:");
+
+
+
+String[] result = Pattern.compile("\\W+").split(Text);
+
+
+
+$/ = ".\n";   # Sets a special ``chunk-mode''; chunks end with a period-newline combination
+
+while (<>) 
+{
+    next unless s{# (regex starts here)
+
+          ### Need to match one word:
+          \b           # Start of word . . . .
+          ( [a-z]+ )  # Grab word, filling $1 (and \1).
+
+          ### Now need to allow any number of spaces and/or <TAGS>
+          (         # Save what intervenes to $2.
+              (?:   # (Non-capturing parens for grouping the alternation)
+                 \s       # Whitespace (includes newline, which is good).
+                |         # -or-
+                 <[^>]+>  # Item like <TAG>.
+              )+       # Need at least one of the above, but allow more.
+          )
+
+          ### Now match the first word again:
+          (\1\b)     # \b ensures not embedded. This copy saved to $3.
+
+      #(regex ends here)
+    }
+    # Above is the regex. The replacement string is below, followed by the modifiers, /i, /g, and /x
+    {\e[7m$1\e[m$2\e[7m$3\e[m}igx;  
+
+    s/^(?:[^\e]*\n)+//mg;     # Remove any unmarked lines.
+    s/^/$ARGV: /mg;         # Ensure lines begin with filename.
+    print;
+}
+
+
+
+% perl -w FindDbl ch01.txt
+ch01.txt: check for doubled words (such as thisthis thisthis), a common problem with
+ch01.txt: * Find doubled words despite capitalization differences, such as with `TheThe
+ch01.txt: thethe...', as well as allow differing amounts of whitespace (space, tabs,
+ch01.txt: /\<(1,000,000|million|thousandthousand thousandthousand)/. But alternation can't be
+ch01.txt: of this chapter. If you knew thethe thethe specific doubled word to find (such
+
+
+
+$HostnameRegex = qr/[-a-z0-9]+(\.[-a-z0-9]+)*\.(com|edu|info)/i;
+
+# Turn email addresses into links . . . 
+$text =~ s{
+   \b
+   # Capture the address to $1 . . . 
+   (
+     \w[-.\w]*                          # username
+     \@
+     $HostnameRegex  # hostname
+   )
+   \b
+}{<a href="mailto:$1">$1</a>}gix;
+
+# Turn <ACRONYM>HTTP</ACRONYM> <ACRONYM>URL</ACRONYM>s into links . . . 
+$text =~ s{
+   \b
+   # Capture the <ACRONYM>URL</ACRONYM> to $1 . . . 
+   (
+      http:// $HostnameRegex \b          # hostname
+      (
+         / [-a-z0-9_:\@&?=+,.!/~*'%\$]* # Optional path
+           (?<![.,?!])    # not allowed to end with [.,?!]
+      )?
+   )
+}{<a href="$1">$1</a>}gix;
+
+
+
+$/ = ".\n";
+while (<>) {
+  next if !s/\b([a-z]+)((?:\s|<[^>]+>)+)(\1\b)/\e[7m$1\e[m$2\e[7m$3\e[m/ig;
+  s/^(?:[^\e]*\n)+//mg;   # Remove any unmarked lines.
+  s/^/$ARGV: /mg;      # Ensure lines begin with filename.
+  print;
+}
+
+
+
+// Time first one . . . 
+for (int i = 4; i > 0; i--)
+{
+    long count = timesToDo;
+    long startTime = System.currentTimeMillis();
+    while (--count > 0)
+          regex1.reset(testString).find();
+    double seconds = (System.currentTimeMillis() - startTime)/1000.0;
+    System.out.println("Alternation takes " + seconds + " seconds");
+}
+
+
+
+
+Option Explicit On
+Option Strict On
+
+Imports System.Text.RegularExpressions
+
+Module Benchmark
+Sub Main()
+  Dim Regex1 as Regex = New Regex("^(a|b|c|d|e|f|g)+$")
+  Dim Regex2 as Regex = New Regex("^[a-g]+$")
+  Dim TimesToDo as Integer = 1000
+  Dim TestString as String = ""
+  Dim I as Integer
+  For I = 1 to 1000
+     TestString = TestString & "abababdedfg"
+  Next
+
+  Dim StartTime as Double = Timer()
+  For I = 1 to TimesToDo
+     Regex1.Match(TestString)
+  Next
+  Dim Seconds as Double = Math.Round(Timer() - StartTime, 3)
+  Console.WriteLine("Alternation takes " & Seconds & " seconds")
+
+  StartTime = Timer()
+  For I = 1 to TimesToDo
+     Regex2.Match(TestString)
+  Next
+  Seconds = Math.Round(Timer() - StartTime, 3)
+  Console.WriteLine("Character class takes " & Seconds & " seconds")
+End Sub
+End Module
+
+
+
+TimesToDo=1000
+testString=""
+for i in 1..1000
+    testString += "abababdedfg"
+end
+
+Regex1 = Regexp::new("^(a|b|c|d|e|f|g)+$");
+Regex2 = Regexp::new("^[a-g]+$");
+
+startTime = Time.new.to_f
+for i in 1..TimesToDo
+    Regex1.match(testString)
+end
+print "Alternation takes %.3f seconds\n" % (Time.new.to_f - startTime);
+
+startTime = Time.new.to_f
+for i in 1..TimesToDo
+    Regex2.match(testString)
+end
+print "Character class takes %.3f seconds\n" % (Time.new.to_f - startTime);
+
+
+
+import re
+import time
+import fpformat
+
+Regex1 = re.compile("^(a|b|c|d|e|f|g)+$")
+Regex2 = re.compile("^[a-g]+$")
+
+TimesToDo = 1250;
+TestString = ""
+for i in range(800):
+    TestString += "abababdedfg"
+
+StartTime = time.time()
+for i in range(TimesToDo):
+   Regex1.search(TestString)
+Seconds = time.time() - StartTime
+print "Alternation takes " + fpformat.fix(Seconds,3) + " seconds"
+
+StartTime = time.time()
+for i in range(TimesToDo):
+   Regex2.search(TestString)
+Seconds = time.time() - StartTime
+print "Character class takes " + fpformat.fix(Seconds,3) + " seconds"
+
+
+
+SUBJECT: MAKE MONEY FAST
+
+
+
+% egrep -i '\<([a-z]+) +\1\>' files...
+
+
+
+http://hostname/path.html
+
+
+
+
+-----------------------------------------------------------------------------
+Copyright 1997-2021 Jeffrey Friedl
