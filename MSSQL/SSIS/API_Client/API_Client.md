@@ -1,4 +1,4 @@
-# Как написать REST клиент на C# для пакета SSIS
+# API клиент на C#
 
 *[Синтаксис MarkDown](https://www.markdownguide.org/basic-syntax/)*  
 [Заметки по SSIS](../SSIS_note.md)  
@@ -105,7 +105,7 @@
     
     }
     Console.ReadLine();
-    ```  
+    ```
   
   - для написания скрипта BIML и последующей генераци пакета можно использовать надстройку [BimlExpress](https://varigence.com/BimlExpress) и пример для [генерации компонента](https://docs.varigence.com/biml/snippets/script-projects-script-component-project). Код для  [cloudpayments.biml](./cloudpayments.biml.md).  
   
@@ -155,7 +155,7 @@
   }
   
   ListPayments = payments;
-  ```  
+  ```
 
 ## Поздравляю, клиент готов!  
 

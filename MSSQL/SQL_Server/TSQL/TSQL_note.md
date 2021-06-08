@@ -4,4 +4,6 @@
 [Заметки по SQL Server](../SQLServer_note.md)  
 
 - **[Получить даты за указанный период](./Get_List_Date.md)**  
+- **[Отправить письмо](./Send_mail.md)**  
+- **[Синхронизации данных таблицы слоя stage в таблицу слоя raw](./Stage_to_Raw_Sync.md)**  
 

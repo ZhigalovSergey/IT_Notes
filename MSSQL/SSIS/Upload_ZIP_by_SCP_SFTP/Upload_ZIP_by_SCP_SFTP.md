@@ -1,4 +1,4 @@
-# Задача выгрузить данные из DWH партнёру  
+# Выгрузка данные из DWH в CSV-файлы и отправка по SFTP  
 
 *[Синтаксис MarkDown](https://www.markdownguide.org/basic-syntax/)*  
 [Заметки по SSIS](../SSIS_note.md)  

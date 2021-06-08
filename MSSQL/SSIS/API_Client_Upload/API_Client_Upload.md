@@ -1,4 +1,4 @@
-# API клиент для выгрузки из DWH  
+# API клиент на C# для выгрузки из DWH  
 *[Синтаксис MarkDown](https://www.markdownguide.org/basic-syntax/)*  
 [Заметки по SSIS](../SSIS_note.md)   
 
