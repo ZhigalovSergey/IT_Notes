@@ -10,5 +10,3 @@
 - [wiki - Регулярные выражения](https://ru.wikipedia.org/wiki/Регулярные_выражения)  
 - [Cервис для тестирования и отладки - regex101.com](https://regex101.com/)  
 - [Регулярные выражения в Python](https://habr.com/ru/post/349860/)  
-- 
-
