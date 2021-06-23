@@ -8,3 +8,6 @@
 - **[Синхронизации данных таблицы слоя stage в таблицу слоя raw](./Stage_to_Raw_Sync.md)**  
 - **[Мониторинг отката транзакции](./RollBack.md)**  
 - **[Поиск объекта](./SearchObject.md)**  
+- **[Убить зависший процесс](./ProcessKill.md)**  
+- **[wait_at_low_priority - kill блокирующих сессий](./wait_at_low_priority.md)**  
+- **[PartitionInfo - Информация по партициям таблицы](./PartitionInfo.md)**  
