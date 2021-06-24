@@ -4,4 +4,5 @@
 ## Python  
 ## [RegEx](./RegEx/RegEx.md)  
 ## [C#](./CSharp/CSharp.md)  
+## [PowerShell](./PowerShell/PowerShell.md)  
 
