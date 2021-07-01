@@ -1,0 +1,613 @@
+Executing the query ...
+*,reader
+READS, 0
+READ_KB, 0
+WRITES, 0
+WRITE_KB, 0
+CPU_TIME_MS, 0
+ROWS_SCANNED, 0
+ROWS_RETURNED, 0
+
+<Batch xmlns="http://schemas.microsoft.com/analysisservices/2003/engine">
+  <Process xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ddl2="http://schemas.microsoft.com/analysisservices/2003/engine/2" xmlns:ddl2_2="http://schemas.microsoft.com/analysisservices/2003/engine/2/2" xmlns:ddl100_100="http://schemas.microsoft.com/analysisservices/2008/engine/100/100" xmlns:ddl200="http://schemas.microsoft.com/analysisservices/2010/engine/200" xmlns:ddl200_200="http://schemas.microsoft.com/analysisservices/2010/engine/200/200" xmlns:ddl300="http://schemas.microsoft.com/analysisservices/2011/engine/300" xmlns:ddl300_300="http://schemas.microsoft.com/analysisservices/2011/engine/300/300" xmlns:ddl400="http://schemas.microsoft.com/analysisservices/2012/engine/400" xmlns:ddl400_400="http://schemas.microsoft.com/analysisservices/2012/engine/400/400" xmlns:ddl500="http://schemas.microsoft.com/analysisservices/2013/engine/500" xmlns:ddl500_500="http://schemas.microsoft.com/analysisservices/2013/engine/500/500">
+    <Object>
+      <DatabaseID>TEST_Marketplace</DatabaseID>
+      <DimensionID>Delivery Detail</DimensionID>
+    </Object>
+    <Type>ProcessFull</Type>
+    <WriteBackTableCreation>UseExisting</WriteBackTableCreation>
+  </Process>
+</Batch>
+Started building processing schedule.
+Finished building processing schedule.
+Started processing the 'Delivery Detail' dimension.
+Processing of the '(All)' attribute has started.
+Started reading data for the '(All)' attribute.
+Finished writing data for the '(All)' attribute.
+Finished processing the '(All)' attribute.
+Processing of the 'Payment Type' attribute has started.
+Started reading data for the 'Payment Type' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[PaymentTypeID] AS [dbo_vw_DimDeliveryDetailPaymentTypeID0_0],[dbo_vw_DimDeliveryDetail].[PaymentTypeName] AS [dbo_vw_DimDeliveryDetailPaymentTypeName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Processing of the 'Delivery Type' attribute has started.
+Started reading data for the 'Delivery Type' attribute.
+Processing of the 'Cancellation Reason' attribute has started.
+Started reading data for the 'Cancellation Reason' attribute.
+Processing of the 'Is Delivery On Time' attribute has started.
+Started reading data for the 'Is Delivery On Time' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryTypeID] AS [dbo_vw_DimDeliveryDetailDeliveryTypeID0_0],[dbo_vw_DimDeliveryDetail].[DeliveryTypeName] AS [dbo_vw_DimDeliveryDetailDeliveryTypeName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Processing of the 'Delivery State' attribute has started.
+Started reading data for the 'Delivery State' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTime] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTime0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Processing of the 'Delivery Execution Days' attribute has started.
+Started reading data for the 'Delivery Execution Days' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryStateKey] AS [dbo_vw_DimDeliveryDetailDeliveryStateKey0_0],[dbo_vw_DimDeliveryDetail].[DeliveryStateName] AS [dbo_vw_DimDeliveryDetailDeliveryStateName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Processing of the 'Delivery Execution Days 3PL' attribute has started.
+Started reading data for the 'Delivery Execution Days 3PL' attribute.
+Processing of the 'Delivery Operator' attribute has started.
+Started reading data for the 'Delivery Operator' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays0_0],[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDaysName] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDaysName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Processing of the 'Is Next Day Delivery' attribute has started.
+Started reading data for the 'Is Next Day Delivery' attribute.
+Processing of the 'Is Changed Subcontractor' attribute has started.
+Started reading data for the 'Is Changed Subcontractor' attribute.
+Processing of the 'Fact Payment Type' attribute has started.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays3PL] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays3PL0_0],[dbo_vw_DimDeliveryDetail].[deliveryexecutiondays3plname] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays3PLName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data for the 'Fact Payment Type' attribute.
+Processing of the 'Is Delivery On Time Fact' attribute has started.
+Started reading data for the 'Is Delivery On Time Fact' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTimeFact] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTimeFact0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Processing of the 'Is Auto Confirmed' attribute has started.
+Started reading data for the 'Is Auto Confirmed' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[FactPaymentTypeID] AS [dbo_vw_DimDeliveryDetailFactPaymentTypeID0_0],[dbo_vw_DimDeliveryDetail].[factpaymenttypename] AS [dbo_vw_DimDeliveryDetailFactPaymentTypeName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Processing of the 'Delivery Logistic Tag' attribute has started.
+Started reading data for the 'Delivery Logistic Tag' attribute.
+Processing of the 'Is Contains Delayed Shipment' attribute has started.
+Started reading data for the 'Is Contains Delayed Shipment' attribute.
+Processing of the 'Pickup Point' attribute has started.
+Started reading data for the 'Pickup Point' attribute.
+Processing of the 'Federal District' attribute has started.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[CancellationReasonID] AS [dbo_vw_DimDeliveryDetailCancellationReasonID0_0],[dbo_vw_DimDeliveryDetail].[CancellationReasonName] AS [dbo_vw_DimDeliveryDetailCancellationReasonName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data for the 'Federal District' attribute.
+Processing of the 'Pickup Point Code' attribute has started.
+Started reading data for the 'Pickup Point Code' attribute.
+Processing of the 'Postal Code' attribute has started.
+Started reading data for the 'Postal Code' attribute.
+Processing of the 'Delivery Logistic Class' attribute has started.
+Started reading data for the 'Delivery Logistic Class' attribute.
+Processing of the 'Delivery Weight Group' attribute has started.
+Started reading data for the 'Delivery Weight Group' attribute.
+Processing of the 'Delivery Interval' attribute has started.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryOperatorKey] AS [dbo_vw_DimDeliveryDetailDeliveryOperatorKey0_0],[dbo_vw_DimDeliveryDetail].[DeliveryOperatorName] AS [dbo_vw_DimDeliveryDetailDeliveryOperatorName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data for the 'Delivery Interval' attribute.
+Processing of the 'Delivery Time Interval' attribute has started.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTime] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTime0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Is Delivery On Time' attribute.
+Finished writing data for the 'Is Delivery On Time' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsAutoConfirmed] AS [dbo_vw_DimDeliveryDetailIsAutoConfirmed0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Is Delivery On Time' attribute.
+Finished processing the 'Is Delivery On Time' attribute.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTimeFact] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTimeFact0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Is Delivery On Time Fact' attribute.
+Started reading data for the 'Delivery Time Interval' attribute.
+Started reading data from the 'Is Delivery On Time Fact' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsChangedSubcontractor] AS [dbo_vw_DimDeliveryDetailIsChangedSubcontractor0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Is Delivery On Time Fact' attribute.
+Processing of the 'Initial Delivery Date' attribute has started.
+Started processing the 'Is Delivery On Time' hierarchy.
+Finished processing the 'Is Delivery On Time Fact' attribute.
+Finished processing the 'Is Delivery On Time' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryStateKey] AS [dbo_vw_DimDeliveryDetailDeliveryStateKey0_0],[dbo_vw_DimDeliveryDetail].[DeliveryStateName] AS [dbo_vw_DimDeliveryDetailDeliveryStateName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery State' attribute.
+Finished writing data for the 'Delivery State' attribute.
+Started reading data for the 'Initial Delivery Date' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[postal_code] AS [dbo_vw_DimDeliveryDetailpostal_code0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Delivery State' attribute.
+Processing of the 'Delivery Date From' attribute has started.
+Finished processing the 'Delivery State' attribute.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays3PL] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays3PL0_0],[dbo_vw_DimDeliveryDetail].[deliveryexecutiondays3plname] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays3PLName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Delivery Execution Days 3PL' attribute.
+Started reading data from the 'Delivery Execution Days 3PL' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[logistic_tag_id] AS [dbo_vw_DimDeliveryDetaillogistic_tag_id0_0],[dbo_vw_DimDeliveryDetail].[logistic_tag_name] AS [dbo_vw_DimDeliveryDetaillogistic_tag_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Delivery Execution Days 3PL' attribute.
+Started processing the 'Is Delivery On Time Fact' hierarchy.
+Finished processing the 'Delivery Execution Days 3PL' attribute.
+Finished processing the 'Is Delivery On Time Fact' hierarchy.
+Started reading data for the 'Delivery Date From' attribute.
+Processing of the 'Low Ops Type' attribute has started.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays0_0],[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDaysName] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDaysName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Execution Days' attribute.
+Finished writing data for the 'Delivery Execution Days' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[id_delivery_interval] AS [dbo_vw_DimDeliveryDetailid_delivery_interval0_0],[dbo_vw_DimDeliveryDetail].[delivery_interval_name] AS [dbo_vw_DimDeliveryDetaildelivery_interval_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Delivery Execution Days' attribute.
+Started processing the 'Delivery State' hierarchy.
+Started processing the 'Delivery Execution Days 3PL' hierarchy.
+Finished processing the 'Delivery Execution Days' attribute.
+Finished processing the 'Delivery State' hierarchy.
+Finished processing the 'Delivery Execution Days 3PL' hierarchy.
+Started reading data for the 'Low Ops Type' attribute.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[CancellationReasonID] AS [dbo_vw_DimDeliveryDetailCancellationReasonID0_0],[dbo_vw_DimDeliveryDetail].[CancellationReasonName] AS [dbo_vw_DimDeliveryDetailCancellationReasonName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Cancellation Reason' attribute.
+Finished writing data for the 'Cancellation Reason' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[PickupPointID] AS [dbo_vw_DimDeliveryDetailPickupPointID0_0],[dbo_vw_DimDeliveryDetail].[PickupPointName] AS [dbo_vw_DimDeliveryDetailPickupPointName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Cancellation Reason' attribute.
+Processing of the 'Delivery Zone' attribute has started.
+Finished processing the 'Cancellation Reason' attribute.
+Started processing the 'Delivery Execution Days' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[PaymentTypeID] AS [dbo_vw_DimDeliveryDetailPaymentTypeID0_0],[dbo_vw_DimDeliveryDetail].[PaymentTypeName] AS [dbo_vw_DimDeliveryDetailPaymentTypeName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Payment Type' attribute.
+Started reading data from the 'Payment Type' attribute.
+Started reading data for the 'Delivery Zone' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[federal_district_key] AS [dbo_vw_DimDeliveryDetailfederal_district_key0_0],[dbo_vw_DimDeliveryDetail].[federal_district_name] AS [dbo_vw_DimDeliveryDetailfederal_district_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Payment Type' attribute.
+Finished processing the 'Delivery Execution Days' hierarchy.
+Processing of the 'Delivery Model Sub Type' attribute has started.
+Finished processing the 'Payment Type' attribute.
+Started processing the 'Cancellation Reason' hierarchy.
+Finished processing the 'Cancellation Reason' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryOperatorKey] AS [dbo_vw_DimDeliveryDetailDeliveryOperatorKey0_0],[dbo_vw_DimDeliveryDetail].[DeliveryOperatorName] AS [dbo_vw_DimDeliveryDetailDeliveryOperatorName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Operator' attribute.
+Finished writing data for the 'Delivery Operator' attribute.
+Started reading data for the 'Delivery Model Sub Type' attribute.
+Processing of the 'Delivery Model Type' attribute has started.
+Started processing the 'Payment Type' hierarchy.
+Finished processing the 'Payment Type' hierarchy.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_logistic_class_key] AS [dbo_vw_DimDeliveryDetaildelivery_logistic_class_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_logistic_class] AS [dbo_vw_DimDeliveryDetaildelivery_logistic_class0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Delivery Operator' attribute.
+Finished processing the 'Delivery Operator' attribute.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[FactPaymentTypeID] AS [dbo_vw_DimDeliveryDetailFactPaymentTypeID0_0],[dbo_vw_DimDeliveryDetail].[factpaymenttypename] AS [dbo_vw_DimDeliveryDetailFactPaymentTypeName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Fact Payment Type' attribute.
+Finished writing data for the 'Fact Payment Type' attribute.
+Started reading data for the 'Delivery Model Type' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[pickuppointcode] AS [dbo_vw_DimDeliveryDetailPickupPointCode0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Fact Payment Type' attribute.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryTypeID] AS [dbo_vw_DimDeliveryDetailDeliveryTypeID0_0],[dbo_vw_DimDeliveryDetail].[DeliveryTypeName] AS [dbo_vw_DimDeliveryDetailDeliveryTypeName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Type' attribute.
+Finished writing data for the 'Delivery Type' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_weight_group_key] AS [dbo_vw_DimDeliveryDetaildelivery_weight_group_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_weight_group] AS [dbo_vw_DimDeliveryDetaildelivery_weight_group0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started processing the 'Delivery Operator' hierarchy.
+Finished reading data from the 'Delivery Type' attribute.
+Finished processing the 'Fact Payment Type' attribute.
+Finished processing the 'Delivery Operator' hierarchy.
+Started processing the 'Fact Payment Type' hierarchy.
+Finished processing the 'Delivery Type' attribute.
+Finished processing the 'Fact Payment Type' hierarchy.
+Started processing the 'Delivery Type' hierarchy.
+Finished processing the 'Delivery Type' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[postal_code] AS [dbo_vw_DimDeliveryDetailpostal_code0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Postal Code' attribute.
+Finished writing data for the 'Postal Code' attribute.
+Finished reading data from the 'Postal Code' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsNextDay] AS [dbo_vw_DimDeliveryDetailIsNextDay0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished processing the 'Postal Code' attribute.
+Started processing the 'Postal Code' hierarchy.
+Finished processing the 'Postal Code' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsChangedSubcontractor] AS [dbo_vw_DimDeliveryDetailIsChangedSubcontractor0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsAutoConfirmed] AS [dbo_vw_DimDeliveryDetailIsAutoConfirmed0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Is Auto Confirmed' attribute.
+Finished writing data for the 'Is Auto Confirmed' attribute.
+Started reading data from the 'Is Changed Subcontractor' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_time_interval_key] AS [dbo_vw_DimDeliveryDetaildelivery_time_interval_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_time_interval_name] AS [dbo_vw_DimDeliveryDetaildelivery_time_interval_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Is Changed Subcontractor' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[initial_delivery_date_key] AS [dbo_vw_DimDeliveryDetailinitial_delivery_date_key0_0],[dbo_vw_DimDeliveryDetail].[initial_delivery_date] AS [dbo_vw_DimDeliveryDetailinitial_delivery_date0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[PickupPointID] AS [dbo_vw_DimDeliveryDetailPickupPointID0_0],[dbo_vw_DimDeliveryDetail].[PickupPointName] AS [dbo_vw_DimDeliveryDetailPickupPointName0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Pickup Point' attribute.
+Started reading data from the 'Pickup Point' attribute.
+Finished reading data from the 'Is Auto Confirmed' attribute.
+Finished reading data from the 'Is Changed Subcontractor' attribute.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[pickuppointcode] AS [dbo_vw_DimDeliveryDetailPickupPointCode0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Pickup Point Code' attribute.
+Started reading data from the 'Pickup Point Code' attribute.
+Finished processing the 'Is Auto Confirmed' attribute.
+Finished reading data from the 'Pickup Point Code' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsContainsDelayedShipment] AS [dbo_vw_DimDeliveryDetailIsContainsDelayedShipment0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished processing the 'Is Changed Subcontractor' attribute.
+Started processing the 'Is Auto Confirmed' hierarchy.
+Started processing the 'Is Changed Subcontractor' hierarchy.
+Finished processing the 'Is Auto Confirmed' hierarchy.
+Finished processing the 'Is Changed Subcontractor' hierarchy.
+Finished processing the 'Pickup Point Code' attribute.
+Started processing the 'Pickup Point Code' hierarchy.
+Finished processing the 'Pickup Point Code' hierarchy.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_date_from_key] AS [dbo_vw_DimDeliveryDetaildelivery_date_from_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_date_from] AS [dbo_vw_DimDeliveryDetaildelivery_date_from0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Pickup Point' attribute.
+Finished processing the 'Pickup Point' attribute.
+Started processing the 'Pickup Point' hierarchy.
+Finished processing the 'Pickup Point' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[federal_district_key] AS [dbo_vw_DimDeliveryDetailfederal_district_key0_0],[dbo_vw_DimDeliveryDetail].[federal_district_name] AS [dbo_vw_DimDeliveryDetailfederal_district_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Federal District' attribute.
+Started reading data from the 'Federal District' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_cnc_subtype_key] AS [dbo_vw_DimDeliveryDetaildelivery_cnc_subtype_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_cnc_subtype_name] AS [dbo_vw_DimDeliveryDetaildelivery_cnc_subtype_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Federal District' attribute.
+Finished processing the 'Federal District' attribute.
+Processing of the 'Region' attribute has started.
+Started reading data for the 'Region' attribute.
+Started processing the 'Federal District' hierarchy.
+Finished processing the 'Federal District' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[id_delivery_interval] AS [dbo_vw_DimDeliveryDetailid_delivery_interval0_0],[dbo_vw_DimDeliveryDetail].[delivery_interval_name] AS [dbo_vw_DimDeliveryDetaildelivery_interval_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Interval' attribute.
+Finished writing data for the 'Delivery Interval' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_zone_id] AS [dbo_vw_DimDeliveryDetaildelivery_zone_id0_0],[dbo_vw_DimDeliveryDetail].[delivery_zone_name] AS [dbo_vw_DimDeliveryDetaildelivery_zone_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Delivery Interval' attribute.
+Finished processing the 'Delivery Interval' attribute.
+Started processing the 'Delivery Interval' hierarchy.
+Finished processing the 'Delivery Interval' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsContainsDelayedShipment] AS [dbo_vw_DimDeliveryDetailIsContainsDelayedShipment0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Is Contains Delayed Shipment' attribute.
+Started reading data from the 'Is Contains Delayed Shipment' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_model_sub_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_sub_type_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_model_sub_type_name] AS [dbo_vw_DimDeliveryDetaildelivery_model_sub_type_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Is Contains Delayed Shipment' attribute.
+Finished processing the 'Is Contains Delayed Shipment' attribute.
+Started processing the 'Is Contains Delayed Shipment' hierarchy.
+Finished processing the 'Is Contains Delayed Shipment' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[logistic_tag_id] AS [dbo_vw_DimDeliveryDetaillogistic_tag_id0_0],[dbo_vw_DimDeliveryDetail].[logistic_tag_name] AS [dbo_vw_DimDeliveryDetaillogistic_tag_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Delivery Logistic Tag' attribute.
+Started reading data from the 'Delivery Logistic Tag' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_model_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_type_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_model_type_name] AS [dbo_vw_DimDeliveryDetaildelivery_model_type_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Delivery Logistic Tag' attribute.
+Finished processing the 'Delivery Logistic Tag' attribute.
+Started processing the 'Delivery Logistic Tag' hierarchy.
+Finished processing the 'Delivery Logistic Tag' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_cnc_subtype_key] AS [dbo_vw_DimDeliveryDetaildelivery_cnc_subtype_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_cnc_subtype_name] AS [dbo_vw_DimDeliveryDetaildelivery_cnc_subtype_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Low Ops Type' attribute.
+Finished writing data for the 'Low Ops Type' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[region_key] AS [dbo_vw_DimDeliveryDetailregion_key0_0],[dbo_vw_DimDeliveryDetail].[region_name] AS [dbo_vw_DimDeliveryDetailregion_name0_1],[dbo_vw_DimDeliveryDetail].[federal_district_key] AS [dbo_vw_DimDeliveryDetailfederal_district_key0_2]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished reading data from the 'Low Ops Type' attribute.
+Finished processing the 'Low Ops Type' attribute.
+Started processing the 'Low Ops Type' hierarchy.
+Finished processing the 'Low Ops Type' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_weight_group_key] AS [dbo_vw_DimDeliveryDetaildelivery_weight_group_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_weight_group] AS [dbo_vw_DimDeliveryDetaildelivery_weight_group0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Delivery Weight Group' attribute.
+Started reading data from the 'Delivery Weight Group' attribute.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[IsNextDay] AS [dbo_vw_DimDeliveryDetailIsNextDay0_0]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Is Next Day Delivery' attribute.
+Started reading data from the 'Is Next Day Delivery' attribute.
+Finished reading data from the 'Delivery Weight Group' attribute.
+Finished reading data from the 'Is Next Day Delivery' attribute.
+Finished processing the 'Is Next Day Delivery' attribute.
+Finished processing the 'Delivery Weight Group' attribute.
+Started processing the 'Is Next Day Delivery' hierarchy.
+Started processing the 'Delivery Weight Group' hierarchy.
+Finished processing the 'Is Next Day Delivery' hierarchy.
+Finished processing the 'Delivery Weight Group' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_logistic_class_key] AS [dbo_vw_DimDeliveryDetaildelivery_logistic_class_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_logistic_class] AS [dbo_vw_DimDeliveryDetaildelivery_logistic_class0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Delivery Logistic Class' attribute.
+Started reading data from the 'Delivery Logistic Class' attribute.
+Finished reading data from the 'Delivery Logistic Class' attribute.
+Finished processing the 'Delivery Logistic Class' attribute.
+Started processing the 'Delivery Logistic Class' hierarchy.
+Finished processing the 'Delivery Logistic Class' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_model_sub_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_sub_type_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_model_sub_type_name] AS [dbo_vw_DimDeliveryDetaildelivery_model_sub_type_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Model Sub Type' attribute.
+Finished writing data for the 'Delivery Model Sub Type' attribute.
+Finished reading data from the 'Delivery Model Sub Type' attribute.
+Finished processing the 'Delivery Model Sub Type' attribute.
+Started processing the 'Delivery Model Sub Type' hierarchy.
+Finished processing the 'Delivery Model Sub Type' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_zone_id] AS [dbo_vw_DimDeliveryDetaildelivery_zone_id0_0],[dbo_vw_DimDeliveryDetail].[delivery_zone_name] AS [dbo_vw_DimDeliveryDetaildelivery_zone_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Zone' attribute.
+Finished writing data for the 'Delivery Zone' attribute.
+Finished reading data from the 'Delivery Zone' attribute.
+Finished processing the 'Delivery Zone' attribute.
+Started processing the 'Delivery Zone' hierarchy.
+Finished processing the 'Delivery Zone' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[region_key] AS [dbo_vw_DimDeliveryDetailregion_key0_0],[dbo_vw_DimDeliveryDetail].[region_name] AS [dbo_vw_DimDeliveryDetailregion_name0_1],[dbo_vw_DimDeliveryDetail].[federal_district_key] AS [dbo_vw_DimDeliveryDetailfederal_district_key0_2]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Region' attribute.
+Finished reading data from the 'Region' attribute.
+Finished writing data for the 'Region' attribute.
+Finished processing the 'Region' attribute.
+Processing of the 'City' attribute has started.
+Started reading data for the 'City' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[city_name] AS [dbo_vw_DimDeliveryDetailcity_name0_0],[dbo_vw_DimDeliveryDetail].[region_key] AS [dbo_vw_DimDeliveryDetailregion_key0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started processing the 'Region' hierarchy.
+Finished processing the 'Region' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_model_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_type_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_model_type_name] AS [dbo_vw_DimDeliveryDetaildelivery_model_type_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Finished writing data for the 'Delivery Model Type' attribute.
+Started reading data from the 'Delivery Model Type' attribute.
+Finished reading data from the 'Delivery Model Type' attribute.
+Finished processing the 'Delivery Model Type' attribute.
+Started processing the 'Delivery Model Type' hierarchy.
+Finished processing the 'Delivery Model Type' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[city_name] AS [dbo_vw_DimDeliveryDetailcity_name0_0],[dbo_vw_DimDeliveryDetail].[region_key] AS [dbo_vw_DimDeliveryDetailregion_key0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'City' attribute.
+Finished reading data from the 'City' attribute.
+Finished writing data for the 'City' attribute.
+Finished processing the 'City' attribute.
+Started processing the 'City' hierarchy.
+Finished processing the 'City' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[initial_delivery_date_key] AS [dbo_vw_DimDeliveryDetailinitial_delivery_date_key0_0],[dbo_vw_DimDeliveryDetail].[initial_delivery_date] AS [dbo_vw_DimDeliveryDetailinitial_delivery_date0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Initial Delivery Date' attribute.
+Finished writing data for the 'Initial Delivery Date' attribute.
+Finished reading data from the 'Initial Delivery Date' attribute.
+Finished processing the 'Initial Delivery Date' attribute.
+Started processing the 'Initial Delivery Date' hierarchy.
+Finished processing the 'Initial Delivery Date' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_date_from_key] AS [dbo_vw_DimDeliveryDetaildelivery_date_from_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_date_from] AS [dbo_vw_DimDeliveryDetaildelivery_date_from0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Date From' attribute.
+Finished writing data for the 'Delivery Date From' attribute.
+Finished reading data from the 'Delivery Date From' attribute.
+Finished processing the 'Delivery Date From' attribute.
+Started processing the 'Delivery Date From' hierarchy.
+Finished processing the 'Delivery Date From' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[delivery_time_interval_key] AS [dbo_vw_DimDeliveryDetaildelivery_time_interval_key0_0],[dbo_vw_DimDeliveryDetail].[delivery_time_interval_name] AS [dbo_vw_DimDeliveryDetaildelivery_time_interval_name0_1]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery Time Interval' attribute.
+Finished writing data for the 'Delivery Time Interval' attribute.
+Finished reading data from the 'Delivery Time Interval' attribute.
+Finished processing the 'Delivery Time Interval' attribute.
+Processing of the 'Delivery ID' attribute has started.
+Started reading data for the 'Delivery ID' attribute.
+Begin SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryID] AS [dbo_vw_DimDeliveryDetailDeliveryID0_0],[dbo_vw_DimDeliveryDetail].[PaymentTypeID] AS [dbo_vw_DimDeliveryDetailPaymentTypeID0_1],[dbo_vw_DimDeliveryDetail].[DeliveryTypeID] AS [dbo_vw_DimDeliveryDetailDeliveryTypeID0_2],[dbo_vw_DimDeliveryDetail].[CancellationReasonID] AS [dbo_vw_DimDeliveryDetailCancellationReasonID0_3],[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTime] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTime0_4],[dbo_vw_DimDeliveryDetail].[DeliveryStateKey] AS [dbo_vw_DimDeliveryDetailDeliveryStateKey0_5],[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays0_6],[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays3PL] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays3PL0_7],[dbo_vw_DimDeliveryDetail].[DeliveryOperatorKey] AS [dbo_vw_DimDeliveryDetailDeliveryOperatorKey0_8],[dbo_vw_DimDeliveryDetail].[IsNextDay] AS [dbo_vw_DimDeliveryDetailIsNextDay0_9],[dbo_vw_DimDeliveryDetail].[IsChangedSubcontractor] AS [dbo_vw_DimDeliveryDetailIsChangedSubcontractor0_10],[dbo_vw_DimDeliveryDetail].[FactPaymentTypeID] AS [dbo_vw_DimDeliveryDetailFactPaymentTypeID0_11],[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTimeFact] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTimeFact0_12],[dbo_vw_DimDeliveryDetail].[IsAutoConfirmed] AS [dbo_vw_DimDeliveryDetailIsAutoConfirmed0_13],[dbo_vw_DimDeliveryDetail].[logistic_tag_id] AS [dbo_vw_DimDeliveryDetaillogistic_tag_id0_14],[dbo_vw_DimDeliveryDetail].[IsContainsDelayedShipment] AS [dbo_vw_DimDeliveryDetailIsContainsDelayedShipment0_15],[dbo_vw_DimDeliveryDetail].[PickupPointID] AS [dbo_vw_DimDeliveryDetailPickupPointID0_16],[dbo_vw_DimDeliveryDetail].[city_name] AS [dbo_vw_DimDeliveryDetailcity_name0_17],[dbo_vw_DimDeliveryDetail].[region_key] AS [dbo_vw_DimDeliveryDetailregion_key0_18],[dbo_vw_DimDeliveryDetail].[pickuppointcode] AS [dbo_vw_DimDeliveryDetailPickupPointCode0_19],[dbo_vw_DimDeliveryDetail].[postal_code] AS [dbo_vw_DimDeliveryDetailpostal_code0_20],[dbo_vw_DimDeliveryDetail].[delivery_logistic_class_key] AS [dbo_vw_DimDeliveryDetaildelivery_logistic_class_key0_21],[dbo_vw_DimDeliveryDetail].[delivery_weight_group_key] AS [dbo_vw_DimDeliveryDetaildelivery_weight_group_key0_22],[dbo_vw_DimDeliveryDetail].[id_delivery_interval] AS [dbo_vw_DimDeliveryDetailid_delivery_interval0_23],[dbo_vw_DimDeliveryDetail].[delivery_time_interval_key] AS [dbo_vw_DimDeliveryDetaildelivery_time_interval_key0_24],[dbo_vw_DimDeliveryDetail].[initial_delivery_date_key] AS [dbo_vw_DimDeliveryDetailinitial_delivery_date_key0_25],[dbo_vw_DimDeliveryDetail].[delivery_date_from_key] AS [dbo_vw_DimDeliveryDetaildelivery_date_from_key0_26],[dbo_vw_DimDeliveryDetail].[delivery_cnc_subtype_key] AS [dbo_vw_DimDeliveryDetaildelivery_cnc_subtype_key0_27],[dbo_vw_DimDeliveryDetail].[delivery_zone_id] AS [dbo_vw_DimDeliveryDetaildelivery_zone_id0_28],[dbo_vw_DimDeliveryDetail].[delivery_model_sub_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_sub_type_key0_29],[dbo_vw_DimDeliveryDetail].[delivery_model_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_type_key0_30]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started processing the 'Delivery Time Interval' hierarchy.
+Finished processing the 'Delivery Time Interval' hierarchy.
+End SQL statement: SELECT 
+		DISTINCT
+	[dbo_vw_DimDeliveryDetail].[DeliveryID] AS [dbo_vw_DimDeliveryDetailDeliveryID0_0],[dbo_vw_DimDeliveryDetail].[PaymentTypeID] AS [dbo_vw_DimDeliveryDetailPaymentTypeID0_1],[dbo_vw_DimDeliveryDetail].[DeliveryTypeID] AS [dbo_vw_DimDeliveryDetailDeliveryTypeID0_2],[dbo_vw_DimDeliveryDetail].[CancellationReasonID] AS [dbo_vw_DimDeliveryDetailCancellationReasonID0_3],[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTime] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTime0_4],[dbo_vw_DimDeliveryDetail].[DeliveryStateKey] AS [dbo_vw_DimDeliveryDetailDeliveryStateKey0_5],[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays0_6],[dbo_vw_DimDeliveryDetail].[DeliveryExecutionDays3PL] AS [dbo_vw_DimDeliveryDetailDeliveryExecutionDays3PL0_7],[dbo_vw_DimDeliveryDetail].[DeliveryOperatorKey] AS [dbo_vw_DimDeliveryDetailDeliveryOperatorKey0_8],[dbo_vw_DimDeliveryDetail].[IsNextDay] AS [dbo_vw_DimDeliveryDetailIsNextDay0_9],[dbo_vw_DimDeliveryDetail].[IsChangedSubcontractor] AS [dbo_vw_DimDeliveryDetailIsChangedSubcontractor0_10],[dbo_vw_DimDeliveryDetail].[FactPaymentTypeID] AS [dbo_vw_DimDeliveryDetailFactPaymentTypeID0_11],[dbo_vw_DimDeliveryDetail].[IsDeliveryOnTimeFact] AS [dbo_vw_DimDeliveryDetailIsDeliveryOnTimeFact0_12],[dbo_vw_DimDeliveryDetail].[IsAutoConfirmed] AS [dbo_vw_DimDeliveryDetailIsAutoConfirmed0_13],[dbo_vw_DimDeliveryDetail].[logistic_tag_id] AS [dbo_vw_DimDeliveryDetaillogistic_tag_id0_14],[dbo_vw_DimDeliveryDetail].[IsContainsDelayedShipment] AS [dbo_vw_DimDeliveryDetailIsContainsDelayedShipment0_15],[dbo_vw_DimDeliveryDetail].[PickupPointID] AS [dbo_vw_DimDeliveryDetailPickupPointID0_16],[dbo_vw_DimDeliveryDetail].[city_name] AS [dbo_vw_DimDeliveryDetailcity_name0_17],[dbo_vw_DimDeliveryDetail].[region_key] AS [dbo_vw_DimDeliveryDetailregion_key0_18],[dbo_vw_DimDeliveryDetail].[pickuppointcode] AS [dbo_vw_DimDeliveryDetailPickupPointCode0_19],[dbo_vw_DimDeliveryDetail].[postal_code] AS [dbo_vw_DimDeliveryDetailpostal_code0_20],[dbo_vw_DimDeliveryDetail].[delivery_logistic_class_key] AS [dbo_vw_DimDeliveryDetaildelivery_logistic_class_key0_21],[dbo_vw_DimDeliveryDetail].[delivery_weight_group_key] AS [dbo_vw_DimDeliveryDetaildelivery_weight_group_key0_22],[dbo_vw_DimDeliveryDetail].[id_delivery_interval] AS [dbo_vw_DimDeliveryDetailid_delivery_interval0_23],[dbo_vw_DimDeliveryDetail].[delivery_time_interval_key] AS [dbo_vw_DimDeliveryDetaildelivery_time_interval_key0_24],[dbo_vw_DimDeliveryDetail].[initial_delivery_date_key] AS [dbo_vw_DimDeliveryDetailinitial_delivery_date_key0_25],[dbo_vw_DimDeliveryDetail].[delivery_date_from_key] AS [dbo_vw_DimDeliveryDetaildelivery_date_from_key0_26],[dbo_vw_DimDeliveryDetail].[delivery_cnc_subtype_key] AS [dbo_vw_DimDeliveryDetaildelivery_cnc_subtype_key0_27],[dbo_vw_DimDeliveryDetail].[delivery_zone_id] AS [dbo_vw_DimDeliveryDetaildelivery_zone_id0_28],[dbo_vw_DimDeliveryDetail].[delivery_model_sub_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_sub_type_key0_29],[dbo_vw_DimDeliveryDetail].[delivery_model_type_key] AS [dbo_vw_DimDeliveryDetaildelivery_model_type_key0_30]
+  FROM [olap].[vw_DimDeliveryDetail] AS [dbo_vw_DimDeliveryDetail]
+Started reading data from the 'Delivery ID' attribute.
+Finished reading data from the 'Delivery ID' attribute.
+Finished writing data for the 'Delivery ID' attribute.
+Finished processing the 'Delivery ID' attribute.
+Started processing the 'Delivery ID' hierarchy.
+Finished processing the 'Delivery ID' hierarchy.
+Starting to build decode stores for the 'Geography' hierarchy.
+Starting to build decode stores for the 'Delivery ID' hierarchy.
+Finished building decode stores for the 'Delivery ID' hierarchy.
+Starting to build decode stores for the 'Payment Type' hierarchy.
+Starting to build decode stores for the 'Delivery Type' hierarchy.
+Finished building decode stores for the 'Geography' hierarchy.
+Starting to build decode stores for the 'Cancellation Reason' hierarchy.
+Starting to build decode stores for the 'Is Delivery On Time' hierarchy.
+Starting to build decode stores for the 'Delivery State' hierarchy.
+Finished building decode stores for the 'Payment Type' hierarchy.
+Finished building decode stores for the 'Delivery Type' hierarchy.
+Starting to build decode stores for the 'Delivery Execution Days' hierarchy.
+Starting to build decode stores for the 'Delivery Execution Days 3PL' hierarchy.
+Starting to build decode stores for the 'Delivery Operator' hierarchy.
+Starting to build decode stores for the 'Region' hierarchy.
+Finished building decode stores for the 'Cancellation Reason' hierarchy.
+Finished building decode stores for the 'Is Delivery On Time' hierarchy.
+Starting to build decode stores for the 'Is Changed Subcontractor' hierarchy.
+Starting to build decode stores for the 'Is Next Day Delivery' hierarchy.
+Starting to build decode stores for the 'Fact Payment Type' hierarchy.
+Starting to build decode stores for the 'Is Delivery On Time Fact' hierarchy.
+Finished building decode stores for the 'Delivery State' hierarchy.
+Starting to build decode stores for the 'Is Auto Confirmed' hierarchy.
+Starting to build decode stores for the 'Delivery Logistic Tag' hierarchy.
+Starting to build decode stores for the 'Is Contains Delayed Shipment' hierarchy.
+Finished building decode stores for the 'Region' hierarchy.
+Finished building decode stores for the 'Delivery Execution Days 3PL' hierarchy.
+Finished building decode stores for the 'Delivery Operator' hierarchy.
+Starting to build decode stores for the 'City' hierarchy.
+Starting to build decode stores for the 'Pickup Point' hierarchy.
+Finished building decode stores for the 'Delivery Execution Days' hierarchy.
+Starting to build decode stores for the 'Postal Code' hierarchy.
+Starting to build decode stores for the 'Delivery Logistic Class' hierarchy.
+Starting to build decode stores for the 'Pickup Point Code' hierarchy.
+Starting to build decode stores for the 'Federal District' hierarchy.
+Starting to build decode stores for the 'Delivery Interval' hierarchy.
+Starting to build decode stores for the 'Delivery Weight Group' hierarchy.
+Finished building decode stores for the 'Is Changed Subcontractor' hierarchy.
+Finished building decode stores for the 'Is Next Day Delivery' hierarchy.
+Starting to build decode stores for the 'Delivery Time Interval' hierarchy.
+Starting to build decode stores for the 'Initial Delivery Date' hierarchy.
+Starting to build decode stores for the 'Delivery Date From' hierarchy.
+Finished building decode stores for the 'Fact Payment Type' hierarchy.
+Starting to build decode stores for the 'Low Ops Type' hierarchy.
+Finished building decode stores for the 'Is Delivery On Time Fact' hierarchy.
+Starting to build decode stores for the 'Delivery Zone' hierarchy.
+Finished building decode stores for the 'Delivery Logistic Tag' hierarchy.
+Finished building decode stores for the 'City' hierarchy.
+Finished building decode stores for the 'Is Contains Delayed Shipment' hierarchy.
+Starting to build decode stores for the 'Delivery Model Sub Type' hierarchy.
+Starting to build decode stores for the 'Delivery Model Type' hierarchy.
+Finished building decode stores for the 'Pickup Point Code' hierarchy.
+Finished building decode stores for the 'Delivery Interval' hierarchy.
+Finished building decode stores for the 'Delivery Logistic Class' hierarchy.
+Finished building decode stores for the 'Federal District' hierarchy.
+Finished building decode stores for the 'Is Auto Confirmed' hierarchy.
+Started processing the 'Geography' hierarchy.
+Finished building decode stores for the 'Delivery Time Interval' hierarchy.
+Finished processing the 'Geography' hierarchy.
+Finished building decode stores for the 'Pickup Point' hierarchy.
+Finished building decode stores for the 'Low Ops Type' hierarchy.
+Finished building decode stores for the 'Delivery Date From' hierarchy.
+Finished building decode stores for the 'Delivery Weight Group' hierarchy.
+Finished building decode stores for the 'Postal Code' hierarchy.
+Finished building decode stores for the 'Initial Delivery Date' hierarchy.
+Finished building decode stores for the 'Delivery Zone' hierarchy.
+Finished building decode stores for the 'Delivery Model Sub Type' hierarchy.
+Finished building decode stores for the 'Delivery Model Type' hierarchy.
+Building indexes for the 'Delivery ID' attribute has started.
+Building indexes for the 'Region' attribute has started.
+Finished building indexes for the 'Region' attribute.
+Building indexes for the 'City' attribute has started.
+Finished building indexes for the 'City' attribute.
+Run complete
