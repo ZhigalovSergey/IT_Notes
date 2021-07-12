@@ -5,5 +5,5 @@
 ### SSRS  
 ### [SQLAgent](./SQL_Server_Agent/SQLAgent_note.md)  
 ### [SQLServer](./SQL_Server/SQLServer_note.md)  
-### [ManagementStudio](./ManagementStudio/ManagementStudio_note.md)  
-
+### [Management Studio](./Management_Studio/ManagementStudio_note.md)  
+### [Extended Events](./Extended_Events/ExtendedEvents_note.md)  
