@@ -1,43 +1,71 @@
-## Мониторинг таблицы
+#### [Заметки по Extended Events](./ExtendedEvents_note.md)  
 
-### Описание проблемы
+### Мониторинг таблицы. Автоматизация.  
 
-Иногда появляется вопрос, а кто-нибудь пользуется вообще этой таблицей? Может не стоит грузить сервер для обновления данных в этой таблице?
+#### Описание проблемы  
 
-### Варианты решения
+Часто таблица используется в других объектах: представления, процедуры, функции. И для отслеживания вызовов нужно перечислить все эти объекты при создании Extended Events. Задача автоматизировать этот процесс.
 
-Первое, что можно сделать - это настроить мониторинг запросов **SELECT** к этой таблице. Для этого используем Extended Events.
+#### Варианты решения  
 
-![](./ExtendedEvents.jpg)
+Напишем запрос для автоматизированного создания скрипта для Extended Events.
 
-### Реализация
+#### Реализация  
 
-Настроить событие Extended Events можно двумя способами: с помощью пользовательского интерфейса SSMS и с помощью инструкции T-SQL. Обе реализации описаны в [документации](https://docs.microsoft.com/ru-ru/sql/relational-databases/extended-events/quick-start-extended-events-in-sql-server?view=sql-server-ver15). Так для отслеживания таблицы product_sort_attributes нужно использовать событие **sql_statement_completed** и следующий шаблон
-
-```sql
-N'%select%product_sort_attributes%'
-```
-
-для поля sqlserver.sql_text в настройках фильтра.
-
-После сбора данных по событиям, по ним можно сделать дополнительный поиск и фильтрацию. Для этого извлечем информацию о событиях с помощью пользовательского интерфейса SSMS 
-
-![](./ExtendedEvents_2.jpg)
-
-Далее настроим столбцы в таблице и наложим фильтр исключающий запросы с самого сервера DWH: SBI-APP-003
-
-![](./ExtendedEvents_3.jpg)
-
-В итоге видно, что таблицу скачивают по запросу
+Возьмем за образец 
 
 ```sql
-select * from MDWH.marketing.product_sort_attributes with (nolock)
+CREATE EVENT SESSION [item_snapshot] ON SERVER 
+ADD EVENT sqlserver.sql_statement_completed(SET collect_statement=(1)
+    ACTION(sqlserver.client_app_name,sqlserver.client_hostname,sqlserver.server_instance_name,sqlserver.server_principal_name,sqlserver.username)
+    WHERE (
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%get_articles_drop%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%vw_fact_product_statistic%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%item_snapshot_sync_drop%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%FactProductStatistic%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%tvf_AssortmentCube%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%vw_item_snapshot%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%items_sync%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%update_fact_assortment_statistic%')
+		)
+	)
+ADD TARGET package0.event_file(SET filename=N'F:\TRC\item_snapshot.xel',max_file_size=(10))
+WITH (MAX_MEMORY=4096 KB,EVENT_RETENTION_MODE=NO_EVENT_LOSS,MAX_DISPATCH_LATENCY=3 SECONDS,MAX_EVENT_SIZE=0 KB,MEMORY_PARTITION_MODE=NONE,TRACK_CAUSALITY=OFF,STARTUP_STATE=OFF)
+GO
 ```
 
-под учёткой MdwhReader
-с серверов MLB-SDB-005 и MLB-SDB-007
+Для перечисления зависимых объектов таблицы **item_snapshot** будем использовать запрос
 
-### Полезные ссылки:  
+```sql
+select
+	string_agg('[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N''%' + o.name + '%'')', ' OR ')
+from
+	sys.objects o
+	left join sys.sql_modules sm on
+		o.object_id = sm.object_id
+where
+	sm.definition like '%item_snapshot%'
+```
+
+Если на вашем сервере не установлена функция агрегирования строк, то можно использовать следующий запрос
+
+```sql
+select
+	'[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N''%' + o.name + '%'') OR '
+from
+	sys.objects o
+	left join sys.sql_modules sm on
+		o.object_id = sm.object_id
+where
+	sm.definition like '%item_snapshot%'
+for xml path (''), type
+```
+
+Далее остается собрать параметризированный динамический SQL запрос
+
+
+
+#### Полезные ссылки:  
 
 - [Database alias in Microsoft SQL Server](https://www.baud.cz/blog/database-alias-in-microsoft-sql-server)  
 - [mssqltips.com - SQL Server Extended Events Tutorial](https://www.mssqltips.com/sqlservertutorial/9194/sql-server-extended-events-tutorial/)  
