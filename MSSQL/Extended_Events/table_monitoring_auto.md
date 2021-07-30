@@ -26,7 +26,8 @@ ADD EVENT sqlserver.sql_statement_completed(SET collect_statement=(1)
 			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%tvf_AssortmentCube%') OR 
 			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%vw_item_snapshot%') OR 
 			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%items_sync%') OR 
-			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%update_fact_assortment_statistic%')
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%update_fact_assortment_statistic%') OR 
+			[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N'%item_snapshot_sync%')
 		)
 	)
 ADD TARGET package0.event_file(SET filename=N'F:\TRC\item_snapshot.xel',max_file_size=(10))
@@ -59,6 +60,56 @@ from
 where
 	sm.definition like '%item_snapshot%'
 for xml path (''), type
+```
+
+Так как наше хранилище распределено по нескольким БД на сервере, то нужно пробежаться по всем БД
+
+```sql
+declare @db_name as nvarchar(255),
+		@sql as nvarchar(4000),
+		@par_object as nvarchar(255) = N'item_snapshot'
+declare list_db cursor
+for
+ select
+	 name as DBName
+ from
+	 sys.databases
+ where
+	 name like '%MDWH%'
+ order by
+	 name;
+
+drop table if exists #res
+create table #res (
+	DB nvarchar(255),
+	name nvarchar(255),
+	type_desc nvarchar(255)
+)
+
+open list_db
+
+fetch next from list_db into @db_name
+
+while @@fetch_status = 0
+begin
+	set @sql = N'use ' + @db_name + ';
+		insert into #res (DB, name, type_desc) 
+		select ''' + @db_name + ''' as DB, name, type_desc 
+		from
+			sys.objects o
+			left join sys.sql_modules sm on
+				o.object_id = sm.object_id
+		where
+			lower(sm.definition) like lower(''%' + @par_object + '%'');'
+	exec (@sql)
+
+	fetch next from list_db into @db_name
+end
+close list_db
+deallocate list_db
+
+select string_agg('[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N''%' + name + '%'')', ' OR ')
+from #res
 ```
 
 Далее остается собрать параметризированный динамический SQL запрос
