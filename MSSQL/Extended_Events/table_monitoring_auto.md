@@ -1,5 +1,3 @@
-[Заметки по Extended Events](./ExtendedEvents_note.md)  
-
 ## Мониторинг таблицы
 
 ### Описание проблемы
