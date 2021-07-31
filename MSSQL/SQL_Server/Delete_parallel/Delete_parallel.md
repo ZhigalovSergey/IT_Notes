@@ -1,15 +1,17 @@
-# Параллельное удаление строк в таблице
+### [Заметки по SQL Server](../SQLServer_note.md)  
 
-## Описание проблемы  
+## Параллельное удаление строк в таблице
+
+### Описание проблемы  
 
 Для организации параллельной прогрузки данных по задаче [Обновление значений в больших таблицах](../Update_Big_Table/Update_Big_Table.md) есть идея организовать параллельное удаление строк в таблице [core].[item_snapshot_item_key]. 
 
-## Решение
+### Решение  
 
 - Выделить большие куски данных, чтобы не было взаимных блокировок.  
 - Или можно создать таблицу, которая логирует удаляемые данные. Это позволит динамически изменять количество процессов для удаления.
 
-## Реализация
+### Реализация  
 
 - Реализуем формирование логирования или карты того, какой кусок таблицы какой процесс обрабатывает.  
 
@@ -189,11 +191,11 @@
 
   Для этого напишем процедуру core.item_snapshot_tail  
 
-## Вывод
+### Вывод  
 
 Для организации параллельной загрузки данных лучше писать обработанный кусок данных в новую таблицу, а не удалять их из общей таблицы. Итоговый скрипт [core.item_snapshot_map.sql](./rand_process/core.item_snapshot_map.sql.md) можно использовать как шаблон для организации параллельной обработки любых задач.
 
-### Исходный код скриптов
+### Исходный код скриптов  
 
 Заранее определяем диапазон для удаления каждому процессу : [core.item_snapshot_N1.sql](./fix_process/core.item_snapshot_N1.sql.md), [core.item_snapshot_N2.sql](./fix_process/core.item_snapshot_N2.sql.md)
 
@@ -203,7 +205,7 @@
 - для параллельной обработки - [core.item_snapshot_map.sql](./rand_process/core.item_snapshot_map.sql.md), 
 - для завершающей обработки, если остались необработанные диапазоны - [core.item_snapshot_tail.sql](./rand_process/core.item_snapshot_tail.sql.md)
 
-### Полезные ссылки:
+### Полезные ссылки:  
 
 - [Running parallel delete statements](https://dba.stackexchange.com/questions/56432/running-parallel-delete-statements)  
 - [Minimally Logging Bulk Load Inserts into SQL Server](https://www.mssqltips.com/sqlservertip/1185/minimally-logging-bulk-load-inserts-into-sql-server/)  

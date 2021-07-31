@@ -1,7 +1,6 @@
-# Заметки по T-SQL  
+### [Заметки по SQL Server](../SQLServer_note.md)  
 
-*[Синтаксис MarkDown](https://www.markdownguide.org/basic-syntax/)*  
-[Заметки по SQL Server](../SQLServer_note.md)  
+## Заметки по T-SQL  
 
 - **[Получить даты за указанный период](./Get_List_Date.md)**  
 - **[Отправить письмо](./Send_mail.md)**  
