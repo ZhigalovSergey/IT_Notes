@@ -5,4 +5,5 @@
 - **[T-SQL](./TSQL/TSQL_note.md)**  
 - **[Извлечение данных из больших и быстро растущих таблиц при формировании витрин](./Select_from_big_table/Select_from_big_table.md)**  
 - **[Обслуживание партиционированных таблиц](./support_partition_table/support_partition_table.md)**  
+- **[Узнать размер таблицы](./size_object/size_object.md)**  
 

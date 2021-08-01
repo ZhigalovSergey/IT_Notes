@@ -59,11 +59,31 @@ create table tempdb.dbo.map_of_tasks (
 	id int not null identity (1, 1),
 	ExecutionInstanceGUID nvarchar(128),
 	task_id int,
-	insert_dt datetime
+	insert_dt datetime,
+	result nvarchar(128)
 )
 ```
 
+Для логирования процесса создадим таблицу load_log
 
+```sql
+create table tempdb.dbo.load_log (
+	id int not null identity (1, 1),
+	task_id int,
+	date_from date,
+	date_to date,
+	insert_dt datetime,
+	result nvarchar(128)
+)
+```
+
+Теперь создадим пакет SSIS для параллельного запуска
+
+![](./parallel.jpg)
+
+[Процедура для вставки задачи](./insert_map_of_tasks.sql) - общая, [для загрузки данных](./load_table.sql) - для каждого случая своя.
+
+Запуск пакета для параллельной загрузки
 
 
 
@@ -80,8 +100,10 @@ create table tempdb.dbo.map_of_tasks (
 
 ### Полезные ссылки:  
 
-[Предыдущие выпуски SQL Server Data Tools (SSDT и SSDT-BI)](https://docs.microsoft.com/ru-ru/sql/ssdt/previous-releases-of-sql-server-data-tools-ssdt-and-ssdt-bi?view=sql-server-ver15#ssdt-for-visual-studio-vs-2017)  
-[Заметки о выпуске SQL Server Management Studio (SSMS)](https://docs.microsoft.com/ru-ru/sql/ssms/release-notes-ssms?view=sql-server-ver15#previous-ssms-releases)  
-[Moving the SSISDB Catalog on a new SQL Server instance](https://www.sqlshack.com/moving-the-ssisdb-catalog-on-a-new-sql-server-instance/)  
-[SQL Server Table Partitioning: Resources](https://www.brentozar.com/sql/table-partitioning-resources/)  
-[Инструкция INSERT](https://docs.microsoft.com/ru-ru/sql/t-sql/statements/insert-transact-sql?view=sql-server-ver15)  
+- [Предыдущие выпуски SQL Server Data Tools (SSDT и SSDT-BI)](https://docs.microsoft.com/ru-ru/sql/ssdt/previous-releases-of-sql-server-data-tools-ssdt-and-ssdt-bi?view=sql-server-ver15#ssdt-for-visual-studio-vs-2017)  
+- [Заметки о выпуске SQL Server Management Studio (SSMS)](https://docs.microsoft.com/ru-ru/sql/ssms/release-notes-ssms?view=sql-server-ver15#previous-ssms-releases)  
+- [Moving the SSISDB Catalog on a new SQL Server instance](https://www.sqlshack.com/moving-the-ssisdb-catalog-on-a-new-sql-server-instance/)  
+- [SQL Server Table Partitioning: Resources](https://www.brentozar.com/sql/table-partitioning-resources/)  
+- [Инструкция INSERT](https://docs.microsoft.com/ru-ru/sql/t-sql/statements/insert-transact-sql?view=sql-server-ver15)  
+- [Выполнение пакета служб SSIS из SSMS с помощью Transact-SQL](https://docs.microsoft.com/ru-ru/sql/integration-services/ssis-quickstart-run-tsql-ssms?view=sql-server-ver15)  
+- [Execute SSIS Package Using T SQL](http://www.intellectsql.com/post-execute-ssis-package-using-tsql/)  

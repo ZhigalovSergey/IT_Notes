@@ -1,6 +1,6 @@
-# Управление памятью
+# Узнать размер таблицы
 
-Чтобы посмотреть сколько занимает места объект и оставшееся свободное место используем sp_spaceused
+Чтобы посмотреть сколько занимает места таблица используем sp_spaceused
 
 ```sql
 -- Для таблицы core.items
@@ -22,6 +22,12 @@ ON s.[object_id] = i.[object_id] AND s.index_id = i.index_id
 WHERE s.[object_id] = object_id('core.item_snapshot')
 GROUP BY i.name
 ORDER BY i.name
+```
+
+Свободное место на дисках сервера
+
+```sql
+EXEC master.sys.xp_fixeddrives
 ```
 
 
