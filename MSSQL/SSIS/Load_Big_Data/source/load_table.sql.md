@@ -1,11 +1,15 @@
-
+```sql
 use MDWH_SNAPSHOT
 go
 
 /*
 
+declare @st date = (select min([snapshot_date]) from [MDWH].[core].[items_collections_places_snapshot])
+
 select [snapshot_date], count(*) cnt
 from [core].items_collections_places_snapshot
+where [snapshot_date] >= dateadd(day, 1, eomonth(@st, 16)) and
+		snapshot_date < dateadd(day, 1, eomonth(@st, 17))
 group by [snapshot_date] 
 order by [snapshot_date] 
 
@@ -29,11 +33,13 @@ as begin
 			task_id
 			,date_from
 			,date_to
+			,insert_dt
 		)
 	select 
 			@task_id
 			,dateadd(day, 1, eomonth(@st, -1 + @task_id))
 			,dateadd(day, 1, eomonth(@st, @task_id))
+			,getdate()
 
 	insert into [core].items_collections_places_snapshot with (tablock) (
 		[snapshot_date],
@@ -67,3 +73,4 @@ as begin
 	where task_id = @task_id
 
 end
+```

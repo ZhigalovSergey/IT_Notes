@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "Load_Big_Data", "Load_Big_Data\Load_Big_Data.dtproj", "{F306DAC2-90B6-4180-A220-041EB9ED6DB4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F306DAC2-90B6-4180-A220-041EB9ED6DB4}.Development|Default.ActiveCfg = Development
+		{F306DAC2-90B6-4180-A220-041EB9ED6DB4}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B49FB7AC-3A2C-4916-A698-FB1B52090230}
+	EndGlobalSection
+EndGlobal

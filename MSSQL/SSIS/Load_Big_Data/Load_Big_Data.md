@@ -21,12 +21,21 @@
 Запрос для получения списка дат, результат которого помещаем в переменную типа Object
 
 ```sql
-select cast(cast(prv.[value] as date) as nvarchar) dt
-from sys.partition_functions as pf
-	left join sys.partition_range_values as prv on
-		prv.function_id = pf.function_id
-where name = 'pf_item_snapshot' and cast(prv.[value] as date) > '2020-12-21'
-order by cast(prv.[value] as date)
+declare @st date = (select min([snapshot_date]) from [MDWH].[core].[items_collections_places_snapshot]),
+		@fin date = getdate()
+
+;with cte_month as
+(
+select 1 as iter, dateadd(day, 1, eomonth(@st, -1)) as dt
+union all 
+select iter + 1 as iter, dateadd(month, 1, dt) as dt
+from cte_month
+where dateadd(month, 1, dt) < @fin
+)
+select dt
+from cte_month
+order by dt
+OPTION (MAXRECURSION 10000)
 ```
 
 ![](./ListDate.jpg)
@@ -81,11 +90,45 @@ create table tempdb.dbo.load_log (
 
 ![](./parallel.jpg)
 
-[Процедура для вставки задачи](./insert_map_of_tasks.sql) - общая, [для загрузки данных](./load_table.sql) - для каждого случая своя.
+[Процедура для вставки задачи](./source/insert_map_of_tasks.sql.md) - общая, [для загрузки данных](./load_table.sql) - для каждого случая своя.
 
 Запуск пакета для параллельной загрузки
 
+```sql
+-- Пользователь из под которого работает SQL Agent
+execute as login = 'CORP\msamir-sdb-005$'
 
+declare @cnt_parall_process int = 2, @iter int = 0
+
+while @iter < @cnt_parall_process
+begin 
+	declare @execution_id bigint,
+			@msg nvarchar(max)
+
+	exec SSISDB.catalog.create_execution
+		@package_name = N'load_parallel.dtsx',
+		@folder_name = N'Load',
+		@project_name = N'Load_Big_Data',
+		@use32bitruntime = false,
+		@reference_id = null,
+		@execution_id = @execution_id output
+
+	exec [catalog].[set_execution_property_override_value]
+		@execution_id,
+		@property_path = N'\Package.Variables[User::loop]',
+		@property_value = 26,
+		@sensitive = 0
+
+	exec SSISDB.catalog.start_execution
+		@execution_id
+
+	select @execution_id
+
+	set @iter = @iter + 1
+end
+```
+
+Дополнительно можно реализовать отключение параллельных процессов, если нагрузка на сервер станет слишком велика. Реализовать это можно через дополнительное поле status в таблице map_of_tasks
 
 ### Реализация. Загрузка INSERT INTO…SELECT для массового импорта данных с минимальным ведением журнала и параллелизмом
 
@@ -96,7 +139,16 @@ create table tempdb.dbo.load_log (
 > - Целевая таблица не используется в репликации.
 > - Для целевой таблицы используется указание `TABLOCK`.
 
+### Реализация. Создание выровненного партиционированного индекса.
 
+Воспользуемся пакетом параллельной загрузки. Перепишем процедуру загрузки данных на создание индекса. Процедура для создания индекса - [create_index.sql](./source/create_index.sql.md)
+
+### Исходный код  
+
+- Инициализация вспомогательных таблиц - [init.sql](./source/init.sql.md)  
+- Процедура для вставки задачи - [insert_map_of_tasks.sql](./source/insert_map_of_tasks.sql.md)  
+- Процедура для загрузки данных - [load_table.sql](./source/load_table.sql.md)  
+- Скрипт для параллельного запуска SSIS пакетов - [start_execution.sql](./source/start_execution.sql.md)  
 
 ### Полезные ссылки:  
 

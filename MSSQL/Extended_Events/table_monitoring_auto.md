@@ -81,8 +81,9 @@ for
 
 drop table if exists #res
 create table #res (
-	DB nvarchar(255),
-	name nvarchar(255),
+	DB_nm nvarchar(255),
+	schema_nm nvarchar(255),
+	object_nm nvarchar(255),
 	type_desc nvarchar(255)
 )
 
@@ -93,10 +94,11 @@ fetch next from list_db into @db_name
 while @@fetch_status = 0
 begin
 	set @sql = N'use ' + @db_name + ';
-		insert into #res (DB, name, type_desc) 
-		select ''' + @db_name + ''' as DB, name, type_desc 
+		insert into #res (DB_nm, schema_nm, object_nm, type_desc) 
+		select ''' + @db_name + ''' as DB, sch.name, o.name, type_desc 
 		from
 			sys.objects o
+			left join sys.schemas sch on o.schema_id = sch.schema_id
 			left join sys.sql_modules sm on
 				o.object_id = sm.object_id
 		where
@@ -108,7 +110,7 @@ end
 close list_db
 deallocate list_db
 
-select string_agg('[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N''%' + name + '%'')', ' OR ')
+select string_agg('[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N''%' + object_nm + '%'')', ' OR ')
 from #res
 ```
 
