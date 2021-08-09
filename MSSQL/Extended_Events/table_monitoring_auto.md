@@ -1,4 +1,4 @@
-#### [Заметки по Extended Events](./ExtendedEvents_note.md)  
+## [Заметки по Extended Events](./ExtendedEvents_note.md)  
 
 ### Мониторинг таблицы. Автоматизация.  
 
@@ -67,7 +67,7 @@ for xml path (''), type
 ```sql
 declare @db_name as nvarchar(255),
 		@sql as nvarchar(4000),
-		@par_object as nvarchar(255) = N'item_snapshot'
+		@par_object as nvarchar(255) = N'items_collections_places_snapshot'
 declare list_db cursor
 for
  select
@@ -102,7 +102,17 @@ begin
 			left join sys.sql_modules sm on
 				o.object_id = sm.object_id
 		where
-			lower(sm.definition) like lower(''%' + @par_object + '%'');'
+			lower(sm.definition) like lower(''%' + @par_object + '%'')'
+	exec (@sql)
+
+	set @sql = N'use ' + @db_name + ';
+		insert into #res (DB_nm, schema_nm, object_nm, type_desc) 
+		select ''' + @db_name + ''' as DB, sch.name, o.name, type_desc 
+		from
+			sys.objects o
+			left join sys.schemas sch on o.schema_id = sch.schema_id
+		where
+			lower(o.name) like lower(''' + @par_object + ''')'
 	exec (@sql)
 
 	fetch next from list_db into @db_name
@@ -110,13 +120,14 @@ end
 close list_db
 deallocate list_db
 
+-- select * from #res as r
+
 select string_agg('[sqlserver].[like_i_sql_unicode_string]([sqlserver].[sql_text],N''%' + object_nm + '%'')', ' OR ')
-from #res
+from 
+(select object_nm from #res group by object_nm) t
 ```
 
-Далее остается собрать параметризированный динамический SQL запрос
-
-
+Далее остается собрать параметризированный динамический SQL запрос и оформить в виде процедуры с параметром создание Extended Event.
 
 #### Полезные ссылки:  
 
