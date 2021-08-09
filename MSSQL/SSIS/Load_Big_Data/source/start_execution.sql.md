@@ -1,5 +1,8 @@
 ﻿```sql
 -- Пользователь из под которого работает SQL Agent
+use SSISDB
+go
+
 execute as login = 'CORP\msamir-sdb-005$'
 
 declare @cnt_parall_process int = 2, @iter int = 0
