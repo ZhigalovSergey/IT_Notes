@@ -164,6 +164,7 @@ public void Main()
 
 - Для GFK: [ScriptMain.cs](./GFK/ScriptMain.cs.md), [Export.cs](./GFK/Export.cs.md), [Upload.cs](./GFK/Upload.cs.md)
 - Для Nielsen: [ScriptMain.cs](./Nielsen/ScriptMain.cs.md), [Export.cs](./Nielsen/Export.cs.md), [Upload.cs](./Nielsen/Upload.cs.md)
+- [Добавить библиотеку в GAC](./GAC_Reg.bat.md)
 
 ### Полезные ссылки:  
 - [Документация по библиотеке System.Data.OleDb](https://docs.microsoft.com/ru-ru/dotnet/api/system.data.oledb?view=netframework-4.6)  
