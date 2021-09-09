@@ -1,4 +1,4 @@
-#### [Заметки по SSAS](../SSAS_note.md)  
+#### [Заметки по SSAS](./SSAS_note.md)  
 
 ### Развернуть Backup с помощью XMLA запроса
 
