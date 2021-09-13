@@ -31,7 +31,8 @@ if (x.ExitCode != 0)
 ```
 
 ### Исходный код  
-[ScriptMain.cs](./ScriptMain.cs.md)  
+[advertising_cost.cs](./ScriptMain/advertising_cost.cs.md)  
+[measurement_protocol.cs](./ScriptMain/measurement_protocol.cs.md)  
 
 ### Полезные ссылки:  
 - [Документация по классу ProcessStartInfo](https://docs.microsoft.com/ru-ru/dotnet/api/system.diagnostics.processstartinfo?view=netframework-4.5)  

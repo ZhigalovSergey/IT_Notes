@@ -1,4 +1,4 @@
-﻿```c#
+```c#
 #region Help:  Introduction to the script task
 /* The Script Task allows you to perform virtually any operation that can be accomplished in
  * a .Net application within the context of an Integration Services control flow. 
@@ -17,7 +17,7 @@ using System.Diagnostics;
 using System.IO;
 #endregion
 
-namespace ST_4cd66b6f588e46c0a5d45630fb846ab2
+namespace ST_ceaa1cc7a1f14ccca0dc7e7136c075c4
 {
     /// <summary>
     /// ScriptMain is the entry point class of the script.  Do not change the name, attributes,
@@ -100,7 +100,7 @@ namespace ST_4cd66b6f588e46c0a5d45630fb846ab2
                     UseShellExecute = false,
                     RedirectStandardError = true,
                     FileName = Dts.Variables["PythonExecutable"].Value.ToString(),
-                    Arguments = Dts.Variables["file_py"].Value.ToString() + " " + Dts.Variables["login"].Value.ToString() + " " + Dts.Variables["nadavi_pass"].GetSensitiveValue().ToString(),
+                    Arguments = Dts.Variables["file_py"].Value.ToString(),
                     WindowStyle = ProcessWindowStyle.Hidden
                 };
                 Process x = Process.Start(p);
@@ -116,6 +116,8 @@ namespace ST_4cd66b6f588e46c0a5d45630fb846ab2
                 Dts.Events.FireError(0, "Script Task", "An error occurred in Script Task: " + exception.Message.ToString(), "", 0);
                 Dts.TaskResult = (int)ScriptResults.Failure;
             }
+
+            Dts.TaskResult = (int)ScriptResults.Success;
 		}
 
         #region ScriptResults declaration
