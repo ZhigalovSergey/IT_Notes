@@ -53,7 +53,11 @@
   order by SESSION_CPU_TIME_MS desc, SESSION_READ_KB desc
   ```
   
+- Так как в DMV не хранится история запросов к серверу. То для более глубокого анализа можно настроить логирование запросов MDX. Есть два подхода, старый - [AsTrace](https://github.com/microsoft/Analysis-Services/tree/master/AsTrace) (по сути, это profiler без GUI) и новый - [XEvent](https://github.com/microsoft/Analysis-Services/tree/master/AsXEventSample)  
+
+  Подход через Extended Events лучше, так как не оказывает дополнительной нагрузки на сервер.  
   
+- Дополнительную информацию на основе DMV можно собрать с помощью проекта [ResMon](http://sqlsrvanalysissrvcs.codeplex.com/downloads/get/163669). Это куб, в который загружаются данные из DMV с определённым шагом.
 
 
 
@@ -63,4 +67,11 @@
 - [Dynamic XMLA using T-SQL for SQL Server Analysis Services](https://www.mssqltips.com/sqlservertip/2790/dynamic-xmla-using-tsql-for-sql-server-analysis-services/)  
 - [SSAS - ОПТИМИЗАЦИЯ ПРОИЗВОДИТЕЛЬНОСТИ](https://www.dvbi.ru/articles/reading/SSAS-optimization)  
 - [ASSP - Analysis Services Stored Procedure Project](https://asstoredprocedures.github.io/ASStoredProcedures/)  
+- [Мониторинг служб Analysis Services с помощью расширенных событий SQL Server](https://docs.microsoft.com/ru-ru/analysis-services/instances/monitor-analysis-services-with-sql-server-extended-events?view=asallproducts-allversions)  
+- [Журнал операций в службах Analysis Services](https://docs.microsoft.com/ru-ru/analysis-services/instances/log-operations-in-analysis-services?view=asallproducts-allversions)  
+- [Monitoring SQL Server Analysis Services with Extended Events](https://www.mssqltips.com/sqlservertip/6121/monitoring-sql-server-analysis-services-with-extended-events/)  
+- [Using Extended Events to monitor DAX queries for SSAS Tabular Databases](https://www.mssqltips.com/sqlservertip/4548/using-extended-events-to-monitor-dax-queries-for-ssas-tabular-databases/)  
+- [Performance Monitoring for SSAS – Extended Events Cheat Sheet](https://byobi.wordpress.com/2016/02/11/performance-monitoring-for-ssas-extended-events-cheat-sheet/)  
+- [Extended Events for SSAS](https://codingsight.com/extended-events-for-ssas/)  
+- [XMLA template script to configure Extended Events for Analysis Services](https://gist.github.com/brazilnut2000/a5e547635b4867d6e535)  
 
