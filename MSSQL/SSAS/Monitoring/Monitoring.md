@@ -1,6 +1,6 @@
 #### [Заметки по SSAS](./SSAS_note.md)  
 
-### Мониторинг запросов к SSAS
+### Мониторинг запросов к SSAS  
 
 #### Описание проблемы
 
@@ -44,7 +44,16 @@
   openquery([MARKETPLACE_OLAP], 'Select * from $System.Discover_Connections')
   ```
 
-  Также можно использовать другие DMV для анализа ситуации. Для [многомерной](./MS-SSAS.pdf) и [табулярной](./MS-SSAS-T.pdf) моделей они могут отличаться.
+  Также можно использовать другие DMV для анализа ситуации. Для [многомерной](./MS-SSAS.pdf) и [табулярной](./MS-SSAS-T.pdf) моделей они могут отличаться. Для удобства можно оборачивать запросы в SQL и работать с DataSets через Excel (накладывать фильтры и делать сортировки). Или как обычно, писать запросы по аналогии с SQL
+  
+  ```sql
+  Select * 
+  from $System.Discover_Sessions
+  where SESSION_STATUS > 0
+  order by SESSION_CPU_TIME_MS desc, SESSION_READ_KB desc
+  ```
+  
+  
 
 
 
@@ -52,4 +61,6 @@
 #### Полезные ссылки:  
 
 - [Dynamic XMLA using T-SQL for SQL Server Analysis Services](https://www.mssqltips.com/sqlservertip/2790/dynamic-xmla-using-tsql-for-sql-server-analysis-services/)  
-- 
+- [SSAS - ОПТИМИЗАЦИЯ ПРОИЗВОДИТЕЛЬНОСТИ](https://www.dvbi.ru/articles/reading/SSAS-optimization)  
+- [ASSP - Analysis Services Stored Procedure Project](https://asstoredprocedures.github.io/ASStoredProcedures/)  
+

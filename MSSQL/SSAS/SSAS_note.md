@@ -5,4 +5,5 @@
 - **[Установка ASSP - Analysis Services Stored Procedure Project](./Deploying_ASSP.md)**  
 - **[Создать Backup с помощью XMLA запроса](./XMLA_create_backup.md)**  
 - **[Развернуть Backup с помощью XMLA запроса](./XMLA_restore_backup.md)**  
+- **[Мониторинг запросов к SSAS](./Monitoring/Monitoring.md)**
 
