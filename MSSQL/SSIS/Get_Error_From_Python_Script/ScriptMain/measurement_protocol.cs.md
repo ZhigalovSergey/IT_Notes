@@ -108,9 +108,9 @@ namespace ST_ceaa1cc7a1f14ccca0dc7e7136c075c4
                 if (x.ExitCode != 0)
                 {
                     StreamReader myStreamReader = x.StandardError;
-                    Dts.Events.FireError(0, "Script Task", "An error occurred in Script Task: " + myStreamReader.ReadToEnd(), "", 0);
+                    Dts.Events.FireError(0, "Script Task", "An error occurred in Python Script: " + myStreamReader.ReadToEnd(), "", 0);
                 }
-				Dts.TaskResult = (int)ScriptResults.Success;
+                Dts.TaskResult = (int)ScriptResults.Success;
             }
             catch (Exception exception)
             {
