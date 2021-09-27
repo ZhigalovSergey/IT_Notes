@@ -110,6 +110,7 @@ namespace ST_ceaa1cc7a1f14ccca0dc7e7136c075c4
                     StreamReader myStreamReader = x.StandardError;
                     Dts.Events.FireError(0, "Script Task", "An error occurred in Script Task: " + myStreamReader.ReadToEnd(), "", 0);
                 }
+				Dts.TaskResult = (int)ScriptResults.Success;
             }
             catch (Exception exception)
             {
@@ -117,7 +118,6 @@ namespace ST_ceaa1cc7a1f14ccca0dc7e7136c075c4
                 Dts.TaskResult = (int)ScriptResults.Failure;
             }
 
-            Dts.TaskResult = (int)ScriptResults.Success;
 		}
 
         #region ScriptResults declaration
