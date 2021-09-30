@@ -1,3 +1,4 @@
+```sql
 use [MDWH_SNAPSHOT]
 go
 
@@ -59,5 +60,4 @@ as begin
 	end
 end
 	go
-
-
+```
