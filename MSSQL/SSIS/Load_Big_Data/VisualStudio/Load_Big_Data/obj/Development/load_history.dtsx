@@ -7,12 +7,12 @@
   DTS:CreatorName="CORP\zhigalov"
   DTS:DTSID="{40A639B8-DE47-43B8-99D3-8A0827DBCBE9}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="15.0.1301.433"
+  DTS:LastModifiedProductVersion="15.0.2000.170"
   DTS:LocaleID="1033"
   DTS:ObjectName="load_history"
   DTS:PackageType="5"
   DTS:VersionBuild="15"
-  DTS:VersionGUID="{CCA66CDC-6EC1-4BD3-BD09-7E2426CF3B2F}">
+  DTS:VersionGUID="{FD7CA787-A6BD-463C-9964-F7AF320DBDFB}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -23,6 +23,8 @@
       DTS:ObjectName="dwh.prod.lan.MDWH">
       <DTS:ObjectData>
         <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
           DTS:ConnectionString="Data Source=dwh.prod.lan;Initial Catalog=MDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -33,6 +35,8 @@
       DTS:ObjectName="dwh.prod.lan.MDWH_SNAPSHOT">
       <DTS:ObjectData>
         <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
           DTS:ConnectionString="Data Source=dwh.prod.lan;Initial Catalog=MDWH_SNAPSHOT;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
@@ -171,7 +175,7 @@ where
                       dataType="System.String"
                       description="The SQL command to be executed."
                       name="SqlCommand"
-                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select [snapshot_date]
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select [snapshot_date]
       ,[item_key]
       ,[offers_count]
       ,[is_item_with_offers]
@@ -431,7 +435,7 @@ where snapshot_date = '1900-01-01'</property>
                       dataType="System.String"
                       description="The SQL command to be executed."
                       name="SqlCommand"
-                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
                     <property
                       dataType="System.Int32"
                       description="Specifies the column code page to use when code page information is unavailable from the data source."
