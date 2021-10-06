@@ -9,7 +9,7 @@ from tempdb.dbo.map_of_tasks
 where result = 'failed'
 
 truncate table core.items_collections_places_snapshot
-with (partitions (1 to 21));
+with (partitions (1 to 11));
 go
 
 */
