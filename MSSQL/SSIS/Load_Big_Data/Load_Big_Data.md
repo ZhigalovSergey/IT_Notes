@@ -151,7 +151,7 @@ end
 - Процедура для вставки задачи - [insert_map_of_tasks.sql](./source/insert_map_of_tasks.sql.md)  
 - Процедура для загрузки данных - [load_table.sql](./source/load_table.sql.md)  
 - Скрипт для параллельного запуска SSIS пакетов - [start_execution.sql](./source/start_execution.sql.md)  
-- Проект пакетов SSIS - [VisualStudio](./VisualStudio)
+- Проект пакетов SSIS - [VisualStudio](./VisualStudio.7z)
 
 ### Полезные ссылки:  
 
