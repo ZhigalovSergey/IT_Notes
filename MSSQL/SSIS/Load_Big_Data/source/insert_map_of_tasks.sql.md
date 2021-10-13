@@ -1,5 +1,5 @@
 ```sql
-use [MDWH_SNAPSHOT]
+use [MDWH_Archive]
 go
 
 /*
@@ -13,7 +13,9 @@ select @res
 -- truncate table tempdb.dbo.map_of_tasks
 -- select * from tempdb.dbo.map_of_tasks (nolock)
 
-create procedure [dbo].[insert_map_of_tasks]
+--create 
+alter
+procedure [dbo].[insert_map_of_tasks]
 	@ExecutionInstanceGUID nvarchar(128),
 	@task_id int,
 	@result nvarchar(128) output
@@ -24,7 +26,7 @@ as begin
 	insert into tempdb.dbo.map_of_tasks (
 		ExecutionInstanceGUID,
 		task_id,
-		insert_dt
+		insert_start_dt
 	)
 	values (
 		@ExecutionInstanceGUID,
@@ -60,4 +62,5 @@ as begin
 	end
 end
 	go
+	
 ```
