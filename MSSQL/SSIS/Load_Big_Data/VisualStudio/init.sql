@@ -1,5 +1,5 @@
-```sql
--- select * from tempdb.dbo.map_of_tasks order by ExecutionInstanceGUID, insert_dt
+
+-- select * from tempdb.dbo.map_of_tasks order by task_id
 
 /*
 
@@ -31,7 +31,7 @@ create table tempdb.dbo.map_of_tasks (
 	status nvarchar(128)
 )
 
--- select * from tempdb.dbo.load_log
+-- select * from tempdb.dbo.load_log order by date_to desc
 
 -- truncate table tempdb.dbo.load_log
 
@@ -45,4 +45,3 @@ create table tempdb.dbo.load_log (
 	insert_dt datetime,
 	result nvarchar(128)
 )
-```

@@ -7,25 +7,23 @@
   DTS:CreatorName="CORP\zhigalov"
   DTS:DTSID="{EB89347B-E4FA-4079-B27C-92F5346F118B}"
   DTS:ExecutableType="Microsoft.Package"
-  DTS:LastModifiedProductVersion="15.0.2000.170"
+  DTS:LastModifiedProductVersion="15.0.1301.433"
   DTS:LocaleID="1033"
   DTS:ObjectName="load_parallel"
   DTS:PackageType="5"
-  DTS:VersionBuild="44"
-  DTS:VersionGUID="{B648447A-173A-487E-8099-0835B41493F9}">
+  DTS:VersionBuild="36"
+  DTS:VersionGUID="{6BC35C08-58F9-4494-91BD-EC10B00B0ED9}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
     <DTS:ConnectionManager
-      DTS:refId="Package.ConnectionManagers[dwh.prod.lan.MDWH_Archive]"
+      DTS:refId="Package.ConnectionManagers[dwh.prod.lan.MDWH_SNAPSHOT]"
       DTS:CreationName="OLEDB"
       DTS:DTSID="{7673D781-E058-497D-BDD9-FD6E99F28B86}"
-      DTS:ObjectName="dwh.prod.lan.MDWH_Archive">
+      DTS:ObjectName="dwh.prod.lan.MDWH_SNAPSHOT">
       <DTS:ObjectData>
         <DTS:ConnectionManager
-          DTS:ConnectRetryCount="1"
-          DTS:ConnectRetryInterval="5"
-          DTS:ConnectionString="Data Source=dwh.prod.lan;Initial Catalog=MDWH_Archive;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+          DTS:ConnectionString="Data Source=dwh.prod.lan;Initial Catalog=MDWH_SNAPSHOT;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
       </DTS:ObjectData>
     </DTS:ConnectionManager>
   </DTS:ConnectionManagers>
@@ -46,7 +44,7 @@
       DTS:Namespace="User"
       DTS:ObjectName="loop">
       <DTS:VariableValue
-        DTS:DataType="3">30</DTS:VariableValue>
+        DTS:DataType="3">26</DTS:VariableValue>
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
@@ -56,15 +54,6 @@
       DTS:ObjectName="result">
       <DTS:VariableValue
         DTS:DataType="8">success</DTS:VariableValue>
-    </DTS:Variable>
-    <DTS:Variable
-      DTS:CreationName=""
-      DTS:DTSID="{B4CAED79-41BE-42CC-807D-481158131C77}"
-      DTS:IncludeInDebugDump="6789"
-      DTS:Namespace="User"
-      DTS:ObjectName="start">
-      <DTS:VariableValue
-        DTS:DataType="3">0</DTS:VariableValue>
     </DTS:Variable>
     <DTS:Variable
       DTS:CreationName=""
@@ -85,7 +74,7 @@
       DTS:DTSID="{8CB336AD-BBEF-41F6-91B3-88BBE21DA7DF}"
       DTS:EvalExpression="@loop &gt; @cnt &amp;&amp; @status == &quot;running&quot;"
       DTS:ExecutableType="STOCK:FORLOOP"
-      DTS:InitExpression="@cnt = @start"
+      DTS:InitExpression="@cnt = 0"
       DTS:LocaleID="-1"
       DTS:MaxConcurrent="1"
       DTS:ObjectName="Loop">
@@ -139,18 +128,12 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{7673D781-E058-497D-BDD9-FD6E99F28B86}"
-              SQLTask:SqlStatementSource="exec load_table ?, ? output" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="exec load_table ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
                 SQLTask:ParameterName="0"
                 SQLTask:DtsVariableName="User::cnt"
                 SQLTask:ParameterDirection="Input"
                 SQLTask:DataType="3"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="1"
-                SQLTask:DtsVariableName="User::result"
-                SQLTask:ParameterDirection="Output"
-                SQLTask:DataType="130"
                 SQLTask:ParameterSize="-1" />
             </SQLTask:SqlTaskData>
           </DTS:ObjectData>
@@ -211,24 +194,18 @@
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
               SQLTask:Connection="{7673D781-E058-497D-BDD9-FD6E99F28B86}"
-              SQLTask:SqlStatementSource="update tempdb.dbo.map_of_tasks&#xA;&#x9;set result = ?,&#xA;&#x9;insert_finish_dt = getdate()&#xA;where ExecutionInstanceGUID = ? and task_id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              SQLTask:SqlStatementSource="update tempdb.dbo.map_of_tasks&#xA;&#x9;set result = 'success'&#xA;where ExecutionInstanceGUID = ? and task_id = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
               <SQLTask:ParameterBinding
-                SQLTask:ParameterName="1"
+                SQLTask:ParameterName="0"
                 SQLTask:DtsVariableName="System::ExecutionInstanceGUID"
                 SQLTask:ParameterDirection="Input"
                 SQLTask:DataType="130"
                 SQLTask:ParameterSize="-1" />
               <SQLTask:ParameterBinding
-                SQLTask:ParameterName="2"
+                SQLTask:ParameterName="1"
                 SQLTask:DtsVariableName="User::cnt"
                 SQLTask:ParameterDirection="Input"
                 SQLTask:DataType="3"
-                SQLTask:ParameterSize="-1" />
-              <SQLTask:ParameterBinding
-                SQLTask:ParameterName="0"
-                SQLTask:DtsVariableName="User::result"
-                SQLTask:ParameterDirection="Input"
-                SQLTask:DataType="130"
                 SQLTask:ParameterSize="-1" />
             </SQLTask:SqlTaskData>
           </DTS:ObjectData>

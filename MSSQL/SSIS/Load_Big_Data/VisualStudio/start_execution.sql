@@ -1,8 +1,5 @@
-﻿```sql
+﻿
 -- Пользователь из под которого работает SQL Agent
-use SSISDB
-go
-
 execute as login = 'CORP\msamir-sdb-005$'
 
 declare @cnt_parall_process int = 2, @iter int = 0
@@ -37,7 +34,7 @@ begin
 end
 
 
--- 1560767
+-- 1563191
 
 /*
 
@@ -49,7 +46,7 @@ where package_name = 'load_parallel.dtsx' and end_time IS NULL
 
 /*
 
-declare @execution_id bigint = 1560396
+declare @execution_id bigint = 1563191
 
 select status from SSISDB.catalog.executions where execution_id = @execution_id
 
@@ -68,4 +65,3 @@ declare @execution_id bigint = 1560397
 exec [SSISDB].[catalog].[stop_operation] @operation_id
 
 */
-```

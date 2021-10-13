@@ -1,4 +1,3 @@
-```sql
 use [MDWH_SNAPSHOT]
 go
 
@@ -13,7 +12,7 @@ select @res
 -- truncate table tempdb.dbo.map_of_tasks
 -- select * from tempdb.dbo.map_of_tasks (nolock)
 
-create procedure [dbo].[insert_map_of_tasks]
+alter procedure [dbo].[insert_map_of_tasks]
 	@ExecutionInstanceGUID nvarchar(128),
 	@task_id int,
 	@result nvarchar(128) output
@@ -24,12 +23,14 @@ as begin
 	insert into tempdb.dbo.map_of_tasks (
 		ExecutionInstanceGUID,
 		task_id,
-		insert_dt
+		insert_dt,
+		status
 	)
 	values (
 		@ExecutionInstanceGUID,
 		@task_id,
-		getdate()
+		getdate(),
+		'running'
 	)
 
 	if (
@@ -58,6 +59,8 @@ as begin
 		commit
 		set @result = 'success'
 	end
+
 end
 	go
-```
+
+

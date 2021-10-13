@@ -4,11 +4,7 @@
     <Configuration>
       <Name>Development</Name>
       <Options>
-        <AssessmentRuleSuppressionSetting />
-        <UseWinAuth>false</UseWinAuth>
-        <WinAuthUserName />
-        <WinAuthDomain />
-        <ServerName>dwh.dev.lan</ServerName>
+        <ServerName>mir-sdb-005</ServerName>
         <PathOnServer>/SSISDB/Load/Load_Big_Data</PathOnServer>
         <UserIDs />
         <UserPasswords />
@@ -18,7 +14,7 @@
           <ConfigurationSetting>
             <Id>LastModifiedTime</Id>
             <Name>LastModifiedTime</Name>
-            <Value xsi:type="xsd:dateTime">2021-09-30T20:13:29.2506192Z</Value>
+            <Value xsi:type="xsd:dateTime">2021-07-27T10:49:20.195779Z</Value>
           </ConfigurationSetting>
         </ParameterConfigurationSensitiveValues>
       </Options>
