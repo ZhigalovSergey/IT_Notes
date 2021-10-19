@@ -10,7 +10,7 @@ GoTo :EOF
 :Obrabotka
 rem For install
 Echo %1 >> GAC_Reg.log
-gacutil /i %1
+gacutil /i %1 >> GAC_Reg.log
 
 rem For uninstall
 rem Echo %2 >> GAC_UnReg.txt

@@ -8,4 +8,5 @@
 - **[Загрузка больших объемов данных](./Load_Big_Data/Load_Big_Data.md)**
 - **[Настройка JOBа SQL SERVER Agent](./Setting_SQL_Server_Agent_JOB/Setting_JOB.md)**  
 - **[Логирование ошибок Python скрипта в пакете SSIS (Script Task)](./Get_Error_From_Python_Script/Get_Error_From_Python_Script.md)**  
+- **[Проверки данных при загрузке в DWH из источников](./Data_Quality_Checks/Data_Quality_Checks.md)**  
 
