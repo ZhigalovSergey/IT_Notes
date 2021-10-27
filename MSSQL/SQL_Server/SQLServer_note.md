@@ -7,4 +7,5 @@
 - **[Обслуживание партиционированных таблиц](./support_partition_table/support_partition_table.md)**  
 - **[Узнать размер таблицы](./size_object/size_object.md)** 
 - **[Перенос объектов слоя RAW в отдельную БД](./transfer_objects_of_RAW_layer_in_separate_DB/transfer_objects_of_RAW_layer_in_separate_DB.md)**   
+- **[Поиск зависимостей между объектами Хранилища данных](./search_references/search_references.md)**  
 
