@@ -1,12 +1,8 @@
 ```sql
---use [MDWH_STG]
---go
 
--- exec [stg_bank_reestr_sberspasibo].[transaction_error_send_email]
+-- drop procedure [stg_bank_reestr_sberspasibo].[transaction_error_send_email]
 
-create 
---alter
-procedure [stg_bank_reestr_sberspasibo].[transaction_error_send_email]
+create procedure [stg_bank_reestr_sberspasibo].[transaction_error_send_email]
 as begin
 	set nocount on;
 
@@ -28,8 +24,8 @@ as begin
 	if (exists (select 1 from #errors)
 		)
 	begin
-		declare @subject nvarchar(max) = N'Ошибки в файлах каталога \\mir-sdb-005\Input\reestr_bank\sberspasibo',
-				@message_text nvarchar(max) = N'Уважаемые коллеги, при загрузке данных sberspasibo обнаружены ошибки:',
+		declare @subject nvarchar(max) = N'РћС€РёР±РєРё РІ С„Р°Р№Р»Р°С… РєР°С‚Р°Р»РѕРіР° \\mir-sdb-005\Input\reestr_bank\sberspasibo',
+				@message_text nvarchar(max) = N'РЈРІР°Р¶Р°РµРјС‹Рµ РєРѕР»Р»РµРіРё, РїСЂРё Р·Р°РіСЂСѓР·РєРµ РґР°РЅРЅС‹С… sberspasibo РѕР±РЅР°СЂСѓР¶РµРЅС‹ РѕС€РёР±РєРё:',
 				@HTML nvarchar(max),
 				@data_context nvarchar(max) = '<br><span style="font-size:12px">' + isnull(db_name() + '.' + object_schema_name(@@procid) + '.' + object_name(@@procid), 'proc') + '</span>',
 				@recipients varchar(255) = 'artem.shabrov@sbermegamarket.ru',
