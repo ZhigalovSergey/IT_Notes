@@ -8,7 +8,7 @@
 
 ### Варианты решения  
 
-- Создадим таблицу зависимостей на основе системных таблиц sys.sql_expression_dependencies и sys.objects. На основе этих данных можно построить неориентированный граф.
+- Создадим таблицу зависимостей на основе системных таблиц **sys.sql_expression_dependencies** и **sys.objects**. На основе этих данных можно построить неориентированный граф.
 - Для определения направления, используем регулярные выражения для анализа текста процедур. В качестве шаблона используем команды **insert into** и **merge**.  
 - Также можно добавить информацию о том в каких ETL пакетах запускаются процедуры. Для этого также могут помочь регулярные выражения.
 
@@ -62,10 +62,82 @@ order by
 	, obj_name
 ```
 
+Определение процедуры можно получить из **sys.sql_modules** или через **object_definition**
 
+```sql
+select object_definition(object_id('core.transaction_v2_sync'))
+
+select top 100 *
+from sys.sql_modules
+where object_id = object_id('core.transaction_v2_sync')
+```
+
+Для поиска по шаблону используем функцию на C#
+
+```c#
+[Microsoft.SqlServer.Server.SqlFunction(IsDeterministic = true)]
+public static SqlBoolean IsMatch(String input, String pattern)
+{
+	if (String.IsNullOrEmpty(input) || String.IsNullOrEmpty(pattern))
+	{
+		return new SqlBoolean(0);
+	}
+	else
+	{
+		return Regex.IsMatch(input, pattern);
+	}
+}
+```
+
+После сборки создадим функцию 
+
+```sql
+use [MDWH]
+go
+
+create function [maintenance].[regex_is_match]
+(
+	@input [NVARCHAR](max),
+	@pattern [NVARCHAR](max)
+)
+returns [BIT] with execute as caller
+as external name [RegexAssembly].[UDF].[IsMatch]
+go
+```
+
+Проверяем работу на примере core.transaction_v2_sync которая формирует данные для таблицы core.transaction_v2
+
+```sql
+select
+	s.name sch,
+	o.name nm
+from
+	sys.objects o
+	inner join sys.schemas s on
+		o.schema_id = s.schema_id
+	inner join sys.sql_modules M on
+		o.object_id = M.object_id
+where
+	o.object_id = object_id('core.transaction_v2_sync') and
+	maintenance.regex_is_match(M.definition, N'(?i).*(merge\s+[[]?core[]]?.[[]?transaction_v2[]]?|insert\s+into\s+[[]?core[]]?.[[]?transaction_v2[]]?).*') = 1
+```
+
+
+
+### Исходный код скриптов  
+
+- [Проект RegEx на C#](./SqlRegex.7z)
 
 ### Полезные ссылки  
 - [sp_MSforeachdb](https://www.mssqltips.com/sqlservertip/1414/run-same-command-on-all-sql-server-databases-without-cursors/)  
 
 - [Making a more reliable and flexible sp_MSforeachdb](https://www.mssqltips.com/sqlservertip/2201/making-a-more-reliable-and-flexible-spmsforeachdb/)  
+
+- [LIKE (Transact-SQL)](https://docs.microsoft.com/ru-ru/sql/t-sql/language-elements/like-transact-sql?view=sql-server-ver15)  
+
+- [SQL Server Regex CLR Function](https://www.mssqltips.com/sqlservertip/6529/sql-server-regex-clr-function/)  
+
+- [Regular Expressions Make Pattern Matching And Data Extraction Easier](https://docs.microsoft.com/en-us/archive/msdn-magazine/2007/february/sql-server-regular-expressions-for-efficient-sql-querying)  
+
+  
 
