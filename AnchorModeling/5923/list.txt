@@ -1,0 +1,14 @@
+"traffic_type",
+"traffic_category",
+"traffic_subcategory",
+"traffic_division",
+"traffic_channel",
+"is_paid_traffic",
+"campaign_target_category_id",
+"campaign_target_web_level1",
+"campaign_target_web_level2",
+"campaign_target_web_level3",
+"campaign_target_web_level4",
+"campaign_target_web_level5",
+"campaign_target_web_level6"
+

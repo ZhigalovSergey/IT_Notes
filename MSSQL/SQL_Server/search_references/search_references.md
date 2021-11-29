@@ -10,7 +10,8 @@
 
 - Создадим таблицу зависимостей на основе системных таблиц **sys.sql_expression_dependencies** и **sys.objects**. На основе этих данных можно построить неориентированный граф.
 - Для определения направления, используем регулярные выражения для анализа текста процедур. В качестве шаблона используем команды **insert into** и **merge**.  
-- Также можно добавить информацию о том в каких ETL пакетах запускаются процедуры. Для этого также могут помочь регулярные выражения.
+- Также можно добавить информацию о том в каких ETL пакетах запускаются процедуры. Для этого также могут помочь регулярные выражения. Рассмотреть возможность извлечения XML-файла пакетов из БД **SSISDB** (Предварительно файлы [шифруются](https://ask.sqlservercentral.com/questions/100651/querying-ssisdb-text-search-in-the-packet-definiti.html#) и проще анализировать пакете в GITе) 
+- Заполним таблицу связей для Atlas  
 
 ### Реализация  
 
@@ -122,7 +123,7 @@ where
 	maintenance.regex_is_match(M.definition, N'(?i).*(merge\s+[[]?core[]]?.[[]?transaction_v2[]]?|insert\s+into\s+[[]?core[]]?.[[]?transaction_v2[]]?).*') = 1
 ```
 
-
+Для заполнения таблицы связей в Atlas создадим функцию с параметром - название процедуры. 
 
 ### Исходный код скриптов  
 
@@ -139,5 +140,5 @@ where
 
 - [Regular Expressions Make Pattern Matching And Data Extraction Easier](https://docs.microsoft.com/en-us/archive/msdn-magazine/2007/february/sql-server-regular-expressions-for-efficient-sql-querying)  
 
-  
+- [sys.sql_expression_dependencies](https://docs.microsoft.com/ru-ru/sql/relational-databases/system-catalog-views/sys-sql-expression-dependencies-transact-sql?view=sql-server-ver15)  
 

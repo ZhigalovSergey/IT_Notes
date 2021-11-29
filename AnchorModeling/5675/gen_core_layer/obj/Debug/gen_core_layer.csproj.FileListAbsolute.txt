@@ -1,0 +1,7 @@
+C:\Users\zhigalov\Desktop\GOODS\TASKS\5675\gen_core_layer\bin\Debug\gen_core_layer.exe.config
+C:\Users\zhigalov\Desktop\GOODS\TASKS\5675\gen_core_layer\bin\Debug\gen_core_layer.exe
+C:\Users\zhigalov\Desktop\GOODS\TASKS\5675\gen_core_layer\bin\Debug\gen_core_layer.pdb
+C:\Users\zhigalov\Desktop\GOODS\TASKS\5675\gen_core_layer\obj\Debug\gen_core_layer.csproj.AssemblyReference.cache
+C:\Users\zhigalov\Desktop\GOODS\TASKS\5675\gen_core_layer\obj\Debug\gen_core_layer.csproj.CoreCompileInputs.cache
+C:\Users\zhigalov\Desktop\GOODS\TASKS\5675\gen_core_layer\obj\Debug\gen_core_layer.exe
+C:\Users\zhigalov\Desktop\GOODS\TASKS\5675\gen_core_layer\obj\Debug\gen_core_layer.pdb

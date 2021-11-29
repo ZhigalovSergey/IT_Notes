@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/12/2021 1:29:42 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ZHIGALOV"
+  DTS:CreatorName="zhigalov"
+  DTS:DTSID="{CF9BF8D3-B10B-465E-B006-04D39E4EC5CD}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.170"
+  DTS:LocaleID="1049"
+  DTS:ObjectName="Package1"
+  DTS:ProtectionLevel="0"
+  DTS:VersionGUID="{992FD750-87E3-4DF7-B966-3B6BC3923F80}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\utm_traffic_type_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{3AC0E275-6DEB-4FDA-A51E-03FCE3EF41A2}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_traffic_type_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_traffic_type_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+</DTS:Executable>

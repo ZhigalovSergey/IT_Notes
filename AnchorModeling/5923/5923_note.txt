@@ -1,0 +1,66 @@
+Разработать витрину для справочника dimUTM в DWH
+
+create table dbo.utm (
+	[utm_key] [bigint] NOT NULL
+	,[medium] [nvarchar](4000) NULL
+	,[source] [nvarchar](4000) NULL
+	,[campaign] [nvarchar](4000) NULL
+	,[hash] [nvarchar](64) NOT NULL
+	,[traffic_type]                [nvarchar](4000) NULL
+	,[traffic_category]            [nvarchar](4000) NULL
+	,[traffic_subcategory]         [nvarchar](4000) NULL
+	,[traffic_division]            [nvarchar](4000) NULL
+	,[traffic_channel]             [nvarchar](4000) NULL
+	,[is_paid_traffic]             [nvarchar](4000) NULL
+	,[campaign_target_category_id] [nvarchar](4000) NULL
+	,[campaign_target_web_level1]  [nvarchar](4000) NULL
+	,[campaign_target_web_level2]  [nvarchar](4000) NULL
+	,[campaign_target_web_level3]  [nvarchar](4000) NULL
+	,[campaign_target_web_level4]  [nvarchar](4000) NULL
+	,[campaign_target_web_level5]  [nvarchar](4000) NULL
+	,[campaign_target_web_level6]  [nvarchar](4000) NULL
+ CONSTRAINT [pk$utm] PRIMARY KEY NONCLUSTERED 
+(
+	[utm_key]
+) ON [DATA_MART]
+) ON [DATA_MART]
+GO
+
+
+select
+	[utm_key],
+	[medium],
+	[source],
+	[campaign],
+	[hash],
+	[traffic_type],
+	[traffic_category],
+	[traffic_subcategory],
+	[traffic_division],
+	[traffic_channel],
+	[is_paid_traffic],
+	[campaign_target_category_id],
+	[campaign_target_web_level1],
+	[campaign_target_web_level2],
+	[campaign_target_web_level3],
+	[campaign_target_web_level4],
+	[campaign_target_web_level5],
+	[campaign_target_web_level6],
+	[mt_insert_dt],
+	[mt_update_dt]
+from
+	[MDWH].[dbo].[utm]
+	
+	
+	update tgt
+	set
+		tgt.traffic_category = src.traffic_category,
+		tgt.mt_update_dt = @mt_dt
+	from
+		dbo.utm as tgt
+		inner join core.utm_traffic_category as src on
+			tgt.utm_key = src.utm_key
+	where
+		tgt.mt_update_dt >= @load_dt
+		and not (isnull(tgt.traffic_category,'||') = isnull(src.traffic_category,'||'))
+		

@@ -1,0 +1,31 @@
+﻿<#@ template language="C#" hostspecific="true"#>
+<#@ import namespace="System.Data" #>
+<# string[] array = new[] {"traffic_type",
+                            "traffic_category",
+                            "traffic_subcategory",
+                            "traffic_division",
+                            "traffic_channel",
+                            "is_paid_traffic",
+                            "campaign_target_category_id",
+                            "campaign_target_web_level1",
+                            "campaign_target_web_level2",
+                            "campaign_target_web_level3",
+                            "campaign_target_web_level4",
+                            "campaign_target_web_level5",
+                            "campaign_target_web_level6" }; #>
+<Biml xmlns="http://schemas.varigence.com/biml.xsd">
+<Connections>
+    <Connection Name="MDWH" CreateInProject="true" ConnectionString="Data Source=dwh.prod.lan;Initial Catalog=MDWH;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+</Connections>
+  <Packages>
+    <Package Name="core_utm" ConstraintMode="Parallel">
+      <Tasks>
+        <# foreach (var table in array) { #>
+        <ExecuteSQL Name="utm_<#=table#>_sync" ConnectionName="MDWH" ResultSet="None">
+          <DirectInput>exec core.utm_<#=table#>_sync;</DirectInput>
+        </ExecuteSQL>
+        <# } #>
+      </Tasks>
+    </Package>
+  </Packages>
+</Biml>
