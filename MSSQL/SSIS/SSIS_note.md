@@ -9,4 +9,4 @@
 - **[Настройка JOBа SQL SERVER Agent](./Setting_SQL_Server_Agent_JOB/Setting_JOB.md)**  
 - **[Логирование ошибок Python скрипта в пакете SSIS (Script Task)](./Get_Error_From_Python_Script/Get_Error_From_Python_Script.md)**  
 - **[Проверки данных при загрузке в DWH из источников](./Data_Quality_Checks/Data_Quality_Checks.md)**  
-
+- **[Error: statement timeout](./Error_statement_timeout/Error_statement_timeout.md)** 
