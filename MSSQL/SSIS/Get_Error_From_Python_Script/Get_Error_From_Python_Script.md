@@ -26,7 +26,7 @@ x.WaitForExit();
 if (x.ExitCode != 0)
 {
     StreamReader myStreamReader = x.StandardError;
-    Dts.Events.FireError(0, "Script Task", "An error occurred in Script Task: " + myStreamReader.ReadToEnd(), "", 0);
+    Dts.Events.FireError(0, "Script Task", "An error occurred in Python Script: FileName: " + Dts.Variables["PythonExecutable"].Value.ToString() + " Arguments: " + Dts.Variables["file_py"].Value.ToString() + " " + Dts.Variables["login"].Value.ToString() + " ***** Error: " + myStreamReader.ReadToEnd(), "", 0);
 }
 ```
 
