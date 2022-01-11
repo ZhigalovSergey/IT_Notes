@@ -1,3 +1,3 @@
 ## Заметки по Anchor Modeling
 
-### [AnchorModeling](./AnchorModeling.md)  
+### [Auto generate core layer](./auto_gen_core_layer.md)  
