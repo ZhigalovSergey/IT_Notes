@@ -199,24 +199,55 @@ select @sql
 Перейдем собственно к написанию command-line приложения, которое будет генерировать слой datamart. Для этого допишем код для генерации слоя core 
 
 ```c#
-// create datamart
-text = File.ReadAllText(dir + "\\template\\dbo\\tbl\\datamart.sql");
-fl_new = string.Format(dir + "\\test\\dbo\\tbl\\" + anchor + ".sql");
+// create datamart_sync.sql
+text = File.ReadAllText(dir + "\\template\\dbo\\proc\\datamart_sync.sql");
+fl_new = string.Format(dir + "\\test\\dbo\\proc\\" + anchor + ".sql");
 text = text.Replace("#anchor#", anchor);
 
-string columns = File.ReadAllText(dir + "\\template\\dbo\\tbl\\columns.sql");
+string list = File.ReadAllText(dir + "\\template\\dbo\\proc\\list.sql");
+string init = File.ReadAllText(dir + "\\template\\dbo\\proc\\init.sql");
 foreach (KeyValuePair<string, string> kvp in dict_attr)
 {
     src_attr = kvp.Key;
     attr = kvp.Value;
 
-    columns = columns.Replace("#"+ src_attr + "#", attr);
+    list = list.Replace("#" + src_attr + "#", anchor + "_" + attr);
+    init = init.Replace("#" + src_attr + "#", anchor + "_" + attr);
 }
-text = text.Replace("#attrs#", columns);
+text = text.Replace("#list#", list);
+text = text.Replace("#init#", init);
+
+// update attribute_business_key
+string upd_bk = File.ReadAllText(dir + "\\template\\dbo\\proc\\update_business_key.sql");
+upd_bk = upd_bk.Replace("#anchor#", anchor);
+upd_bk = upd_bk.Replace("#src_name#", src_name);
+upd_bk = upd_bk.Replace("#attr_bk_1#", attr_bk_1);
+upd_bk = upd_bk.Replace("#attr_bk_2#", attr_bk_2);
+upd_bk = upd_bk.Replace("#attr_bk_3#", attr_bk_3);
+upd_bk = upd_bk.Replace("#attr_bk_4#", attr_bk_4);
+upd_bk = upd_bk.Replace("#attr_bk_5#", attr_bk_5);
+upd_bk = upd_bk.Replace("#attr_bk_6#", attr_bk_6);
+text = text.Replace("#upd_business_key#", upd_bk);
+
+// update attributes
+string upd_attrs = "";
+foreach (KeyValuePair<string, string> kvp in dict_attr)
+{
+    if (bk.Contains(kvp.Key)) continue;
+    src_attr = kvp.Key;
+    attr = kvp.Value;
+    string upd_attr = File.ReadAllText(dir + "\\template\\dbo\\proc\\update_attr.sql");
+
+    upd_attr = upd_attr.Replace("#anchor#", anchor);
+    upd_attr = upd_attr.Replace("#attr#", attr);
+    upd_attrs += upd_attr;
+}
+
+text = text.Replace("#upd_attrs#", upd_attrs);
 File.WriteAllText(fl_new, text);
 ```
 
-Также нужно сгенерировать скрипты миграции. 
+Также нужно сгенерировать ETL пакет.  
 
 ### Полезные ссылки
 
