@@ -10,7 +10,7 @@ create table [core].[#anchor#] (
 ) on [core]
 go
 
-create nonclustered index [mt_update_dt] on [core].[#anchor#]
+create nonclustered index [mt_insert_dt] on [core].[#anchor#]
 (
 [mt_insert_dt]
 )

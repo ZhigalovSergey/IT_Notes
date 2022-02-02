@@ -15,7 +15,9 @@ as begin
 			#anchor#_id [NVARCHAR](64) not null,
 			#anchor#_source [NVARCHAR](4000) null,
 			#anchor#_medium [NVARCHAR](4000) null,
-			#anchor#_campaign [NVARCHAR](4000) null
+			#anchor#_campaign [NVARCHAR](4000) null,
+			#anchor#_content [NVARCHAR](4000) null,
+			#anchor#_term [NVARCHAR](4000) null
 		)
 
 		insert into ##anchor#_s_#src_name# (
@@ -23,14 +25,18 @@ as begin
 			#anchor#_id,
 			#anchor#_source,
 			#anchor#_medium,
-			#anchor#_campaign
+			#anchor#_campaign,
+			#anchor#_content,
+			#anchor#_term
 		)
 		select
 			next value for core.#anchor#_sequence as #anchor#_key,
 			[id],
 			[source],
 			[medium],
-			[campaign]
+			[campaign],
+			[content],
+			[term]
 		from
 			[MDWH_RAW].[raw_gbq168810_g161014_dwh_output].[dimUtmExtended] src
 		where
@@ -41,7 +47,7 @@ as begin
 				from
 					core.#anchor#_s_#src_name# as tgt
 				where
-					tgt.#anchor#_id = src.[id]
+					tgt.#anchor#_hash = src.[id]
 			)
 
 		insert into core.#anchor# (
@@ -58,10 +64,12 @@ as begin
 
 		insert into core.#anchor#_s_#src_name# (
 			#anchor#_key,
-			#anchor#_id,
+			#anchor#_hash,
 			#anchor#_source,
 			#anchor#_medium,
 			#anchor#_campaign,
+			#anchor#_content,
+			#anchor#_term,
 			mt_insert_dt
 		)
 		select
@@ -70,6 +78,8 @@ as begin
 			#anchor#_source,
 			#anchor#_medium,
 			#anchor#_campaign,
+			#anchor#_content,
+			#anchor#_term,
 			@mt_dt as mt_insert_dt
 		from
 			##anchor#_s_#src_name# as src

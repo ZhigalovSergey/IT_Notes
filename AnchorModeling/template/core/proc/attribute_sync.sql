@@ -18,13 +18,13 @@ as begin
 	)
 	select
 		#anchor#_key,
-		gbq.TrafficType											-- нужен mapping между названиями полей слоя raw и названиями атрибутов
+		src.#src_attr#
 	from
-		[MDWH_RAW].[raw_gbq168810_g161014_dwh_output].[dimUtm] as gbq
-		inner join core.[utm_gbq] as utm on
-			gbq.id = utm.[hash]
+		[MDWH_RAW].[raw_gbq168810_g161014_dwh_output].[dimUtmExtended] src
+		inner join core.[#anchor#_s_#src_name#] as #anchor# on
+			src.id = #anchor#.[#anchor#_hash]
 	where
-		gbq.mt_update_dt >= @load_dt
+		src.mt_update_dt >= @load_dt
 
 	insert into core.#anchor#_x_#attr# (
 		#anchor#_key,

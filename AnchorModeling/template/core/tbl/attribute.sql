@@ -13,6 +13,6 @@ go
 
 create nonclustered index [mt_update_dt] on [core].[#anchor#_x_#attr#]
 (
-[mt_insert_dt]
+[mt_update_dt]
 )
 go
