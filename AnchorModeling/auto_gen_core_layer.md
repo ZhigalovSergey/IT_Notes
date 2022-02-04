@@ -270,4 +270,5 @@ namespace gen_core_layer
 
 ### Полезные ссылки
 
-- [JSON](https://ru.wikipedia.org/wiki/JSON)
+- [JSON](https://ru.wikipedia.org/wiki/JSON)  
+- [Querying JSON with complex JSON Path](https://www.newtonsoft.com/json/help/html/QueryJsonSelectTokenJsonPath.htm)  

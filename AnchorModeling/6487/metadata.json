@@ -1,0 +1,31 @@
+{
+"src_name" : "gbq", 
+"raw_table" : {
+				"db" : "MDWH_RAW", 
+				"schema" : "raw_gbq168810_g161014_dwh_output", 
+				"table" : "dimUtmExtended", 
+				"business_key" : ["id", "source", "medium", "campaign", "content", "term"]
+				}, 
+"anchor" : "utm_extended", 
+"mapping" : {
+			"id"                        : "hash"                        ,
+			"source"                    : "source"                      ,
+			"medium"                    : "medium"                      ,
+			"campaign"                  : "campaign"                    ,
+			"content"                   : "content"                     ,
+			"term"                      : "term"                        ,
+			"TrafficType"               : "traffic_type"                ,
+			"TrafficCategory"           : "traffic_category"            ,
+			"TrafficSubcategory"        : "traffic_subcategory"         ,
+			"TrafficDivision"           : "traffic_division"            ,
+			"TrafficChannel"            : "traffic_channel"             ,
+			"IsPaidTraffic"             : "traffic_is_paid"             ,
+			"CampaignTargetCategoryId"  : "campaign_target_category_id" ,
+			"CampaignTargetWebLevel1"   : "campaign_target_web_level_1" ,
+			"CampaignTargetWebLevel2"   : "campaign_target_web_level_2" ,
+			"CampaignTargetWebLevel3"   : "campaign_target_web_level_3" ,
+			"CampaignTargetWebLevel4"   : "campaign_target_web_level_4" ,
+			"CampaignTargetWebLevel5"   : "campaign_target_web_level_5" ,
+			"CampaignTargetWebLevel6"   : "campaign_target_web_level_6" 
+			}
+}

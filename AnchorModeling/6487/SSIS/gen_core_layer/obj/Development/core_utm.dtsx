@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/12/2021 1:57:01 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ZHIGALOV"
+  DTS:CreatorName="zhigalov"
+  DTS:DTSID="{D8DE9553-0ABE-498B-BA1F-D7A18016B23B}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.170"
+  DTS:LocaleID="1049"
+  DTS:ObjectName="core_utm"
+  DTS:ProtectionLevel="0"
+  DTS:VersionGUID="{2D7900AE-8CDD-4B6A-8A8C-E572463CC1AB}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\utm_campaign_target_category_id_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{29A5B357-C53A-4A7E-BCE3-767F946A2BDB}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_campaign_target_category_id_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="6">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_campaign_target_category_id_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_campaign_target_web_level1_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{839285CF-68E6-4C20-8EE5-95D87CCAFBA9}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_campaign_target_web_level1_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="7">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_campaign_target_web_level1_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_campaign_target_web_level2_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{2C3469B0-E867-40E3-A86A-8B3419338D75}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_campaign_target_web_level2_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="8">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_campaign_target_web_level2_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_campaign_target_web_level3_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{5899F00E-FE5A-4D18-9046-05CBFF462FF7}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_campaign_target_web_level3_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="9">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_campaign_target_web_level3_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_campaign_target_web_level4_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{08B949F8-3091-4362-9D30-6D2240B273E1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_campaign_target_web_level4_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="10">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_campaign_target_web_level4_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_campaign_target_web_level5_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{59102478-C1F7-40EE-B3B4-A4CB10F6F5AD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_campaign_target_web_level5_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="11">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_campaign_target_web_level5_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_campaign_target_web_level6_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{4F365F17-90FE-4C08-AF78-DEC56356B414}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_campaign_target_web_level6_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="12">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_campaign_target_web_level6_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_is_paid_traffic_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{4F06390E-F2F4-4B4D-83C9-FA892B2520BB}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_is_paid_traffic_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="5">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_is_paid_traffic_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_traffic_category_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{2F667E7C-6F60-44B5-BDD7-BC787F516FDD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_traffic_category_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_traffic_category_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_traffic_channel_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{95116DFC-E2E7-4510-801C-E8B3E7BD1469}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_traffic_channel_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="4">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_traffic_channel_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_traffic_division_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{C5F6B144-B78F-4A33-B313-F4C612C28106}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_traffic_division_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_traffic_division_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_traffic_subcategory_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{5B4E2A61-19D5-4043-A08D-52A60DF6ECDD}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_traffic_subcategory_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_traffic_subcategory_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\utm_traffic_type_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{166066CC-26F6-4926-AFB1-330B86CC3249}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="utm_traffic_type_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="3">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}"
+          SQLTask:SqlStatementSource="exec core.utm_traffic_type_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+</DTS:Executable>

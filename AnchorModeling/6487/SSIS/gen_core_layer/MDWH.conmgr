@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts" DTS:ObjectName="MDWH" DTS:DTSID="{B8795773-8E52-4FDB-A0DE-DF9B75D86FB3}" DTS:refId="Package.ConnectionManagers[MDWH]" DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts" DTS:ConnectionString="data source=dwh.prod.lan;initial catalog=MDWH;provider=SQLNCLI11.1;integrated security=SSPI;auto translate=False"></DTS:ConnectionManager>
+  </DTS:ObjectData>
+</DTS:ConnectionManager>
