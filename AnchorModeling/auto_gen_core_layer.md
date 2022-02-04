@@ -113,16 +113,40 @@ go
 
 В дальнейшем продумать структуру JSON файла (metadata.json), в котором будет вся информация, необходимая для генерирования слоя core.
 
-Запрос для извлечения полей таблицы
+**Запрос для заполнения "raw_table"."columns" в metadata.json**
 
 ```sql
 use [MDWH_RAW]
 go
 
-select c.name, *
+declare @sql nvarchar(max) = ''
+
+select @sql = @sql + char(9)+'"'+c.name+'" : "'+t.name+case when t.name = 'nvarchar' then '('+cast(c.max_length/2 as nvarchar)+')' else '' end+'",'+char(13)
 from sys.objects o
 inner join sys.columns c on o.object_id = c.object_id
-where o.name = 'dimUtmExtended'
+inner join sys.types t on c.user_type_id = t.user_type_id
+where o.name = 'collections'
+and c.name not in ('mt_insert_dt','mt_update_dt','mt_delete_dt')
+
+select @sql
+```
+
+**Запрос для заполнения "mapping" в metadata.json**. Значения в хранилище корректируем руками.
+
+```sql
+use [MDWH_RAW]
+go
+
+declare @sql nvarchar(max) = ''
+
+select @sql = @sql + char(9)+'"'+c.name+'" : "'+c.name+'",'+char(13)
+from sys.objects o
+inner join sys.columns c on o.object_id = c.object_id
+inner join sys.types t on c.user_type_id = t.user_type_id
+where o.name = 'collections'
+and c.name not in ('mt_insert_dt','mt_update_dt','mt_delete_dt')
+
+select @sql
 ```
 
 Перейдем собственно к написанию command-line приложения, которое будет генерировать слой core.
