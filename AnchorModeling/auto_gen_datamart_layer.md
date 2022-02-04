@@ -1,3 +1,5 @@
+### AnchorModeling(../AnchorModeling.md)
+
 ## Автоматизация разработки слоя datamart
 
 ### Описание проблемы
