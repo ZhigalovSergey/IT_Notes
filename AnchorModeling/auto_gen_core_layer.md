@@ -1,4 +1,4 @@
-### AnchorModeling(../AnchorModeling.md)
+### AnchorModeling(./AnchorModeling.md)
 
 ## Автоматизация разработки слоя core
 
