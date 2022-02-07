@@ -1,0 +1,8 @@
+	[#collection_id#] bigint,
+	[#collection_type_id#] int,
+	[#parent_id#] bigint,
+	[#identifier#] nvarchar(255),
+	[#parent_identifier#] nvarchar(255),
+	[#collection_name#] nvarchar(255),
+	[#collection_display_name#] nvarchar(255),
+	[#is_active#] bit,

@@ -1,0 +1,158 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/7/2022 8:28:03 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="ZHIGALOV"
+  DTS:CreatorName="zhigalov"
+  DTS:DTSID="{0624D5FA-87DF-433C-ABE6-AD3A35B95D0C}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.170"
+  DTS:LocaleID="1049"
+  DTS:ObjectName="core_collection"
+  DTS:ProtectionLevel="0"
+  DTS:VersionBuild="2"
+  DTS:VersionGUID="{D5966869-CA82-4680-99A9-708CD37298DC}"
+  DTS:VersionMajor="0">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\collection_x_collection_display_name_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{465B2D35-4CF3-40AC-B171-73CEF1F6C05E}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="collection_x_collection_display_name_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="4">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{63FA6312-2EF2-418D-881B-05082DD58ED5}"
+          SQLTask:SqlStatementSource="exec core.collection_collection_display_name_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\collection_x_collection_name_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{B35B6496-F773-4B0A-B936-6DD1236E0F5D}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="collection_x_collection_name_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="3">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{63FA6312-2EF2-418D-881B-05082DD58ED5}"
+          SQLTask:SqlStatementSource="exec core.collection_collection_name_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\collection_x_identifier_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{6B7E5C0B-84C1-419D-BC6B-CC12804A9D35}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="collection_x_identifier_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{63FA6312-2EF2-418D-881B-05082DD58ED5}"
+          SQLTask:SqlStatementSource="exec core.collection_identifier_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\collection_x_is_active_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{8B20050F-039D-4239-B865-DDBD76CA19F1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="collection_x_is_active_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="5">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{63FA6312-2EF2-418D-881B-05082DD58ED5}"
+          SQLTask:SqlStatementSource="exec core.collection_x_is_active_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\collection_x_parent_identifier_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{382CA9E0-4862-46CF-A776-7137E8D76A44}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="collection_x_parent_identifier_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="2">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{63FA6312-2EF2-418D-881B-05082DD58ED5}"
+          SQLTask:SqlStatementSource="exec core.collection_x_parent_identifier_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\collection_x_parent_id_sync"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DTSID="{CEBEA009-8633-4FC8-850A-A956DA5F2277}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="collection_x_parent_id_sync"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{63FA6312-2EF2-418D-881B-05082DD58ED5}"
+          SQLTask:SqlStatementSource="exec core.collection_x_parent_id_sync;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="281,42"
+          Id="Package\collection_x_collection_display_name_sync"
+          TopLeft="342.5,78.5" />
+        <NodeLayout
+          Size="242,42"
+          Id="Package\collection_x_collection_name_sync"
+          TopLeft="348,5.5" />
+        <NodeLayout
+          Size="208,42"
+          Id="Package\collection_x_identifier_sync"
+          TopLeft="352,154.5" />
+        <NodeLayout
+          Size="207,42"
+          Id="Package\collection_x_is_active_sync"
+          TopLeft="654.5,303.5" />
+        <NodeLayout
+          Size="211,42"
+          Id="Package\collection_x_parent_id_sync"
+          TopLeft="359.5,307.5" />
+        <NodeLayout
+          Size="244,42"
+          Id="Package\collection_x_parent_identifier_sync"
+          TopLeft="360,377.5" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

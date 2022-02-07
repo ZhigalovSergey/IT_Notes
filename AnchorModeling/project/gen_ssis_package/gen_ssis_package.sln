@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "gen_ssis_package", "gen_ssis_package.dtproj", "{9B88E1CE-4B2F-4232-BE1D-CE4288BD1B1D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B88E1CE-4B2F-4232-BE1D-CE4288BD1B1D}.Development|Default.ActiveCfg = Development
+		{9B88E1CE-4B2F-4232-BE1D-CE4288BD1B1D}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CEE5BAA-070F-450A-853B-75F7FB27466B}
+	EndGlobalSection
+EndGlobal
