@@ -12,9 +12,9 @@
 
 ### Реализация
 
-Создадим шаблоны для **DataMart**. Разместим шаблоны в папке **template**. 
+Создадим шаблоны для **DataMart** и разместим в папке **template**. 
 
-Шаблон для [таблицы Anchor](./template/tbl/anchor.sql)
+Шаблон для [таблицы DataMart](./template/dbo/tbl/datamart.sql)
 
 ```sql
 create table [dbo].[#anchor#] (
@@ -29,6 +29,26 @@ create table [dbo].[#anchor#] (
 ) on [DATA_MART]
 go
 ```
+
+Так как витрина может быть основана на нескольких сущностях, то сведем задачу получения полей (#attrs#) к написанию запроса SQL, где будут перечислены все поля витрины. Результат этого запроса сохраним в файле **metadata_tbl_columns.sql** в папке metadata и укажем об этом в **metadata.json**. Также список полей можно занести в файл вручную.
+
+```sql
+use [MDWH_RAW]
+go
+
+declare @sql nvarchar(max) = ''
+
+select @sql = @sql + char(9)+'[#'+c.name+'#] '+t.name++case when t.name = 'nvarchar' then '('+cast(c.max_length/2 as nvarchar)+')' else '' end+','+char(13)
+from sys.objects o
+inner join sys.columns c on o.object_id = c.object_id
+inner join sys.types t on c.user_type_id = t.user_type_id
+where o.name = 'collections'
+and c.name not in ('mt_insert_dt','mt_update_dt','mt_delete_dt')
+
+select @sql
+```
+
+
 
 Шаблон для **процедуры синхронизации DataMart** - в разработке, нужно продумать дополнительные поля для таблицы источников anchor, где будут храниться имена источников в сокращенном виде. Также продумать хранение полей бизнес-ключа для разных источников. Например, в одной системе бизнес ключ может быть id int not null, а в другом набор полей типа nvarchar(255). Также при наличии нескольких источников процедура усложняется. Сейчас шаблон имеет следующий вид
 
@@ -87,17 +107,50 @@ end
 	go
 ```
 
-Дополнительно имеем шаблон для **business_key**
+В шаблоне **datamart_sync.sql** возникает аналогичная задача в получении списка поле. Её можно решать с помощью запроса SQL, немного его модифицировав. Или же заполнить файл **metadata_proc_columns_list.sql (используется для #list#)** руками.
+
+```sql
+use [MDWH_RAW]
+go
+
+declare @sql nvarchar(max) = ''
+
+select @sql = @sql + char(9)+char(9)+'[#'+c.name+'#],'+char(13)
+from sys.objects o
+inner join sys.columns c on o.object_id = c.object_id
+inner join sys.types t on c.user_type_id = t.user_type_id
+where o.name = 'collections'
+and c.name not in ('mt_insert_dt','mt_update_dt','mt_delete_dt')
+
+select @sql
+```
+
+Аналогичный запрос для файла **metadata_proc_columns_init.sql (используется для #init#)**
+
+```sql
+use [MDWH_RAW]
+go
+
+declare @sql nvarchar(max) = ''
+
+select @sql = @sql + char(9)+char(9)+'null as [#'+c.name+'#],'+char(13)
+from sys.objects o
+inner join sys.columns c on o.object_id = c.object_id
+inner join sys.types t on c.user_type_id = t.user_type_id
+where o.name = 'collections'
+and c.name not in ('mt_insert_dt','mt_update_dt','mt_delete_dt')
+
+select @sql
+```
+
+Как видим, это по сути один и тот же запрос. Разница только в формировании поля.
+
+Шаблон для **business_key** требует дополнительной доработки на стороне C# в случае если у нас составной бизнес ключ. 
 
 ```sql
 	update tgt
 	set
-		tgt.[#anchor#_#attr_bk_1#] = src.[#anchor#_#attr_bk_1#],
-		tgt.[#anchor#_#attr_bk_2#] = src.[#anchor#_#attr_bk_2#],
-		tgt.[#anchor#_#attr_bk_3#] = src.[#anchor#_#attr_bk_3#],
-		tgt.[#anchor#_#attr_bk_4#] = src.[#anchor#_#attr_bk_4#],
-		tgt.[#anchor#_#attr_bk_5#] = src.[#anchor#_#attr_bk_5#],
-		tgt.[#anchor#_#attr_bk_6#] = src.[#anchor#_#attr_bk_6#],
+		#set_attrs# --tgt.[#anchor#_#attr_bk#] = src.[#anchor#_#attr_bk#],
 		tgt.mt_update_dt = @mt_dt
 	from
 		dbo.#anchor# as tgt
@@ -105,17 +158,11 @@ end
 			tgt.#anchor#_key = src.#anchor#_key
 	where
 		tgt.mt_update_dt >= @load_dt
-		and not (
-				isnull(tgt.[#anchor#_#attr_bk_1#], '||') = isnull(src.[#anchor#_#attr_bk_1#], '||')
-			and isnull(tgt.[#anchor#_#attr_bk_2#], '||') = isnull(src.[#anchor#_#attr_bk_2#], '||')
-			and isnull(tgt.[#anchor#_#attr_bk_3#], '||') = isnull(src.[#anchor#_#attr_bk_3#], '||')
-			and isnull(tgt.[#anchor#_#attr_bk_4#], '||') = isnull(src.[#anchor#_#attr_bk_4#], '||')
-			and isnull(tgt.[#anchor#_#attr_bk_5#], '||') = isnull(src.[#anchor#_#attr_bk_5#], '||')
-			and isnull(tgt.[#anchor#_#attr_bk_6#], '||') = isnull(src.[#anchor#_#attr_bk_6#], '||')
-			)
+		and not exists 
+			#where_attrs# --(select tgt.#anchor#_#attr_bk# intersect select src.#anchor#_#attr_bk#)
 
 	execute maintenance.InsertExecution
-		@Step = N'update #attr_bk_1#, #attr_bk_2#, #attr_bk_3#, #attr_bk_4#, #attr_bk_5#, #attr_bk_6#)',
+		@Step = N'update #attr_bk#',
 		@ExecGUID = @exec_guid,
 		@ProcID = @proc_id,
 		@Rows = @@rowcount;
@@ -144,77 +191,79 @@ end
 		
 ```
 
-Запрос для извлечения полей таблицы. Результат этого запроса сохраним в **columns.sql**, рядом с шаблоном **datamart.sql**
-
-```sql
-use [MDWH_RAW]
-go
-
-declare @sql nvarchar(max) = ''
-
-select @sql = @sql + char(9)+'[#'+c.name+'#] '+t.name+'('+cast(c.max_length/2 as nvarchar)+'),'+char(13)
-from sys.objects o
-inner join sys.columns c on o.object_id = c.object_id
-inner join sys.types t on c.user_type_id = t.user_type_id
-where o.name = 'dimUtmExtended'
-and c.name not in ('mt_insert_dt','mt_update_dt','update_dt')
-
-select @sql
-```
-
-Для шаблона **datamart_sync.sql** запустим запрос и сохраним результат в **list.sql**
-
-```sql
-use [MDWH_RAW]
-go
-
-declare @sql nvarchar(max) = ''
-
-select @sql = @sql + char(9)+char(9)+'[#'+c.name+'#],'+char(13)
-from sys.objects o
-inner join sys.columns c on o.object_id = c.object_id
-inner join sys.types t on c.user_type_id = t.user_type_id
-where o.name = 'dimUtmExtended'
-and c.name not in ('mt_insert_dt','mt_update_dt','update_dt')
-
-select @sql
-```
-
-И запустим запрос и сохраним результат в **init.sql**
-
-```sql
-use [MDWH_RAW]
-go
-
-declare @sql nvarchar(max) = ''
-
-select @sql = @sql + char(9)+char(9)+'null as [#'+c.name+'#],'+char(13)
-from sys.objects o
-inner join sys.columns c on o.object_id = c.object_id
-inner join sys.types t on c.user_type_id = t.user_type_id
-where o.name = 'dimUtmExtended'
-and c.name not in ('mt_insert_dt','mt_update_dt','update_dt')
-
-select @sql
-```
-
 Перейдем собственно к написанию command-line приложения, которое будет генерировать слой datamart. Для этого допишем код для генерации слоя core 
 
 ```c#
-// create datamart_sync.sql
-text = File.ReadAllText(dir + "\\template\\dbo\\proc\\datamart_sync.sql");
-fl_new = string.Format(dir + "\\test\\dbo\\proc\\" + anchor + ".sql");
-text = text.Replace("#anchor#", anchor);
+Console.WriteLine(args[0]);
+string dir = args[0];
 
-string list = File.ReadAllText(dir + "\\template\\dbo\\proc\\list.sql");
-string init = File.ReadAllText(dir + "\\template\\dbo\\proc\\init.sql");
+string text;
+string fl_new;
+
+string fl_json = dir + "\\metadata.json";
+string json = File.ReadAllText(fl_json);
+
+JObject mt = JObject.Parse(json);
+
+JToken mapping = mt.SelectToken("$.mapping");
+Console.WriteLine("mapping is: " + mapping);
+Dictionary<string, string> dict_attr = JsonConvert.DeserializeObject<Dictionary<string, string>>(mapping.ToString());
+
+string[] bk = mt.SelectToken("$.raw_table.business_key").Select(s => (string)s).ToArray();
+Console.WriteLine("bk is : " + String.Join("; ", bk));
+
+string attr_bk = bk[0];
+
+string anchor = (string)mt.SelectToken("$.anchor");
+Console.WriteLine("anchor is : " + anchor);
+
+string src_name = (string)mt.SelectToken("$.src_name");
+Console.WriteLine("src_name is : " + src_name);
+Console.ReadLine();
+
+string tbl_path = dir + "\\test\\dbo\\tbl\\";
+if (!Directory.Exists(tbl_path))
+{
+	Directory.CreateDirectory(tbl_path);
+}
+
+string proc_path = dir + "\\test\\dbo\\proc\\";
+if (!Directory.Exists(proc_path))
+{
+	Directory.CreateDirectory(proc_path);
+}
+
+// create datamart.sql
+text = File.ReadAllText(dir + "\\template\\dbo\\tbl\\datamart.sql");
+fl_new = string.Format(dir + "\\test\\dbo\\tbl\\" + anchor + ".sql");
+text = text.Replace("#anchor#", anchor);
+string tbl_columns = File.ReadAllText(dir + "\\metadata\\metadata_tbl_columns.sql");
+string src_attr;
+string attr;
 foreach (KeyValuePair<string, string> kvp in dict_attr)
 {
-    src_attr = kvp.Key;
-    attr = kvp.Value;
+	src_attr = kvp.Key;
+	attr = kvp.Value;
 
-    list = list.Replace("#" + src_attr + "#", anchor + "_" + attr);
-    init = init.Replace("#" + src_attr + "#", anchor + "_" + attr);
+	tbl_columns = tbl_columns.Replace("#" + src_attr + "#", anchor + "_" + attr);
+}
+text = text.Replace("#attrs#", tbl_columns);
+File.WriteAllText(fl_new, text);
+
+// create datamart_sync.sql
+text = File.ReadAllText(dir + "\\template\\dbo\\proc\\datamart_sync.sql");
+fl_new = string.Format(dir + "\\test\\dbo\\proc\\" + anchor + "_sync.sql");
+text = text.Replace("#anchor#", anchor);
+
+string list = File.ReadAllText(dir + "\\metadata\\metadata_proc_columns_list.sql");
+string init = File.ReadAllText(dir + "\\metadata\\metadata_proc_columns_init.sql");
+foreach (KeyValuePair<string, string> kvp in dict_attr)
+{
+	src_attr = kvp.Key;
+	attr = kvp.Value;
+
+	list = list.Replace("#" + src_attr + "#", anchor + "_" + attr);
+	init = init.Replace("#" + src_attr + "#", anchor + "_" + attr);
 }
 text = text.Replace("#list#", list);
 text = text.Replace("#init#", init);
@@ -223,26 +272,21 @@ text = text.Replace("#init#", init);
 string upd_bk = File.ReadAllText(dir + "\\template\\dbo\\proc\\update_business_key.sql");
 upd_bk = upd_bk.Replace("#anchor#", anchor);
 upd_bk = upd_bk.Replace("#src_name#", src_name);
-upd_bk = upd_bk.Replace("#attr_bk_1#", attr_bk_1);
-upd_bk = upd_bk.Replace("#attr_bk_2#", attr_bk_2);
-upd_bk = upd_bk.Replace("#attr_bk_3#", attr_bk_3);
-upd_bk = upd_bk.Replace("#attr_bk_4#", attr_bk_4);
-upd_bk = upd_bk.Replace("#attr_bk_5#", attr_bk_5);
-upd_bk = upd_bk.Replace("#attr_bk_6#", attr_bk_6);
+upd_bk = upd_bk.Replace("#attr_bk#", attr_bk);
 text = text.Replace("#upd_business_key#", upd_bk);
 
 // update attributes
 string upd_attrs = "";
 foreach (KeyValuePair<string, string> kvp in dict_attr)
 {
-    if (bk.Contains(kvp.Key)) continue;
-    src_attr = kvp.Key;
-    attr = kvp.Value;
-    string upd_attr = File.ReadAllText(dir + "\\template\\dbo\\proc\\update_attr.sql");
+	if (bk.Contains(kvp.Key)) continue;
+	src_attr = kvp.Key;
+	attr = kvp.Value;
+	string upd_attr = File.ReadAllText(dir + "\\template\\dbo\\proc\\update_attr.sql");
 
-    upd_attr = upd_attr.Replace("#anchor#", anchor);
-    upd_attr = upd_attr.Replace("#attr#", attr);
-    upd_attrs += upd_attr;
+	upd_attr = upd_attr.Replace("#anchor#", anchor);
+	upd_attr = upd_attr.Replace("#attr#", attr);
+	upd_attrs += upd_attr;
 }
 
 text = text.Replace("#upd_attrs#", upd_attrs);
