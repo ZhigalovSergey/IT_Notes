@@ -1,7 +1,7 @@
 # IT_Notes
 ## [MSSQL](./MSSQL/MSSQL.md)  
 ## Linux  
-## Python  
+## [Python](./Python/python.md)    
 ## [RegEx](./RegEx/RegEx.md)  
 ## [C#](./CSharp/CSharp.md)  
 ## [PowerShell](./PowerShell/PowerShell.md)  
