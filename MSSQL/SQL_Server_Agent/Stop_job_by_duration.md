@@ -25,7 +25,7 @@ begin
 					and sj.job_id = @job
 					and sja.start_execution_date IS NOT NULL	-- job is currently running
 					and sja.stop_execution_date IS NULL		-- job hasn't stopped running
-					and datediff(mi, sja.start_execution_date, getdate()) > 9 -- duration more 240 min
+					and datediff(mi, sja.start_execution_date, getdate()) > 240 -- duration more 240 min
 		)
 		exec msdb.dbo.sp_stop_job @job_id = @job
 	fetch next from jobs_cursor
