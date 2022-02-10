@@ -1,5 +1,6 @@
 # IT_Notes
 ## [MSSQL](./MSSQL/MSSQL.md)  
+## [BigQuery](./BigQuery/big_query.md) 
 ## Linux  
 ## [Python](./Python/python.md)    
 ## [RegEx](./RegEx/RegEx.md)  
