@@ -7,12 +7,12 @@ create table [core].[#anchor#_x_#attr#] (
 	constraint [pk_#anchor#_#attr#] primary key clustered
 	(
 	[#anchor#_key]
-	)
-)
+	) on [core]
+) on [core]
 go
 
-create nonclustered index [mt_update_dt] on [core].[#anchor#_x_#attr#]
+create nonclustered index [mt_update_dt] include(#anchor#_#attr#) on [core].[#anchor#_x_#attr#]
 (
 [mt_update_dt]
-)
+) include (#anchor#_#attr#) on [core]
 go
