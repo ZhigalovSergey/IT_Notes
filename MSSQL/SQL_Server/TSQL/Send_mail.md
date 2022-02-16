@@ -173,8 +173,8 @@ declare @subject nvarchar(max) = N'Long running jobs are stoped',
 		@message_text nvarchar(max) = N'Уважаемые коллеги, внимание! Были остановлены долго работающие задания.',
 		@HTML nvarchar(max) = N'<br><table border="1" cellpadding="1" cellspacing="1"><tr style="background-color: gold;"><th>Long running job</th></tr><td>',
 		@data_context nvarchar(max) = '<br><span style="font-size:12px">STOP_long_job</span>',
-		@recipients varchar(255) = 'sergey.zhigalov@sbermegamarket.ru',
-		@blind_copy_recipients varchar(255) = '',
+		@recipients varchar(255) = 'sqldwh@sbermegamarket.ru',
+		@blind_copy_recipients varchar(255) = 'sergey.zhigalov@sbermegamarket.ru',
 		@stoped varchar(255) = ''
 
 declare @job nvarchar(255)
@@ -202,7 +202,7 @@ begin
 					and sj.job_id = @job
 					and sja.start_execution_date IS NOT NULL	-- job is currently running
 					and sja.stop_execution_date IS NULL		-- job hasn't stopped running
-					and datediff(mi, sja.start_execution_date, getdate()) > 1 -- duration more 240 min
+					and datediff(mi, sja.start_execution_date, getdate()) > 240 -- duration more 240 min
 		)
 		begin
 			exec msdb.dbo.sp_stop_job @job_id = @job
