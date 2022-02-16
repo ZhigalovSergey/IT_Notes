@@ -166,6 +166,67 @@ as begin
 end
 ```
 
+Письмо по остановленным заданиям
+
+```sql
+declare @subject nvarchar(max) = N'Long running jobs are stoped',
+		@message_text nvarchar(max) = N'Уважаемые коллеги, внимание! Были остановлены долго работающие задания.',
+		@HTML nvarchar(max) = N'<br><table border="1" cellpadding="1" cellspacing="1"><tr style="background-color: gold;"><th>Long running job</th></tr><td>',
+		@data_context nvarchar(max) = '<br><span style="font-size:12px">STOP_long_job</span>',
+		@recipients varchar(255) = 'sergey.zhigalov@sbermegamarket.ru',
+		@blind_copy_recipients varchar(255) = '',
+		@stoped varchar(255) = ''
+
+declare @job nvarchar(255)
+
+declare jobs_cursor cursor for   
+select N'FD5D119A-0D0C-4D2D-8BC8-9F9856055E70' as job_id -- input_gbq_sessionDetails_GA_7
+union all
+select N'CBD19FE9-0DE0-410D-A7BE-2A95A1A7F6A1' as job_id -- input_gbq_app_sessions_7d
+union all
+select N'8A642BC9-BABF-4A02-9169-D04450E4B0B9' as job_id -- input_gbq
+
+open jobs_cursor
+fetch next from jobs_cursor
+into @job
+
+while @@fetch_status = 0  
+begin  
+	if exists (
+				SELECT sj.Name, sj.job_id, datediff(mi, sja.start_execution_date, getdate()) duration
+				FROM msdb.dbo.sysjobs sj
+				JOIN msdb.dbo.sysjobactivity sja
+				ON sj.job_id = sja.job_id
+				WHERE session_id = (
+					SELECT MAX(session_id) FROM msdb.dbo.sysjobactivity)	-- make sure this is the most recent run SQL Server Agent
+					and sj.job_id = @job
+					and sja.start_execution_date IS NOT NULL	-- job is currently running
+					and sja.stop_execution_date IS NULL		-- job hasn't stopped running
+					and datediff(mi, sja.start_execution_date, getdate()) > 1 -- duration more 240 min
+		)
+		begin
+			exec msdb.dbo.sp_stop_job @job_id = @job
+			set @stoped = @stoped + (select name from msdb.dbo.sysjobs where job_id = @job) + '</td>'
+		end
+	fetch next from jobs_cursor
+	into @job
+end
+close jobs_cursor
+deallocate jobs_cursor
+
+if @stoped <> ''
+	begin 
+		set @HTML = @message_text + @HTML + @stoped + '</tr></table>' + @data_context
+		exec msdb.dbo.sp_send_dbmail
+			@profile_name = 'BI_Goods',
+			@recipients = @recipients,
+			@blind_copy_recipients = @blind_copy_recipients,
+			@subject = @subject,
+			@body_format = 'HTML',
+			@body = @HTML
+	end
+```
+
 
 
 ### Полезные ссылки:  
