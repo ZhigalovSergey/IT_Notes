@@ -171,24 +171,27 @@ end
 ```sql
 declare @subject nvarchar(max) = N'Long running jobs are stoped',
 		@message_text nvarchar(max) = N'Уважаемые коллеги, внимание! Были остановлены долго работающие задания.',
-		@HTML nvarchar(max) = N'<br><table border="1" cellpadding="1" cellspacing="1"><tr style="background-color: gold;"><th>Long running job</th></tr><td>',
+		@HTML nvarchar(max) = N'<br><table border="1" cellpadding="1" cellspacing="1"><tr style="background-color: gold;"><th>Long running job</th></tr>',
 		@data_context nvarchar(max) = '<br><span style="font-size:12px">STOP_long_job</span>',
 		@recipients varchar(255) = 'sqldwh@sbermegamarket.ru',
 		@blind_copy_recipients varchar(255) = 'sergey.zhigalov@sbermegamarket.ru',
 		@stoped varchar(255) = ''
 
-declare @job nvarchar(255)
+declare @job nvarchar(255), @min_duration int
 
 declare jobs_cursor cursor for   
 select N'FD5D119A-0D0C-4D2D-8BC8-9F9856055E70' as job_id -- input_gbq_sessionDetails_GA_7
+		, 240 as min_duration_minutes
 union all
 select N'CBD19FE9-0DE0-410D-A7BE-2A95A1A7F6A1' as job_id -- input_gbq_app_sessions_7d
+		, 240 as min_duration_minutes
 union all
 select N'8A642BC9-BABF-4A02-9169-D04450E4B0B9' as job_id -- input_gbq
+		, 240 as min_duration_minutes
 
 open jobs_cursor
 fetch next from jobs_cursor
-into @job
+into @job, @min_duration
 
 while @@fetch_status = 0  
 begin  
@@ -202,14 +205,14 @@ begin
 					and sj.job_id = @job
 					and sja.start_execution_date IS NOT NULL	-- job is currently running
 					and sja.stop_execution_date IS NULL		-- job hasn't stopped running
-					and datediff(mi, sja.start_execution_date, getdate()) > 240 -- duration more 240 min
+					and datediff(mi, sja.start_execution_date, getdate()) > @min_duration -- duration
 		)
 		begin
 			exec msdb.dbo.sp_stop_job @job_id = @job
-			set @stoped = @stoped + (select name from msdb.dbo.sysjobs where job_id = @job) + '</td>'
+			set @stoped = @stoped + '<td>' + (select name from msdb.dbo.sysjobs where job_id = @job) + '</td>'
 		end
 	fetch next from jobs_cursor
-	into @job
+	into @job, @min_duration
 end
 close jobs_cursor
 deallocate jobs_cursor
