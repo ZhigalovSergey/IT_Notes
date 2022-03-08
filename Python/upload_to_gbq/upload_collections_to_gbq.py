@@ -22,10 +22,11 @@ def load(sql_conn, project_id, credentials, date_from, date_to, cnt_shard, numbe
         [mt_delete_dt]
     from
         [MDWH].[CORE].[collections]''' + "where mt_update_dt>='" + date_from + "' and mt_update_dt<'" + date_to + "' and collection_id%"+str(cnt_shard)+"="+str(number)
-    logging.info("loading from src")
+    logging.info("loading from collections")
     df = pd.read_sql(con=sql_conn, sql=sql) # извлекаем данные для прогрузки
-    logging.info("uploading to tgt")
-    
+    logging.info("loading from collections finished")
+
+    logging.info("uploading to dwh_input.collections_tmp")
     d10_sec = 10
     retry_insert_gbq = 1
     res = ''
@@ -92,9 +93,9 @@ def load(sql_conn, project_id, credentials, date_from, date_to, cnt_shard, numbe
                         join dwh_input.collections as tgt on src.collection_id = tgt.collection_id
                         )
     '''
-
+    logging.info("inserting to dwh_input.collections")
     pd.read_gbq(sql_insert, project_id=project_id, configuration = {"query": {"timeoutMs": 600000}}, credentials=credentials, dialect='standard')
-    logging.info("inserting dwh_input.collections finished")
+    logging.info("inserting to dwh_input.collections finished")
 
     sql_update = '''
         update dwh_input.collections tgt
@@ -140,22 +141,24 @@ def load(sql_conn, project_id, credentials, date_from, date_to, cnt_shard, numbe
                     ,tgt.mt_delete_dt
                 )
     '''
-
+    logging.info("updating dwh_input.collections")
     pd.read_gbq(sql_update, project_id=project_id, configuration = {"query": {"timeoutMs": 600000}}, credentials=credentials, dialect='standard')
     logging.info("updating dwh_input.collections finished")
 
-def main():
-    logging.basicConfig(handlers=[logging.FileHandler(filename='load.log', encoding='utf-8', mode='w')],
+def main():  
+    ap = argparse.ArgumentParser()
+    ap.add_argument("json_credentials", type=str,
+                    help="path for json file with credentials")
+    ap.add_argument("log_file", type=str,
+                    help="path for log file")
+    args = ap.parse_args()
+    json_credentials = args.json_credentials
+    log_file = args.log_file
+    logging.basicConfig(handlers=[logging.FileHandler(filename=log_file, encoding='utf-8', mode='w')],
                                 format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                                 datefmt='%H:%M:%S',
                                 level=logging.INFO)
     logging.info("pid: " + str(os.getpid())) # логируем номер процесса, под которым запущен скрипт
-    
-    ap = argparse.ArgumentParser()
-    ap.add_argument("json_credentials", type=str,
-                    help="path for json file with credentials")
-    args = ap.parse_args()
-    json_credentials = args.json_credentials
     
     try:
         sql_conn = pyodbc.connect('''DRIVER={ODBC Driver 17 for SQL Server};

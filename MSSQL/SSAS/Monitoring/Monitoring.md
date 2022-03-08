@@ -1,4 +1,4 @@
-#### [Заметки по SSAS](./SSAS_note.md)  
+#### [Заметки по SSAS](../SSAS_note.md)  
 
 ### Мониторинг запросов к SSAS  
 
@@ -55,7 +55,20 @@
   
 - Так как в DMV не хранится история запросов к серверу. То для более глубокого анализа можно настроить логирование запросов MDX. Есть два подхода, старый - [AsTrace](https://github.com/microsoft/Analysis-Services/tree/master/AsTrace) (по сути, это profiler без GUI) и новый - [XEvent](https://github.com/microsoft/Analysis-Services/tree/master/AsXEventSample)  
 
-  Подход через Extended Events лучше, так как не оказывает дополнительной нагрузки на сервер.  
+  Подход через Extended Events лучше, так как не оказывает дополнительной нагрузки на сервер.  Как правило, логирование через XEvents сохраняется в файл. Для извлечения данных из файла можно использовать запрос SQL, для примера: 
+  
+  ```sql
+  select
+      n.value('(data[@name="StartTime"]/value)[1]', 'datetime2') as StartTime,
+      n.value('(data[@name="EndTime"]/value)[1]', 'datetime2') as EndTime,
+      n.value('(data[@name="ServerName"]/value)[1]', 'nvarchar(255)') as ServerName,
+      n.value('(data[@name="DatabaseName"]/value)[1]', 'nvarchar(255)') as DatabaseName,
+      n.value('(data[@name="NTUserName"]/value)[1]', 'nvarchar(255)') as UserName,
+      n.value('(data[@name="TextData"]/value)[1]', 'nvarchar(max)') as MDXQuery
+  from (select cast(event_data as XML) as event_data
+  from sys.fn_xe_file_target_read_file('\\mir-sdb-008\ExtEventsLog\MDX_Traces*.xel', null, null, null)) ed
+  cross apply ed.event_data.nodes('event') as q(n)
+  ```
   
 - Дополнительную информацию на основе DMV можно собрать с помощью проекта [ResMon](http://sqlsrvanalysissrvcs.codeplex.com/downloads/get/163669). Это куб, в который загружаются данные из DMV с определённым шагом.
 
