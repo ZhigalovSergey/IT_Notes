@@ -169,6 +169,7 @@ end
 Письмо по остановленным заданиям
 
 ```sql
+
 declare @subject nvarchar(max) = N'Long running jobs are stoped',
 		@message_text nvarchar(max) = N'Уважаемые коллеги, внимание! Были остановлены долго работающие задания.',
 		@HTML nvarchar(max) = N'<br><table border="1" cellpadding="1" cellspacing="1"><tr style="background-color: gold;"><th>Long running job</th></tr>',
@@ -188,6 +189,25 @@ select N'CBD19FE9-0DE0-410D-A7BE-2A95A1A7F6A1' as job_id -- input_gbq_app_sessio
 union all
 select N'8A642BC9-BABF-4A02-9169-D04450E4B0B9' as job_id -- input_gbq
 		, 240 as min_duration_minutes
+union all
+select N'54E08700-97CF-407D-A3FD-6F8E7EFBD2F0' as job_id -- output_gbq
+		, 240 as min_duration_minutes
+union all
+select N'8C7FF558-4402-416D-B323-9A00A38CBBEB' as job_id -- ga_detailed_web_statistic
+		, 240 as min_duration_minutes
+union all
+select N'E1A53353-CC80-49E3-98CF-E10ED905D79F' as job_id -- input_gbq_export
+		, 240 as min_duration_minutes
+union all
+select N'7330378E-1A85-496D-83A3-C7711742AEBD' as job_id -- input_exponea
+		, 240 as min_duration_minutes
+union all
+select N'D4CBEE19-798D-446F-B18C-932A771D804A' as job_id -- input_advertising_cost
+		, 60 as min_duration_minutes	
+union all
+select N'17394BA5-9B3B-45A1-A324-2B622C541828' as job_id -- input_gbq_smm_dashboard
+		, 60 as min_duration_minutes
+
 
 open jobs_cursor
 fetch next from jobs_cursor
@@ -209,7 +229,7 @@ begin
 		)
 		begin
 			exec msdb.dbo.sp_stop_job @job_id = @job
-			set @stoped = @stoped + '<td>' + (select name from msdb.dbo.sysjobs where job_id = @job) + '</td>'
+			set @stoped = @stoped + '<tr>' + (select name from msdb.dbo.sysjobs where job_id = @job) + '</tr>'
 		end
 	fetch next from jobs_cursor
 	into @job, @min_duration
@@ -219,7 +239,7 @@ deallocate jobs_cursor
 
 if @stoped <> ''
 	begin 
-		set @HTML = @message_text + @HTML + @stoped + '</tr></table>' + @data_context
+		set @HTML = @message_text + @HTML + @stoped + '</table>' + @data_context
 		exec msdb.dbo.sp_send_dbmail
 			@profile_name = 'BI_Goods',
 			@recipients = @recipients,
