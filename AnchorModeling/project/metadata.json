@@ -1,31 +1,17 @@
 {
-"src_name" : "malibu", 
+"src_name" : "gbq", 
 "raw_table" : {
 				"db" : "MDWH_RAW", 
-				"schema" : "raw_malibu_malibu_malibu", 
-				"table" : "collections", 
-				"business_key" : ["collection_id"],
+				"schema" : "raw_gbq", 
+				"table" : "reward_sber_channels", 
+				"business_key" : ["channel"],
 				"columns" : {
-								"collection_id" : "bigint",
-								"collection_type_id" : "int",
-								"parent_id" : "bigint",
-								"identifier" : "nvarchar(255)",
-								"parent_identifier" : "nvarchar(255)",
-								"collection_name" : "nvarchar(255)",
-								"collection_display_name" : "nvarchar(255)",
-								"is_active" : "bit"
+								"channel" : "nvarchar(128)"
 							}
 				}, 
-"anchor" : "collection", 
+"anchor" : "reward_sber_channel", 
 "mapping" : {
-				"collection_id" : "collection_id",
-				"collection_type_id" : "collection_type_id",
-				"parent_id" : "parent_id",
-				"identifier" : "identifier",
-				"parent_identifier" : "parent_identifier",
-				"collection_name" : "collection_name",
-				"collection_display_name" : "collection_display_name",
-				"is_active" : "is_active"
+				"channel" : "channel"
 			},
 "metadata" : {
 				"metadata_tbl_columns.sql" : "./metadata/metadata_tbl_columns.sql",

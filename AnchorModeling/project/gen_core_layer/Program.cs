@@ -23,9 +23,20 @@ namespace gen_core_layer
             string fl_json = dir + "\\metadata.json";
             string json = File.ReadAllText(fl_json);
 
-            string text;
-            string anchor = "utm_extended";
-            string fl_new;
+            JObject mt = JObject.Parse(json);
+            string anchor = (string)mt.SelectToken("$.anchor");
+            Console.WriteLine("anchor is : " + anchor);
+
+            string src_name = (string)mt.SelectToken("$.src_name");
+            Console.WriteLine("src_name is : " + src_name);
+            Console.ReadLine();
+
+            string[] bk = mt.SelectToken("$.raw_table.business_key").Select(s => (string)s).ToArray();
+            Console.WriteLine("bk is : " + String.Join("; ", bk));
+
+            string bk1 = bk[0];
+
+
 
             anchor anchor_obj = new anchor();
 
@@ -36,12 +47,11 @@ namespace gen_core_layer
 
             if (type_obj == "attribute_business_key" || type_obj == "all")
             {
-                anchor_obj.gen_attribute_business_key(anchor, dir);
+                anchor_obj.gen_attribute_business_key(anchor, dir, src_name, bk1);
             }
 
             if (type_obj == "anchor_sync" || type_obj == "all")
             {
-                string src_name = "gbq";
                 anchor_obj.gen_anchor_sync(anchor, dir, src_name);
             }
 
