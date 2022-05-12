@@ -26,6 +26,18 @@
   $1MDWH_RAW.$2
   ```
 
+- Другой пример. Нужно поменять название таблицы MDWH_CORE.core.order_create_dt на MDWH_CORE.core.order_x_create_dt, тогда шаблон для поиска будет  
+
+  ```sql
+  (\s+)([[]?MDWH_CORE[]]?\.[[]?core[]]?\.[[]?order_create_dt[]]?)(\s+|\b)
+  ```
+
+  Шаблон для замены будет  
+
+  ```sql
+  $1MDWH_CORE.core.order_x_create_dt$3
+  ```
+
   
 
 ### Полезные ссылки:  
