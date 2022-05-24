@@ -25,3 +25,4 @@ ym_token = "AQAAAABUFn0UAAdOH258DsfK8UsquTCCKi7LtbQ"
 - [Метод POST](https://developer.mozilla.org/ru/docs/Web/HTTP/Methods/POST)  
 - [Введение в Postman](https://habr.com/ru/company/kolesa/blog/351250/)  
 - [Yandex - Список загрузок офлайн-конверсий](https://yandex.ru/dev/metrika/doc/api2/management/offline_conversion/findall.html)   
+- [GA - Event Builder](https://ga-dev-tools.web.app/ga4/event-builder/)  
