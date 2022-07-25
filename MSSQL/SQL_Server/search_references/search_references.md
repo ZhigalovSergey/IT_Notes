@@ -146,3 +146,6 @@ where
 
 - [sys.sql_expression_dependencies](https://docs.microsoft.com/ru-ru/sql/relational-databases/system-catalog-views/sys-sql-expression-dependencies-transact-sql?view=sql-server-ver15)  
 
+- [sys.dm_sql_referenced_entities](https://docs.microsoft.com/ru-ru/sql/relational-databases/system-catalog-views/sys-sql-expression-dependencies-transact-sql?view=sql-server-ver16)
+
+- [Apache Atlas – доступный data catalog](https://habr.com/ru/company/glowbyte/blog/667834/)

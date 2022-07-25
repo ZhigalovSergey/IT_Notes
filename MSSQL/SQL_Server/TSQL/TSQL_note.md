@@ -11,4 +11,5 @@
 - **[wait_at_low_priority - kill блокирующих сессий](./wait_at_low_priority.md)**  
 - **[PartitionInfo - Информация по партициям таблицы](./PartitionInfo.md)**  
 - **[Проверка существования объекта БД](./object_id.md)**  
-
+- **[Информация о колонках таблицы](./info_columns_by_table.md)** 
+- **[Подсчёт уникальных значений накопительным итогом](./window_func_count_distinct.md)**  
